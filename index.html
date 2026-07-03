@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Yinyu Zhu 摄影</title>
+    <meta
+      name="description"
+      content="Personal photography website for work, photographed places, stories, and about information."
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="home-page">
+    <header class="site-header home-header">
+      <a class="brand-lockup" href="index.html" aria-label="Yinyu Zhu Photography home">
+        <span class="brand-name" data-profile="brand">Yinyu Zhu</span>
+        <span class="brand-role" data-i18n="profile.role">摄影师</span>
+      </a>
+
+      <nav class="main-nav compact-nav" aria-label="Main navigation">
+        <div class="nav-item has-submenu">
+          <a class="nav-link" href="work.html" data-i18n="nav.work">作品</a>
+          <div class="nav-submenu" aria-label="Work collections">
+            <a href="work.html#gallery-city" data-i18n="nav.city">城市</a>
+            <a href="work.html#gallery-landscape" data-i18n="nav.landscape">风景</a>
+            <a href="work.html#gallery-street" data-i18n="nav.street">街景</a>
+            <a href="work.html#gallery-abstract" data-i18n="nav.abstract">抽象</a>
+          </div>
+        </div>
+        <a href="places.html" data-i18n="nav.places">地点</a>
+        <a href="story.html" data-i18n="nav.story">故事</a>
+        <a href="about.html" data-i18n="nav.about">关于</a>
+      </nav>
+
+      <div class="header-actions" aria-label="Social links and contact">
+        <a class="social-button" href="#" aria-label="Xiaohongshu">
+          <img src="assets/icons/xiaohongshu.svg" alt="">
+        </a>
+        <a class="social-button" href="#" aria-label="TikTok">
+          <img src="assets/icons/tiktok.svg" alt="">
+        </a>
+        <a class="social-button" href="#" aria-label="Instagram">
+          <img src="assets/icons/instagram.svg" alt="">
+        </a>
+        <a class="social-button" href="#" aria-label="X">
+          <img src="assets/icons/x.svg" alt="">
+        </a>
+        <a class="contact-tab" href="mailto:hello@yourname.com" data-i18n="nav.contact">联系</a>
+        <button class="language-switch" type="button" data-language-switch aria-label="Switch to English">EN</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="home-hero" aria-labelledby="homeTitle">
+        <img class="home-hero-image" src="assets/photos/thumb/landscape/landscape-01.jpg" alt="">
+        <div class="home-shade" aria-hidden="true"></div>
+
+        <div class="home-menu" aria-label="Site sections">
+          <a href="work.html" data-i18n="nav.work">作品</a>
+          <a href="places.html" data-i18n="nav.places">地点</a>
+          <a href="story.html" data-i18n="nav.story">故事</a>
+          <a href="about.html" data-i18n="nav.about">关于</a>
+        </div>
+
+        <div class="home-caption">
+          <p class="eyebrow" data-i18n="home.eyebrow">摄影档案</p>
+          <h1 id="homeTitle" data-i18n="home.title">Light, distance, and the quiet geography of memory.</h1>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

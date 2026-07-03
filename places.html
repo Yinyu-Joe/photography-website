@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>地点 | Yinyu Zhu 摄影</title>
+    <meta
+      name="description"
+      content="A dotted world map showing photographed places around the world."
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand-lockup" href="index.html" aria-label="Yinyu Zhu Photography home">
+        <span class="brand-name" data-profile="brand">Yinyu Zhu</span>
+        <span class="brand-role" data-i18n="profile.role">摄影师</span>
+      </a>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <div class="nav-item has-submenu">
+          <a class="nav-link" href="work.html" data-i18n="nav.work">作品</a>
+          <div class="nav-submenu" aria-label="Work collections">
+            <a href="work.html#gallery-city" data-i18n="nav.city">城市</a>
+            <a href="work.html#gallery-landscape" data-i18n="nav.landscape">风景</a>
+            <a href="work.html#gallery-street" data-i18n="nav.street">街景</a>
+            <a href="work.html#gallery-abstract" data-i18n="nav.abstract">抽象</a>
+          </div>
+        </div>
+        <a href="places.html" aria-current="page" data-i18n="nav.places">地点</a>
+        <a href="story.html" data-i18n="nav.story">故事</a>
+        <a href="about.html" data-i18n="nav.about">关于</a>
+      </nav>
+
+      <div class="header-actions" aria-label="Social links and contact">
+        <a class="social-button" href="#" aria-label="Xiaohongshu">
+          <img src="assets/icons/xiaohongshu.svg" alt="">
+        </a>
+        <a class="social-button" href="#" aria-label="TikTok">
+          <img src="assets/icons/tiktok.svg" alt="">
+        </a>
+        <a class="social-button" href="#" aria-label="Instagram">
+          <img src="assets/icons/instagram.svg" alt="">
+        </a>
+        <a class="social-button" href="#" aria-label="X">
+          <img src="assets/icons/x.svg" alt="">
+        </a>
+        <a class="contact-tab" href="mailto:hello@yourname.com" data-i18n="nav.contact">联系</a>
+        <button class="language-switch" type="button" data-language-switch aria-label="Switch to English">EN</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="atlas-hero" id="places" aria-labelledby="atlasTitle">
+        <div class="atlas-copy">
+          <p class="eyebrow" data-i18n="atlas.eyebrow">影像地图</p>
+          <h1 id="atlasTitle" data-i18n="atlas.title">把照片散落在世界的坐标上。</h1>
+        </div>
+
+        <div class="map-stage" aria-label="World photo map">
+          <canvas id="worldMapCanvas" class="world-map-canvas" aria-hidden="true"></canvas>
+          <div class="location-layer" id="locationLayer"></div>
+          <div class="photo-preview" id="photoPreview" aria-hidden="true">
+            <img id="previewImage" src="" alt="">
+            <div>
+              <p id="previewPlace"></p>
+              <span id="previewMeta"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="atlas-meta" aria-label="Photo atlas summary">
+          <span id="placeCount">0</span>
+          <span data-i18n="atlas.placeCount">作品分类</span>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="lightbox" id="lightbox" aria-labelledby="lightboxTitle" aria-describedby="lightboxMeta">
+      <button class="lightbox-close" type="button" id="closeLightbox" data-i18n-aria="lightbox.close" aria-label="关闭">×</button>
+      <button class="lightbox-control lightbox-prev" type="button" id="prevWork" data-i18n-aria="lightbox.prev" aria-label="上一张">‹</button>
+      <div class="lightbox-media" aria-live="polite">
+        <img id="lightboxImage" src="" alt="">
+      </div>
+      <button class="lightbox-control lightbox-next" type="button" id="nextWork" data-i18n-aria="lightbox.next" aria-label="下一张">›</button>
+      <div class="lightbox-info">
+        <h2 id="lightboxTitle"></h2>
+        <p id="lightboxMeta"></p>
+      </div>
+      <div class="lightbox-thumbs" id="lightboxThumbs" aria-label="Photo thumbnails"></div>
+      <p class="sr-only" id="lightboxCaption"></p>
+    </dialog>
+
+    <script src="assets/photos/photo-manifest.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
