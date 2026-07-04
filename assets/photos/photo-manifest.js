@@ -3,7 +3,7 @@ window.photoCollections = [
     "id": "city",
     "name": {
       "zh": "城市",
-      "en": "City"
+      "en": "Urban"
     },
     "description": {
       "zh": "城市体量、光线与边界里的秩序。",
@@ -18,7 +18,7 @@ window.photoCollections = [
         "year": "2023",
         "title": {
           "zh": "城市 01",
-          "en": "City 01"
+          "en": "URBAN 01"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -33,7 +33,7 @@ window.photoCollections = [
         "year": "2023",
         "title": {
           "zh": "城市 02",
-          "en": "City 02"
+          "en": "URBAN 02"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -48,7 +48,7 @@ window.photoCollections = [
         "year": "2023",
         "title": {
           "zh": "城市 03",
-          "en": "City 03"
+          "en": "URBAN 03"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -63,7 +63,7 @@ window.photoCollections = [
         "year": "2023",
         "title": {
           "zh": "城市 04",
-          "en": "City 04"
+          "en": "URBAN 04"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -78,7 +78,7 @@ window.photoCollections = [
         "year": "2023",
         "title": {
           "zh": "城市 05",
-          "en": "City 05"
+          "en": "URBAN 05"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -93,7 +93,7 @@ window.photoCollections = [
         "year": "2023",
         "title": {
           "zh": "城市 06",
-          "en": "City 06"
+          "en": "URBAN 06"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -108,7 +108,7 @@ window.photoCollections = [
         "year": "2024",
         "title": {
           "zh": "城市 07",
-          "en": "City 07"
+          "en": "URBAN 07"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -123,7 +123,7 @@ window.photoCollections = [
         "year": "2024",
         "title": {
           "zh": "城市 08",
-          "en": "City 08"
+          "en": "URBAN 08"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -138,7 +138,7 @@ window.photoCollections = [
         "year": "2024",
         "title": {
           "zh": "城市 09",
-          "en": "City 09"
+          "en": "URBAN 09"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -153,7 +153,7 @@ window.photoCollections = [
         "year": "2024",
         "title": {
           "zh": "城市 10",
-          "en": "City 10"
+          "en": "URBAN 10"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -168,7 +168,7 @@ window.photoCollections = [
         "year": "2024",
         "title": {
           "zh": "城市 11",
-          "en": "City 11"
+          "en": "URBAN 11"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -183,7 +183,7 @@ window.photoCollections = [
         "year": "2025",
         "title": {
           "zh": "城市 12",
-          "en": "City 12"
+          "en": "URBAN 12"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -198,7 +198,7 @@ window.photoCollections = [
         "year": "2025",
         "title": {
           "zh": "城市 13",
-          "en": "City 13"
+          "en": "URBAN 13"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -213,7 +213,7 @@ window.photoCollections = [
         "year": "2025",
         "title": {
           "zh": "城市 14",
-          "en": "City 14"
+          "en": "URBAN 14"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -228,7 +228,7 @@ window.photoCollections = [
         "year": "2025",
         "title": {
           "zh": "城市 15",
-          "en": "City 15"
+          "en": "URBAN 15"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -243,7 +243,7 @@ window.photoCollections = [
         "year": "2025",
         "title": {
           "zh": "城市 16",
-          "en": "City 16"
+          "en": "URBAN 16"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -258,7 +258,7 @@ window.photoCollections = [
         "year": "2026",
         "title": {
           "zh": "城市 17",
-          "en": "City 17"
+          "en": "URBAN 17"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -273,7 +273,7 @@ window.photoCollections = [
         "year": "2026",
         "title": {
           "zh": "城市 18",
-          "en": "City 18"
+          "en": "URBAN 18"
         },
         "caption": {
           "zh": "城市体量、光线与边界里的秩序。",
@@ -287,8 +287,8 @@ window.photoCollections = [
   {
     "id": "landscape",
     "name": {
-      "zh": "风景",
-      "en": "Landscape"
+      "zh": "风光",
+      "en": "Landscapes"
     },
     "description": {
       "zh": "山、水、云和远处天气留下的空间感。",
@@ -302,8 +302,8 @@ window.photoCollections = [
         "original": "20230224-_DSC1710.jpg",
         "year": "2023",
         "title": {
-          "zh": "风景 01",
-          "en": "Landscape 01"
+          "zh": "风光 01",
+          "en": "LANDSCAPES 01"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -317,8 +317,8 @@ window.photoCollections = [
         "original": "20231229-_DSC0533-已增强-降噪.jpg",
         "year": "2023",
         "title": {
-          "zh": "风景 02",
-          "en": "Landscape 02"
+          "zh": "风光 02",
+          "en": "LANDSCAPES 02"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -332,8 +332,8 @@ window.photoCollections = [
         "original": "20240518-_7C20041-已增强-降噪.jpg",
         "year": "2024",
         "title": {
-          "zh": "风景 03",
-          "en": "Landscape 03"
+          "zh": "风光 03",
+          "en": "LANDSCAPES 03"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -347,8 +347,8 @@ window.photoCollections = [
         "original": "20240518-_7C20415.jpg",
         "year": "2024",
         "title": {
-          "zh": "风景 04",
-          "en": "Landscape 04"
+          "zh": "风光 04",
+          "en": "LANDSCAPES 04"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -362,8 +362,8 @@ window.photoCollections = [
         "original": "20250104-_7C20094-已增强-降噪.jpg",
         "year": "2025",
         "title": {
-          "zh": "风景 05",
-          "en": "Landscape 05"
+          "zh": "风光 05",
+          "en": "LANDSCAPES 05"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -377,8 +377,8 @@ window.photoCollections = [
         "original": "20250104-_7C20154-已增强-降噪.jpg",
         "year": "2025",
         "title": {
-          "zh": "风景 06",
-          "en": "Landscape 06"
+          "zh": "风光 06",
+          "en": "LANDSCAPES 06"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -392,8 +392,8 @@ window.photoCollections = [
         "original": "20250104-_7C20237-已增强-降噪.jpg",
         "year": "2025",
         "title": {
-          "zh": "风景 07",
-          "en": "Landscape 07"
+          "zh": "风光 07",
+          "en": "LANDSCAPES 07"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -407,8 +407,8 @@ window.photoCollections = [
         "original": "20250525-_7C20106-2.jpg",
         "year": "2025",
         "title": {
-          "zh": "风景 08",
-          "en": "Landscape 08"
+          "zh": "风光 08",
+          "en": "LANDSCAPES 08"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -422,8 +422,8 @@ window.photoCollections = [
         "original": "20250528-IMG_0924.jpg",
         "year": "2025",
         "title": {
-          "zh": "风景 09",
-          "en": "Landscape 09"
+          "zh": "风光 09",
+          "en": "LANDSCAPES 09"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -437,8 +437,8 @@ window.photoCollections = [
         "original": "20250721-_7C20053.jpg",
         "year": "2025",
         "title": {
-          "zh": "风景 10",
-          "en": "Landscape 10"
+          "zh": "风光 10",
+          "en": "LANDSCAPES 10"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -452,8 +452,8 @@ window.photoCollections = [
         "original": "20250922-_7C20191.jpg",
         "year": "2025",
         "title": {
-          "zh": "风景 11",
-          "en": "Landscape 11"
+          "zh": "风光 11",
+          "en": "LANDSCAPES 11"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -467,8 +467,8 @@ window.photoCollections = [
         "original": "20250922-_7C20329.jpg",
         "year": "2025",
         "title": {
-          "zh": "风景 12",
-          "en": "Landscape 12"
+          "zh": "风光 12",
+          "en": "LANDSCAPES 12"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -482,8 +482,8 @@ window.photoCollections = [
         "original": "20251123-7C200266.jpg",
         "year": "2025",
         "title": {
-          "zh": "风景 13",
-          "en": "Landscape 13"
+          "zh": "风光 13",
+          "en": "LANDSCAPES 13"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -497,8 +497,8 @@ window.photoCollections = [
         "original": "20260127-7C200016.jpg",
         "year": "2026",
         "title": {
-          "zh": "风景 14",
-          "en": "Landscape 14"
+          "zh": "风光 14",
+          "en": "LANDSCAPES 14"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -512,8 +512,8 @@ window.photoCollections = [
         "original": "20260130-7C200420.jpg",
         "year": "2026",
         "title": {
-          "zh": "风景 15",
-          "en": "Landscape 15"
+          "zh": "风光 15",
+          "en": "LANDSCAPES 15"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -527,8 +527,8 @@ window.photoCollections = [
         "original": "20260205-7C200320.jpg",
         "year": "2026",
         "title": {
-          "zh": "风景 16",
-          "en": "Landscape 16"
+          "zh": "风光 16",
+          "en": "LANDSCAPES 16"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -542,8 +542,8 @@ window.photoCollections = [
         "original": "20260205-7C200406.jpg",
         "year": "2026",
         "title": {
-          "zh": "风景 17",
-          "en": "Landscape 17"
+          "zh": "风光 17",
+          "en": "LANDSCAPES 17"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -557,8 +557,8 @@ window.photoCollections = [
         "original": "20260207-7C200013-2.jpg",
         "year": "2026",
         "title": {
-          "zh": "风景 18",
-          "en": "Landscape 18"
+          "zh": "风光 18",
+          "en": "LANDSCAPES 18"
         },
         "caption": {
           "zh": "山、水、云和远处天气留下的空间感。",
@@ -572,8 +572,8 @@ window.photoCollections = [
   {
     "id": "street",
     "name": {
-      "zh": "街景",
-      "en": "Street"
+      "zh": "街头",
+      "en": "Streets"
     },
     "description": {
       "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -587,8 +587,8 @@ window.photoCollections = [
         "original": "20230221-_DSC0526.jpg",
         "year": "2023",
         "title": {
-          "zh": "街景 01",
-          "en": "Street 01"
+          "zh": "街头 01",
+          "en": "STREETS 01"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -602,8 +602,8 @@ window.photoCollections = [
         "original": "20230412-_DSC7630.jpg",
         "year": "2023",
         "title": {
-          "zh": "街景 02",
-          "en": "Street 02"
+          "zh": "街头 02",
+          "en": "STREETS 02"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -617,8 +617,8 @@ window.photoCollections = [
         "original": "20230526-_R000866.jpg",
         "year": "2023",
         "title": {
-          "zh": "街景 03",
-          "en": "Street 03"
+          "zh": "街头 03",
+          "en": "STREETS 03"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -632,8 +632,8 @@ window.photoCollections = [
         "original": "20230723-_DSC1041.jpg",
         "year": "2023",
         "title": {
-          "zh": "街景 04",
-          "en": "Street 04"
+          "zh": "街头 04",
+          "en": "STREETS 04"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -647,8 +647,8 @@ window.photoCollections = [
         "original": "20230724-_DSC1761.jpg",
         "year": "2023",
         "title": {
-          "zh": "街景 05",
-          "en": "Street 05"
+          "zh": "街头 05",
+          "en": "STREETS 05"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -662,8 +662,8 @@ window.photoCollections = [
         "original": "20230804-_DSC3310.jpg",
         "year": "2023",
         "title": {
-          "zh": "街景 06",
-          "en": "Street 06"
+          "zh": "街头 06",
+          "en": "STREETS 06"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -677,8 +677,8 @@ window.photoCollections = [
         "original": "20230824-_DSC7259.jpg",
         "year": "2023",
         "title": {
-          "zh": "街景 07",
-          "en": "Street 07"
+          "zh": "街头 07",
+          "en": "STREETS 07"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -692,8 +692,8 @@ window.photoCollections = [
         "original": "20240523-_7C20090.jpg",
         "year": "2024",
         "title": {
-          "zh": "街景 08",
-          "en": "Street 08"
+          "zh": "街头 08",
+          "en": "STREETS 08"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -707,8 +707,8 @@ window.photoCollections = [
         "original": "20240523-_7C20140.jpg",
         "year": "2024",
         "title": {
-          "zh": "街景 09",
-          "en": "Street 09"
+          "zh": "街头 09",
+          "en": "STREETS 09"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -722,8 +722,8 @@ window.photoCollections = [
         "original": "20240603-_7C20224-已增强-降噪.jpg",
         "year": "2024",
         "title": {
-          "zh": "街景 10",
-          "en": "Street 10"
+          "zh": "街头 10",
+          "en": "STREETS 10"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -737,8 +737,8 @@ window.photoCollections = [
         "original": "20240608-_7C20150-已增强-降噪.jpg",
         "year": "2024",
         "title": {
-          "zh": "街景 11",
-          "en": "Street 11"
+          "zh": "街头 11",
+          "en": "STREETS 11"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -752,8 +752,8 @@ window.photoCollections = [
         "original": "20241219-_7C20165.jpg",
         "year": "2024",
         "title": {
-          "zh": "街景 12",
-          "en": "Street 12"
+          "zh": "街头 12",
+          "en": "STREETS 12"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -767,8 +767,8 @@ window.photoCollections = [
         "original": "20241219-_7C20216.jpg",
         "year": "2024",
         "title": {
-          "zh": "街景 13",
-          "en": "Street 13"
+          "zh": "街头 13",
+          "en": "STREETS 13"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -782,8 +782,8 @@ window.photoCollections = [
         "original": "20241220-_7C20039-已增强-降噪.jpg",
         "year": "2024",
         "title": {
-          "zh": "街景 14",
-          "en": "Street 14"
+          "zh": "街头 14",
+          "en": "STREETS 14"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -797,8 +797,8 @@ window.photoCollections = [
         "original": "20250105-_7C20456.jpg",
         "year": "2025",
         "title": {
-          "zh": "街景 15",
-          "en": "Street 15"
+          "zh": "街头 15",
+          "en": "STREETS 15"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -812,8 +812,8 @@ window.photoCollections = [
         "original": "20250110-_7C20109.jpg",
         "year": "2025",
         "title": {
-          "zh": "街景 16",
-          "en": "Street 16"
+          "zh": "街头 16",
+          "en": "STREETS 16"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -827,8 +827,8 @@ window.photoCollections = [
         "original": "20250322-_7C20187.jpg",
         "year": "2025",
         "title": {
-          "zh": "街景 17",
-          "en": "Street 17"
+          "zh": "街头 17",
+          "en": "STREETS 17"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -842,8 +842,8 @@ window.photoCollections = [
         "original": "20251106-_7C20168.jpg",
         "year": "2025",
         "title": {
-          "zh": "街景 18",
-          "en": "Street 18"
+          "zh": "街头 18",
+          "en": "STREETS 18"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -857,8 +857,8 @@ window.photoCollections = [
         "original": "20251106-_7C20293.jpg",
         "year": "2025",
         "title": {
-          "zh": "街景 19",
-          "en": "Street 19"
+          "zh": "街头 19",
+          "en": "STREETS 19"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -872,8 +872,8 @@ window.photoCollections = [
         "original": "20251107-_7C20293.jpg",
         "year": "2025",
         "title": {
-          "zh": "街景 20",
-          "en": "Street 20"
+          "zh": "街头 20",
+          "en": "STREETS 20"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -887,8 +887,8 @@ window.photoCollections = [
         "original": "20251122-7C200022.jpg",
         "year": "2025",
         "title": {
-          "zh": "街景 21",
-          "en": "Street 21"
+          "zh": "街头 21",
+          "en": "STREETS 21"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -902,8 +902,8 @@ window.photoCollections = [
         "original": "20251126-7C200147.jpg",
         "year": "2025",
         "title": {
-          "zh": "街景 22",
-          "en": "Street 22"
+          "zh": "街头 22",
+          "en": "STREETS 22"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -917,8 +917,8 @@ window.photoCollections = [
         "original": "20260114-7C200317.jpg",
         "year": "2026",
         "title": {
-          "zh": "街景 23",
-          "en": "Street 23"
+          "zh": "街头 23",
+          "en": "STREETS 23"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -932,8 +932,8 @@ window.photoCollections = [
         "original": "20260122-7C200087.jpg",
         "year": "2026",
         "title": {
-          "zh": "街景 24",
-          "en": "Street 24"
+          "zh": "街头 24",
+          "en": "STREETS 24"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -947,8 +947,8 @@ window.photoCollections = [
         "original": "20260122-7C200829.jpg",
         "year": "2026",
         "title": {
-          "zh": "街景 25",
-          "en": "Street 25"
+          "zh": "街头 25",
+          "en": "STREETS 25"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -962,8 +962,8 @@ window.photoCollections = [
         "original": "20260127-7C200557.jpg",
         "year": "2026",
         "title": {
-          "zh": "街景 26",
-          "en": "Street 26"
+          "zh": "街头 26",
+          "en": "STREETS 26"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -977,8 +977,8 @@ window.photoCollections = [
         "original": "20260209-7C200018.jpg",
         "year": "2026",
         "title": {
-          "zh": "街景 27",
-          "en": "Street 27"
+          "zh": "街头 27",
+          "en": "STREETS 27"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -992,8 +992,8 @@ window.photoCollections = [
         "original": "20260210-7C200081.jpg",
         "year": "2026",
         "title": {
-          "zh": "街景 28",
-          "en": "Street 28"
+          "zh": "街头 28",
+          "en": "STREETS 28"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -1007,8 +1007,8 @@ window.photoCollections = [
         "original": "20260301-7C200330.jpg",
         "year": "2026",
         "title": {
-          "zh": "街景 29",
-          "en": "Street 29"
+          "zh": "街头 29",
+          "en": "STREETS 29"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -1022,8 +1022,8 @@ window.photoCollections = [
         "original": "20260607-7C200448.jpg",
         "year": "2026",
         "title": {
-          "zh": "街景 30",
-          "en": "Street 30"
+          "zh": "街头 30",
+          "en": "STREETS 30"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -1037,8 +1037,8 @@ window.photoCollections = [
         "original": "20260621-7C200218-DxO_DeepPRIME XD3.jpg",
         "year": "2026",
         "title": {
-          "zh": "街景 31",
-          "en": "Street 31"
+          "zh": "街头 31",
+          "en": "STREETS 31"
         },
         "caption": {
           "zh": "行人、街道与偶然瞬间组成的现场。",
@@ -1052,8 +1052,8 @@ window.photoCollections = [
   {
     "id": "abstract",
     "name": {
-      "zh": "抽象",
-      "en": "Abstract"
+      "zh": "片段",
+      "en": "Fragments"
     },
     "description": {
       "zh": "形状、纹理与光影脱离具体对象后的观看。",
@@ -1067,8 +1067,8 @@ window.photoCollections = [
         "original": "20230823-_DSC7006.jpg",
         "year": "2023",
         "title": {
-          "zh": "抽象 01",
-          "en": "Abstract 01"
+          "zh": "片段 01",
+          "en": "FRAGMENTS 01"
         },
         "caption": {
           "zh": "形状、纹理与光影脱离具体对象后的观看。",
@@ -1082,8 +1082,8 @@ window.photoCollections = [
         "original": "20240518-_7C20038-已增强-降噪.jpg",
         "year": "2024",
         "title": {
-          "zh": "抽象 02",
-          "en": "Abstract 02"
+          "zh": "片段 02",
+          "en": "FRAGMENTS 02"
         },
         "caption": {
           "zh": "形状、纹理与光影脱离具体对象后的观看。",
@@ -1097,8 +1097,8 @@ window.photoCollections = [
         "original": "20240824-_7C20444.jpg",
         "year": "2024",
         "title": {
-          "zh": "抽象 03",
-          "en": "Abstract 03"
+          "zh": "片段 03",
+          "en": "FRAGMENTS 03"
         },
         "caption": {
           "zh": "形状、纹理与光影脱离具体对象后的观看。",
@@ -1112,8 +1112,8 @@ window.photoCollections = [
         "original": "20241012-_7C20887-已增强-降噪.jpg",
         "year": "2024",
         "title": {
-          "zh": "抽象 04",
-          "en": "Abstract 04"
+          "zh": "片段 04",
+          "en": "FRAGMENTS 04"
         },
         "caption": {
           "zh": "形状、纹理与光影脱离具体对象后的观看。",
@@ -1127,8 +1127,8 @@ window.photoCollections = [
         "original": "20250108-_7C20003.jpg",
         "year": "2025",
         "title": {
-          "zh": "抽象 05",
-          "en": "Abstract 05"
+          "zh": "片段 05",
+          "en": "FRAGMENTS 05"
         },
         "caption": {
           "zh": "形状、纹理与光影脱离具体对象后的观看。",
@@ -1142,8 +1142,8 @@ window.photoCollections = [
         "original": "20250109-20250109-_7C20498.jpg",
         "year": "2025",
         "title": {
-          "zh": "抽象 06",
-          "en": "Abstract 06"
+          "zh": "片段 06",
+          "en": "FRAGMENTS 06"
         },
         "caption": {
           "zh": "形状、纹理与光影脱离具体对象后的观看。",
@@ -1157,8 +1157,8 @@ window.photoCollections = [
         "original": "20250721-_7C20157.jpg",
         "year": "2025",
         "title": {
-          "zh": "抽象 07",
-          "en": "Abstract 07"
+          "zh": "片段 07",
+          "en": "FRAGMENTS 07"
         },
         "caption": {
           "zh": "形状、纹理与光影脱离具体对象后的观看。",
@@ -1172,8 +1172,8 @@ window.photoCollections = [
         "original": "20251105-_7C20021.jpg",
         "year": "2025",
         "title": {
-          "zh": "抽象 08",
-          "en": "Abstract 08"
+          "zh": "片段 08",
+          "en": "FRAGMENTS 08"
         },
         "caption": {
           "zh": "形状、纹理与光影脱离具体对象后的观看。",
@@ -1187,8 +1187,8 @@ window.photoCollections = [
         "original": "20251106-_7C20797.jpg",
         "year": "2025",
         "title": {
-          "zh": "抽象 09",
-          "en": "Abstract 09"
+          "zh": "片段 09",
+          "en": "FRAGMENTS 09"
         },
         "caption": {
           "zh": "形状、纹理与光影脱离具体对象后的观看。",
@@ -1202,8 +1202,8 @@ window.photoCollections = [
         "original": "20251213-7C200189.jpg",
         "year": "2025",
         "title": {
-          "zh": "抽象 10",
-          "en": "Abstract 10"
+          "zh": "片段 10",
+          "en": "FRAGMENTS 10"
         },
         "caption": {
           "zh": "形状、纹理与光影脱离具体对象后的观看。",
@@ -1217,8 +1217,8 @@ window.photoCollections = [
         "original": "20251230-7C200112.jpg",
         "year": "2025",
         "title": {
-          "zh": "抽象 11",
-          "en": "Abstract 11"
+          "zh": "片段 11",
+          "en": "FRAGMENTS 11"
         },
         "caption": {
           "zh": "形状、纹理与光影脱离具体对象后的观看。",
@@ -1232,8 +1232,8 @@ window.photoCollections = [
         "original": "20260208-7C200542.jpg",
         "year": "2026",
         "title": {
-          "zh": "抽象 12",
-          "en": "Abstract 12"
+          "zh": "片段 12",
+          "en": "FRAGMENTS 12"
         },
         "caption": {
           "zh": "形状、纹理与光影脱离具体对象后的观看。",
@@ -1247,8 +1247,8 @@ window.photoCollections = [
         "original": "20260621-7C200032.jpg",
         "year": "2026",
         "title": {
-          "zh": "抽象 13",
-          "en": "Abstract 13"
+          "zh": "片段 13",
+          "en": "FRAGMENTS 13"
         },
         "caption": {
           "zh": "形状、纹理与光影脱离具体对象后的观看。",
@@ -1262,8 +1262,8 @@ window.photoCollections = [
         "original": "20260621-7C200039.jpg",
         "year": "2026",
         "title": {
-          "zh": "抽象 14",
-          "en": "Abstract 14"
+          "zh": "片段 14",
+          "en": "FRAGMENTS 14"
         },
         "caption": {
           "zh": "形状、纹理与光影脱离具体对象后的观看。",

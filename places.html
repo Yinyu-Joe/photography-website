@@ -8,13 +8,12 @@
       name="description"
       content="A dotted world map showing photographed places around the world."
     >
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260704-cleanup">
   </head>
   <body>
     <header class="site-header">
       <a class="brand-lockup" href="index.html" aria-label="Yinyu Zhu Photography home">
-        <span class="brand-name" data-profile="brand">Yinyu Zhu</span>
-        <span class="brand-role" data-i18n="profile.role">摄影师</span>
+        <img class="brand-logo" src="assets/logo-yinyu-zhu.png" alt="Yinyu Zhu Photography">
       </a>
 
       <nav class="main-nav" aria-label="Main navigation">
@@ -22,9 +21,9 @@
           <a class="nav-link" href="work.html" data-i18n="nav.work">作品</a>
           <div class="nav-submenu" aria-label="Work collections">
             <a href="work.html#gallery-city" data-i18n="nav.city">城市</a>
-            <a href="work.html#gallery-landscape" data-i18n="nav.landscape">风景</a>
-            <a href="work.html#gallery-street" data-i18n="nav.street">街景</a>
-            <a href="work.html#gallery-abstract" data-i18n="nav.abstract">抽象</a>
+            <a href="work.html#gallery-landscape" data-i18n="nav.landscape">风光</a>
+            <a href="work.html#gallery-street" data-i18n="nav.street">街头</a>
+            <a href="work.html#gallery-abstract" data-i18n="nav.abstract">片段</a>
           </div>
         </div>
         <a href="places.html" aria-current="page" data-i18n="nav.places">地点</a>
@@ -33,45 +32,40 @@
       </nav>
 
       <div class="header-actions" aria-label="Social links and contact">
-        <a class="social-button" href="#" aria-label="Xiaohongshu">
+        <a class="social-button social-button-xiaohongshu" href="https://xhslink.com/m/3zQMnKDmRw6" target="_blank" rel="noopener noreferrer" aria-label="Xiaohongshu">
           <img src="assets/icons/xiaohongshu.svg" alt="">
         </a>
-        <a class="social-button" href="#" aria-label="TikTok">
+        <a class="social-button" href="https://v.douyin.com/dit1bf5wQF0/" target="_blank" rel="noopener noreferrer" aria-label="Douyin">
           <img src="assets/icons/tiktok.svg" alt="">
         </a>
-        <a class="social-button" href="#" aria-label="Instagram">
+        <a class="social-button" href="https://www.instagram.com/yinyuzhu_11?igsh=MjBhbTZ4NnN6bmZl" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
           <img src="assets/icons/instagram.svg" alt="">
         </a>
-        <a class="social-button" href="#" aria-label="X">
+        <a class="social-button" href="https://x.com/YinyuZhu83" target="_blank" rel="noopener noreferrer" aria-label="X">
           <img src="assets/icons/x.svg" alt="">
         </a>
-        <a class="contact-tab" href="mailto:hello@yourname.com" data-i18n="nav.contact">联系</a>
+        <a class="contact-tab" href="mailto:yinyu.zhu@outlook.com" data-i18n="nav.contact">联系</a>
         <button class="language-switch" type="button" data-language-switch aria-label="Switch to English">EN</button>
       </div>
     </header>
 
     <main>
-      <section class="atlas-hero" id="places" aria-labelledby="atlasTitle">
-        <div class="atlas-copy">
-          <p class="eyebrow" data-i18n="atlas.eyebrow">影像地图</p>
-          <h1 id="atlasTitle" data-i18n="atlas.title">把照片散落在世界的坐标上。</h1>
-        </div>
-
-        <div class="map-stage" aria-label="World photo map">
+      <section class="atlas-hero" id="places" aria-label="Interactive dotted world map">
+        <div class="map-stage" aria-label="World photo map. Drag to move. Pinch, use mouse wheel, plus, minus, or zero to zoom.">
           <canvas id="worldMapCanvas" class="world-map-canvas" aria-hidden="true"></canvas>
           <div class="location-layer" id="locationLayer"></div>
-          <div class="photo-preview" id="photoPreview" aria-hidden="true">
+          <button class="photo-preview" id="photoPreview" type="button" aria-hidden="true" tabindex="-1">
             <img id="previewImage" src="" alt="">
             <div>
               <p id="previewPlace"></p>
-              <span id="previewMeta"></span>
+              <small id="previewMeta"></small>
             </div>
-          </div>
+          </button>
         </div>
 
         <div class="atlas-meta" aria-label="Photo atlas summary">
           <span id="placeCount">0</span>
-          <span data-i18n="atlas.placeCount">作品分类</span>
+          <span data-i18n="atlas.placeCount">地点</span>
         </div>
       </section>
     </main>
@@ -91,7 +85,8 @@
       <p class="sr-only" id="lightboxCaption"></p>
     </dialog>
 
-    <script src="assets/photos/photo-manifest.js"></script>
-    <script src="script.js"></script>
+    <script src="assets/photos/photo-manifest.js?v=20260704-cleanup"></script>
+    <script src="assets/photos/place-manifest.js?v=20260704-cleanup"></script>
+    <script src="script.js?v=20260704-cleanup"></script>
   </body>
 </html>

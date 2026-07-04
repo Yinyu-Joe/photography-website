@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>关于 | Yinyu Zhu 摄影</title>
     <meta name="description" content="About the photographer and contact information.">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260704-cleanup">
   </head>
   <body>
     <header class="site-header">
       <a class="brand-lockup" href="index.html" aria-label="Yinyu Zhu Photography home">
-        <span class="brand-name" data-profile="brand">Yinyu Zhu</span>
-        <span class="brand-role" data-i18n="profile.role">摄影师</span>
+        <img class="brand-logo" src="assets/logo-yinyu-zhu.png" alt="Yinyu Zhu Photography">
       </a>
 
       <nav class="main-nav" aria-label="Main navigation">
@@ -19,9 +18,9 @@
           <a class="nav-link" href="work.html" data-i18n="nav.work">作品</a>
           <div class="nav-submenu" aria-label="Work collections">
             <a href="work.html#gallery-city" data-i18n="nav.city">城市</a>
-            <a href="work.html#gallery-landscape" data-i18n="nav.landscape">风景</a>
-            <a href="work.html#gallery-street" data-i18n="nav.street">街景</a>
-            <a href="work.html#gallery-abstract" data-i18n="nav.abstract">抽象</a>
+            <a href="work.html#gallery-landscape" data-i18n="nav.landscape">风光</a>
+            <a href="work.html#gallery-street" data-i18n="nav.street">街头</a>
+            <a href="work.html#gallery-abstract" data-i18n="nav.abstract">片段</a>
           </div>
         </div>
         <a href="places.html" data-i18n="nav.places">地点</a>
@@ -30,51 +29,79 @@
       </nav>
 
       <div class="header-actions" aria-label="Social links and contact">
-        <a class="social-button" href="#" aria-label="Xiaohongshu">
+        <a class="social-button social-button-xiaohongshu" href="https://xhslink.com/m/3zQMnKDmRw6" target="_blank" rel="noopener noreferrer" aria-label="Xiaohongshu">
           <img src="assets/icons/xiaohongshu.svg" alt="">
         </a>
-        <a class="social-button" href="#" aria-label="TikTok">
+        <a class="social-button" href="https://v.douyin.com/dit1bf5wQF0/" target="_blank" rel="noopener noreferrer" aria-label="Douyin">
           <img src="assets/icons/tiktok.svg" alt="">
         </a>
-        <a class="social-button" href="#" aria-label="Instagram">
+        <a class="social-button" href="https://www.instagram.com/yinyuzhu_11?igsh=MjBhbTZ4NnN6bmZl" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
           <img src="assets/icons/instagram.svg" alt="">
         </a>
-        <a class="social-button" href="#" aria-label="X">
+        <a class="social-button" href="https://x.com/YinyuZhu83" target="_blank" rel="noopener noreferrer" aria-label="X">
           <img src="assets/icons/x.svg" alt="">
         </a>
-        <a class="contact-tab" href="mailto:hello@yourname.com" data-i18n="nav.contact">联系</a>
+        <a class="contact-tab" href="mailto:yinyu.zhu@outlook.com" data-i18n="nav.contact">联系</a>
         <button class="language-switch" type="button" data-language-switch aria-label="Switch to English">EN</button>
       </div>
     </header>
 
-    <main class="content-page">
-      <section class="about-page" aria-labelledby="aboutTitle">
-        <div>
-          <p class="eyebrow" data-i18n="about.eyebrow">关于</p>
-          <h1 id="aboutTitle" data-i18n="about.title">以安静的观察，记录人、城市与自然的瞬间。</h1>
-        </div>
-        <div class="about-body">
+    <main class="about-minimal">
+      <section class="about-minimal-content" aria-labelledby="aboutTitle">
+        <div class="about-minimal-section">
+          <h1 class="section-page-title" id="aboutTitle" data-i18n="about.eyebrow">关于</h1>
           <p data-i18n="about.bodyOne">
-            我关注日常中的细节：一束光、一次回望、一条雨后的街道。作品横跨人像、街拍、风光、建筑与静物，希望在真实与克制之间保留画面的呼吸。
+            我是一名以旅行，人像，城市与日常景观为主要方向的摄影创作者。我的作品关注人在不同地域中的移动、停留与观看，并试图记录那些介于陌生与熟悉之间的瞬间。
           </p>
           <p data-i18n="about.bodyTwo">
-            每一个黄色坐标都连接到一次拍摄现场。以后可以继续添加真实城市、经纬度和照片，让这张地图慢慢长成完整的影像档案。
+            这个网站收录了我在不同国家和城市拍摄的作品，并通过地图与系列项目的方式整理这些影像。相比单纯展示目的地，我更关心照片如何保存一种具体的经验：当我经过那里时，世界曾经以这样的方式出现。
           </p>
-          <div class="contact-actions">
-            <a class="button-primary" href="mailto:hello@yourname.com" data-i18n="contact.emailAction">发送邮件</a>
-            <p>
-              <span data-i18n="contact.wechatLabel">微信</span>
-              <strong data-profile="wechat">your_wechat_id</strong>
-            </p>
-          </div>
+        </div>
+        <div class="about-minimal-section contact-panel" aria-labelledby="aboutContactTitle">
+          <h2 class="about-minimal-title" id="aboutContactTitle" data-i18n="contact.eyebrow">联系</h2>
+          <dl class="contact-list">
+            <div>
+              <dt data-i18n="contact.emailLabel">邮箱</dt>
+              <dd>
+                <a href="mailto:yinyu.zhu@outlook.com" data-profile="email">yinyu.zhu@outlook.com</a>
+              </dd>
+            </div>
+            <div>
+              <dt data-i18n="contact.wechatLabel">微信</dt>
+              <dd>
+                <strong data-profile="wechat">your_wechat_id</strong>
+              </dd>
+            </div>
+          </dl>
+        </div>
+        <div class="about-minimal-section copyright-section" aria-labelledby="copyrightTitle">
+          <h2 class="about-minimal-title" id="copyrightTitle" data-i18n="copyright.title">Copyright / 版权声明</h2>
+          <p data-i18n="copyright.bodyOne">
+            © Yinyu Zhu。本网站所有内容，作者保留全部权利。
+          </p>
+          <p data-i18n="copyright.bodyTwo">
+            欢迎个人在非商业场景下保存图片，用作个人欣赏或设备壁纸。此类使用不包括重新上传、公开发布、转载、印刷、销售、改编、二次创作或任何商业用途。
+          </p>
+          <p data-i18n="copyright.bodyThree">
+            任何形式的图片转载皆需经过作者许可。未得许可，不得将本网站图片完整上传至 Instagram、小红书、微博或其他公共平台。
+          </p>
+          <p data-i18n="copyright.bodyFour">
+            欢迎分享本网站的原始页面链接。引用图片时，请注明作者、作者社交平台账号，作品来源及原始链接，且不得裁切、去除水印、修改色彩或误导性使用。
+          </p>
+          <p data-i18n="copyright.bodyFive">
+            禁止将本网站任何图片、文字、元数据或其衍生内容用于 AI、机器学习、计算机视觉、图像生成模型、数据集构建、模型训练、微调、评估、嵌入、特征提取或类似用途。
+          </p>
+          <p data-i18n="copyright.bodySix">
+            搜索引擎可根据本站 robots.txt 设置索引和展示本网站页面及图片预览，但这不代表第三方获得复制、转载、下载、训练或商业使用授权。
+          </p>
+          <p>
+            <span data-i18n="copyright.licensing">如需商业授权，请提前取得书面许可：</span>
+            <a href="mailto:yinyu.zhu@outlook.com" data-profile="email">yinyu.zhu@outlook.com</a>
+          </p>
         </div>
       </section>
-
-      <figure class="about-portrait">
-        <img src="assets/photos/thumb/street/street-01.jpg" alt="">
-      </figure>
     </main>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=20260704-cleanup"></script>
   </body>
 </html>

@@ -8,13 +8,12 @@
       name="description"
       content="Personal photography website for work, photographed places, stories, and about information."
     >
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260704-cleanup">
   </head>
   <body class="home-page">
     <header class="site-header home-header">
       <a class="brand-lockup" href="index.html" aria-label="Yinyu Zhu Photography home">
-        <span class="brand-name" data-profile="brand">Yinyu Zhu</span>
-        <span class="brand-role" data-i18n="profile.role">摄影师</span>
+        <img class="brand-logo" src="assets/logo-yinyu-zhu.png" alt="Yinyu Zhu Photography">
       </a>
 
       <nav class="main-nav compact-nav" aria-label="Main navigation">
@@ -22,9 +21,9 @@
           <a class="nav-link" href="work.html" data-i18n="nav.work">作品</a>
           <div class="nav-submenu" aria-label="Work collections">
             <a href="work.html#gallery-city" data-i18n="nav.city">城市</a>
-            <a href="work.html#gallery-landscape" data-i18n="nav.landscape">风景</a>
-            <a href="work.html#gallery-street" data-i18n="nav.street">街景</a>
-            <a href="work.html#gallery-abstract" data-i18n="nav.abstract">抽象</a>
+            <a href="work.html#gallery-landscape" data-i18n="nav.landscape">风光</a>
+            <a href="work.html#gallery-street" data-i18n="nav.street">街头</a>
+            <a href="work.html#gallery-abstract" data-i18n="nav.abstract">片段</a>
           </div>
         </div>
         <a href="places.html" data-i18n="nav.places">地点</a>
@@ -33,26 +32,29 @@
       </nav>
 
       <div class="header-actions" aria-label="Social links and contact">
-        <a class="social-button" href="#" aria-label="Xiaohongshu">
+        <a class="social-button social-button-xiaohongshu" href="https://xhslink.com/m/3zQMnKDmRw6" target="_blank" rel="noopener noreferrer" aria-label="Xiaohongshu">
           <img src="assets/icons/xiaohongshu.svg" alt="">
         </a>
-        <a class="social-button" href="#" aria-label="TikTok">
+        <a class="social-button" href="https://v.douyin.com/dit1bf5wQF0/" target="_blank" rel="noopener noreferrer" aria-label="Douyin">
           <img src="assets/icons/tiktok.svg" alt="">
         </a>
-        <a class="social-button" href="#" aria-label="Instagram">
+        <a class="social-button" href="https://www.instagram.com/yinyuzhu_11?igsh=MjBhbTZ4NnN6bmZl" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
           <img src="assets/icons/instagram.svg" alt="">
         </a>
-        <a class="social-button" href="#" aria-label="X">
+        <a class="social-button" href="https://x.com/YinyuZhu83" target="_blank" rel="noopener noreferrer" aria-label="X">
           <img src="assets/icons/x.svg" alt="">
         </a>
-        <a class="contact-tab" href="mailto:hello@yourname.com" data-i18n="nav.contact">联系</a>
+        <a class="contact-tab" href="mailto:yinyu.zhu@outlook.com" data-i18n="nav.contact">联系</a>
         <button class="language-switch" type="button" data-language-switch aria-label="Switch to English">EN</button>
       </div>
     </header>
 
     <main>
       <section class="home-hero" aria-labelledby="homeTitle">
-        <img class="home-hero-image" src="assets/photos/thumb/landscape/landscape-01.jpg" alt="">
+        <picture class="home-hero-media" aria-hidden="true">
+          <source srcset="assets/home/home-landscape.jpg" media="(orientation: landscape)">
+          <img class="home-hero-image" src="assets/home/home-portrait.jpg" width="1350" height="2400" alt="">
+        </picture>
         <div class="home-shade" aria-hidden="true"></div>
 
         <div class="home-menu" aria-label="Site sections">
@@ -62,13 +64,10 @@
           <a href="about.html" data-i18n="nav.about">关于</a>
         </div>
 
-        <div class="home-caption">
-          <p class="eyebrow" data-i18n="home.eyebrow">摄影档案</p>
-          <h1 id="homeTitle" data-i18n="home.title">Light, distance, and the quiet geography of memory.</h1>
-        </div>
+        <h1 id="homeTitle" class="sr-only" data-i18n="home.title">光、距离，以及记忆里安静的地理。</h1>
       </section>
     </main>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=20260704-cleanup"></script>
   </body>
 </html>
