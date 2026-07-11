@@ -8,54 +8,50 @@
       name="description"
       content="A dotted world map showing photographed places around the world."
     >
-    <link rel="stylesheet" href="styles.css?v=20260704-cleanup">
+    <meta name="theme-color" content="#fafafa">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="styles.css?v=20260711-ui-polish">
   </head>
   <body>
+    <a class="skip-link" href="#main-content" data-i18n="nav.skip">跳到主要内容</a>
     <header class="site-header">
       <a class="brand-lockup" href="index.html" aria-label="Yinyu Zhu Photography home">
-        <img class="brand-logo" src="assets/logo-yinyu-zhu.png" alt="Yinyu Zhu Photography">
+        <img class="brand-logo" src="assets/logo-yinyu-zhu.png" width="760" height="520" alt="Yinyu Zhu Photography">
       </a>
 
       <nav class="main-nav" aria-label="Main navigation">
-        <div class="nav-item has-submenu">
-          <a class="nav-link" href="work.html" data-i18n="nav.work">作品</a>
-          <div class="nav-submenu" aria-label="Work collections">
-            <a href="work.html#gallery-city" data-i18n="nav.city">城市</a>
-            <a href="work.html#gallery-landscape" data-i18n="nav.landscape">风光</a>
-            <a href="work.html#gallery-street" data-i18n="nav.street">街头</a>
-            <a href="work.html#gallery-abstract" data-i18n="nav.abstract">片段</a>
-          </div>
-        </div>
-        <a href="places.html" aria-current="page" data-i18n="nav.places">地点</a>
+        <a href="work.html" data-i18n="nav.work">作品</a>
+        <a href="places.html" aria-current="page" data-i18n="nav.places">地图</a>
         <a href="story.html" data-i18n="nav.story">故事</a>
         <a href="about.html" data-i18n="nav.about">关于</a>
       </nav>
 
       <div class="header-actions" aria-label="Social links and contact">
         <a class="social-button social-button-xiaohongshu" href="https://xhslink.com/m/3zQMnKDmRw6" target="_blank" rel="noopener noreferrer" aria-label="Xiaohongshu">
-          <img src="assets/icons/xiaohongshu.svg" alt="">
+          <img src="assets/icons/xiaohongshu.svg" width="24" height="24" alt="">
         </a>
         <a class="social-button" href="https://v.douyin.com/dit1bf5wQF0/" target="_blank" rel="noopener noreferrer" aria-label="Douyin">
-          <img src="assets/icons/tiktok.svg" alt="">
+          <img src="assets/icons/tiktok.svg" width="24" height="24" alt="">
         </a>
         <a class="social-button" href="https://www.instagram.com/yinyuzhu_11?igsh=MjBhbTZ4NnN6bmZl" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-          <img src="assets/icons/instagram.svg" alt="">
+          <img src="assets/icons/instagram.svg" width="24" height="24" alt="">
         </a>
         <a class="social-button" href="https://x.com/YinyuZhu83" target="_blank" rel="noopener noreferrer" aria-label="X">
-          <img src="assets/icons/x.svg" alt="">
+          <img src="assets/icons/x.svg" width="24" height="24" alt="">
         </a>
         <a class="contact-tab" href="mailto:yinyu.zhu@outlook.com" data-i18n="nav.contact">联系</a>
         <button class="language-switch" type="button" data-language-switch aria-label="Switch to English">EN</button>
       </div>
     </header>
 
-    <main>
+    <main id="main-content" tabindex="-1">
       <section class="atlas-hero" id="places" aria-label="Interactive dotted world map">
-        <div class="map-stage" aria-label="World photo map. Drag to move. Pinch, use mouse wheel, plus, minus, or zero to zoom.">
+        <div class="map-stage" tabindex="0" aria-label="World photo map. Drag to move. Pinch, use mouse wheel, plus, minus, or zero to zoom.">
           <canvas id="worldMapCanvas" class="world-map-canvas" aria-hidden="true"></canvas>
           <div class="location-layer" id="locationLayer"></div>
           <button class="photo-preview" id="photoPreview" type="button" aria-hidden="true" tabindex="-1">
-            <img id="previewImage" src="" alt="">
+            <img id="previewImage" alt="">
             <div>
               <p id="previewPlace"></p>
               <small id="previewMeta"></small>
@@ -74,7 +70,7 @@
       <button class="lightbox-close" type="button" id="closeLightbox" data-i18n-aria="lightbox.close" aria-label="关闭">×</button>
       <button class="lightbox-control lightbox-prev" type="button" id="prevWork" data-i18n-aria="lightbox.prev" aria-label="上一张">‹</button>
       <div class="lightbox-media" aria-live="polite">
-        <img id="lightboxImage" src="" alt="">
+        <img id="lightboxImage" decoding="async" alt="">
       </div>
       <button class="lightbox-control lightbox-next" type="button" id="nextWork" data-i18n-aria="lightbox.next" aria-label="下一张">›</button>
       <div class="lightbox-info">
@@ -87,6 +83,6 @@
 
     <script src="assets/photos/photo-manifest.js?v=20260704-cleanup"></script>
     <script src="assets/photos/place-manifest.js?v=20260704-cleanup"></script>
-    <script src="script.js?v=20260704-cleanup"></script>
+    <script src="script.js?v=20260711-ui-polish"></script>
   </body>
 </html>

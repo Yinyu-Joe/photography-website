@@ -10,54 +10,50 @@
         history.scrollRestoration = "manual";
       }
     </script>
-    <link rel="stylesheet" href="styles.css?v=20260704-cleanup">
+    <meta name="theme-color" content="#fafafa">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="styles.css?v=20260711-ui-polish">
   </head>
   <body>
+    <a class="skip-link" href="#main-content" data-i18n="nav.skip">跳到主要内容</a>
     <header class="site-header">
       <a class="brand-lockup" href="index.html" aria-label="Yinyu Zhu Photography home">
-        <img class="brand-logo" src="assets/logo-yinyu-zhu.png" alt="Yinyu Zhu Photography">
+        <img class="brand-logo" src="assets/logo-yinyu-zhu.png" width="760" height="520" alt="Yinyu Zhu Photography">
       </a>
 
       <nav class="main-nav" aria-label="Main navigation">
-        <div class="nav-item has-submenu">
-          <a class="nav-link" href="work.html" data-i18n="nav.work">作品</a>
-          <div class="nav-submenu" aria-label="Work collections">
-            <a href="work.html#gallery-city" data-i18n="nav.city">城市</a>
-            <a href="work.html#gallery-landscape" data-i18n="nav.landscape">风光</a>
-            <a href="work.html#gallery-street" data-i18n="nav.street">街头</a>
-            <a href="work.html#gallery-abstract" data-i18n="nav.abstract">片段</a>
-          </div>
-        </div>
-        <a href="places.html" data-i18n="nav.places">地点</a>
+        <a href="work.html" data-i18n="nav.work">作品</a>
+        <a href="places.html" data-i18n="nav.places">地图</a>
         <a href="story.html" aria-current="page" data-i18n="nav.story">故事</a>
         <a href="about.html" data-i18n="nav.about">关于</a>
       </nav>
 
       <div class="header-actions" aria-label="Social links and contact">
         <a class="social-button social-button-xiaohongshu" href="https://xhslink.com/m/3zQMnKDmRw6" target="_blank" rel="noopener noreferrer" aria-label="Xiaohongshu">
-          <img src="assets/icons/xiaohongshu.svg" alt="">
+          <img src="assets/icons/xiaohongshu.svg" width="24" height="24" alt="">
         </a>
         <a class="social-button" href="https://v.douyin.com/dit1bf5wQF0/" target="_blank" rel="noopener noreferrer" aria-label="Douyin">
-          <img src="assets/icons/tiktok.svg" alt="">
+          <img src="assets/icons/tiktok.svg" width="24" height="24" alt="">
         </a>
         <a class="social-button" href="https://www.instagram.com/yinyuzhu_11?igsh=MjBhbTZ4NnN6bmZl" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-          <img src="assets/icons/instagram.svg" alt="">
+          <img src="assets/icons/instagram.svg" width="24" height="24" alt="">
         </a>
         <a class="social-button" href="https://x.com/YinyuZhu83" target="_blank" rel="noopener noreferrer" aria-label="X">
-          <img src="assets/icons/x.svg" alt="">
+          <img src="assets/icons/x.svg" width="24" height="24" alt="">
         </a>
         <a class="contact-tab" href="mailto:yinyu.zhu@outlook.com" data-i18n="nav.contact">联系</a>
         <button class="language-switch" type="button" data-language-switch aria-label="Switch to English">EN</button>
       </div>
     </header>
 
-    <main class="content-page story-page">
+    <main class="content-page story-page" id="main-content" tabindex="-1">
       <article class="story-article" aria-labelledby="storyTitle">
         <h1 id="storyTitle" class="section-page-title" data-i18n="nav.story">故事</h1>
 
         <section class="story-entry">
           <figure class="story-photo story-photo-feature">
-            <img src="assets/story/20260130-7C200963.jpg" width="1425" height="2400" alt="">
+            <img src="assets/story/20260130-7C200963.jpg" width="1425" height="2400" fetchpriority="high" decoding="async" alt="">
           </figure>
           <div class="story-caption">
             <p data-i18n="story.captionOne">夜色把山体压低，把天空打开。星光很安静，火山口却在远处持续喷发，红色的熔岩从黑暗中升起，又落回山的轮廓里。画面里没有多余的东西，只有天空、山和火。它不是一场壮观的表演，更像一次短暂的显露：大地在夜里露出自己的内部，安静，却无法忽视。</p>
@@ -66,7 +62,7 @@
 
         <section class="story-entry">
           <figure class="story-photo">
-            <img src="assets/story/20260129-7C200452.jpg" width="1600" height="2400" alt="">
+            <img src="assets/story/20260129-7C200452.jpg" width="1600" height="2400" loading="lazy" decoding="async" alt="">
           </figure>
           <div class="story-caption">
             <p data-i18n="story.captionTwo">山坡上的墓地被阳光照亮，蓝色、粉色、绿色和黄色散落在草丛之间。这里没有把死亡藏进阴影里，而是让它站在明亮的空气中。每一个十字架都很小，每一个名字都很具体。颜色让记忆变得接近生活，也让这个地方少了一点距离感。人离开之后，留下的不只是石碑，还有被继续照看的形状、文字和土地。</p>
@@ -75,7 +71,7 @@
 
         <section class="story-entry">
           <figure class="story-photo">
-            <img src="assets/story/20260210-7C200360.jpg" width="1425" height="2400" alt="">
+            <img src="assets/story/20260210-7C200360.jpg" width="1425" height="2400" loading="lazy" decoding="async" alt="">
           </figure>
           <div class="story-caption">
             <p data-i18n="story.captionThree">城市广场上，一座巨大的雕塑弯着身体，占据了画面的前方。它沉重、锈蚀、安静，和背后的高楼一起构成了城市的尺度。旁边的人坐着、弯腰、低头看手机，生活照常进行。纪念性的物体和普通的一天被放在同一片光里。重量并没有打断日常，只是成为人们经过、停留、继续生活的一部分。</p>
@@ -84,7 +80,7 @@
 
         <section class="story-entry">
           <figure class="story-photo story-photo-wide">
-            <img src="assets/story/20250525-_7C20284.jpg" width="1800" height="2400" alt="">
+            <img src="assets/story/20250525-_7C20284.jpg" width="1800" height="2400" loading="lazy" decoding="async" alt="">
           </figure>
           <div class="story-caption">
             <p data-i18n="story.captionFour">在一面粗粝的石墙前，几个被使用过的物件被随手放进垃圾桶里。纸杯、饮料瓶、白色纸袋，原本只是城市消费里最轻的东西，却因为红色塑料袋的包裹，突然拥有了一种临时的秩序。它们没有人物，也没有事件，却记录了一个动作刚刚结束的痕迹。有人停留过，喝完了，离开了。日常在这里不是背景，而是主角。</p>
@@ -93,7 +89,7 @@
 
         <section class="story-entry">
           <figure class="story-photo">
-            <img src="assets/story/20250806-_7C20019.jpg" width="1800" height="2400" alt="">
+            <img src="assets/story/20250806-_7C20019.jpg" width="1800" height="2400" loading="lazy" decoding="async" alt="">
           </figure>
           <div class="story-caption">
             <p data-i18n="story.captionFive">镜头贴近一片破裂的表面。颜色被拿走以后，裂痕、反光和灰尘变得更清楚。它不再只是一个损坏的物体，而是一块被时间打开的平面。边缘翘起，暗部下沉，光落在不规则的纹理上，让一张普通的桌面变成了可以被观看的地形。破损没有被修复，也没有被美化，只是安静地存在着。</p>
@@ -102,7 +98,7 @@
       </article>
     </main>
 
-    <script src="script.js?v=20260704-cleanup"></script>
+    <script src="script.js?v=20260711-ui-polish"></script>
     <script>
       window.addEventListener("load", () => {
         window.scrollTo(0, 0);

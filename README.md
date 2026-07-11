@@ -1,9 +1,9 @@
-# 个人摄影网站第一版
+# 个人摄影网站
 
 这是一个静态个人摄影作品集网站，不需要复杂安装。主要页面包括：
 
-- `index.html`：网页结构
-- `work.html`：作品瀑布流，使用缩略图预览、高清图弹窗查看
+- `index.html`：极简首页
+- `work.html`：作品入口，包含 Selected、Series、Index 三种浏览方式
 - `places.html`：拍摄地点地图
 - `story.html`：故事页面
 - `about.html`：关于与联系方式
@@ -32,6 +32,7 @@ const profile = {
 - `assets/photos/thumb`：页面照片墙和地图预览用的缩略图
 - `assets/photos/full`：点击打开详情时用的高清图
 - `assets/photos/photo-manifest.js`：缩略图和高清图的一一对应清单
+- `assets/photos/portfolio-data.js`：精选顺序、系列结构和 Index 筛选配置
 
 如果之后继续替换照片，可以保持同样结构，并在 `photo-manifest.js` 里维护每张照片的 `thumbSrc` 与 `fullSrc`：
 
@@ -41,7 +42,13 @@ const profile = {
 - `caption`：中英文说明
 - `year`：年份
 
-Work 页面会按城市、风景、街景、抽象的顺序展示照片。
+新增照片后，先在 `photo-manifest.js` 维护基础信息。若要把照片放入精选或系列，再在 `portfolio-data.js` 中加入对应照片 `id`：
+
+- `selectedPhotoIds`：Selected 的照片与展示顺序（建议 12–18 张）
+- `series`：系列名称、说明、封面与包含的照片
+- `indexFilters`：Index 中人物、黑白等跨分类筛选
+
+原有 `city`、`landscape`、`street`、`abstract` 分类仍保留，并作为 Index 的快速筛选使用。
 
 ## 怎么预览
 

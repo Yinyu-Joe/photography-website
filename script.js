@@ -19,15 +19,23 @@ const copy = {
     "home.eyebrow": "摄影档案",
     "home.title": "光、距离，以及记忆里安静的地理。",
     "nav.work": "作品",
-    "nav.places": "地点",
+    "nav.places": "地图",
     "nav.story": "故事",
     "nav.about": "关于",
     "nav.contact": "联系",
+    "nav.skip": "跳到主要内容",
     "nav.city": "城市",
     "nav.landscape": "风光",
     "nav.street": "街头",
     "nav.abstract": "片段",
     "nav.atlas": "地图",
+    "works.title": "作品",
+    "works.selected": "精选",
+    "works.series": "系列",
+    "works.index": "索引",
+    "works.selectedIntro": "在移动、停留与观看之间，选出一些安静但重要的瞬间。",
+    "works.seriesIntro": "以观看主题整理的摄影章节，一张照片可以同时进入多个系列。",
+    "works.indexIntro": "按传统分类与视觉特征快速浏览全部作品。",
     "atlas.eyebrow": "影像地图",
     "atlas.title": "把照片散落在世界的坐标上。",
     "atlas.placeCount": "地点",
@@ -80,16 +88,24 @@ const copy = {
     "profile.role": "PHOTOGRAPHER",
     "home.eyebrow": "PHOTOGRAPHY ARCHIVE",
     "home.title": "Light, distance, and the quiet geography of memory.",
-    "nav.work": "Work",
-    "nav.places": "Places",
+    "nav.work": "Works",
+    "nav.places": "Map",
     "nav.story": "Story",
     "nav.about": "About",
     "nav.contact": "Contact",
+    "nav.skip": "Skip to main content",
     "nav.city": "Urban",
     "nav.landscape": "Landscapes",
     "nav.street": "Streets",
     "nav.abstract": "Fragments",
     "nav.atlas": "ATLAS",
+    "works.title": "Works",
+    "works.selected": "Selected",
+    "works.series": "Series",
+    "works.index": "Index",
+    "works.selectedIntro": "A quiet edit of people, places, and fragments collected across movement and stillness.",
+    "works.seriesIntro": "Photographic chapters organized by ways of seeing. A photograph may belong to more than one series.",
+    "works.indexIntro": "Browse the complete archive by familiar categories and visual qualities.",
     "atlas.eyebrow": "PHOTO ATLAS",
     "atlas.title": "A world map made from photographed coordinates.",
     "atlas.placeCount": "photo places",
@@ -142,6 +158,7 @@ const copy = {
 
 const importedPhotoCollections = Array.isArray(globalThis.photoCollections) ? globalThis.photoCollections : [];
 const importedPlaceCollections = Array.isArray(globalThis.placePhotoCollections) ? globalThis.placePhotoCollections : [];
+const portfolioData = globalThis.portfolioData || { selectedPhotoIds: [], series: [], indexFilters: [] };
 
 const works = [
   {
@@ -316,6 +333,10 @@ function applyImportedPhotoCollections() {
         id: photo.id,
         placeId: collection.id,
         collectionId: collection.id,
+        category: collection.id,
+        tags: [collection.id],
+        series: [],
+        isSelected: false,
         original: photo.original,
         year: photo.year || "",
         src: photo.fullSrc,
@@ -338,6 +359,29 @@ function applyImportedPhotoCollections() {
 }
 
 applyImportedPhotoCollections();
+
+function applyPortfolioMetadata() {
+  const selectedIds = new Set(portfolioData.selectedPhotoIds || []);
+  const peopleIds = new Set(portfolioData.indexFilters?.find((filter) => filter.id === "people")?.photoIds || []);
+  const blackAndWhiteIds = new Set(
+    portfolioData.indexFilters?.find((filter) => filter.id === "black-and-white")?.photoIds || [],
+  );
+
+  works.forEach((work) => {
+    const series = (portfolioData.series || [])
+      .filter((item) => item.photoIds.includes(work.id))
+      .map((item) => item.id);
+    const tags = new Set(work.tags || [work.category].filter(Boolean));
+    if (peopleIds.has(work.id)) tags.add("people");
+    tags.add(blackAndWhiteIds.has(work.id) ? "black-and-white" : "color");
+
+    work.isSelected = selectedIds.has(work.id);
+    work.series = series;
+    work.tags = [...tags];
+  });
+}
+
+applyPortfolioMetadata();
 
 function applyImportedPlaceCollections() {
   if (!importedPlaceCollections.length) return;
@@ -383,11 +427,22 @@ const mapBounds = {
   maxLat: 82,
 };
 
-const mapViewDefaults = {
-  centerLon: 104.2,
-  centerLat: 35.8,
-  zoom: 3.35,
+const mapViewPresets = {
+  landscape: {
+    centerLon: 94.43,
+    centerLat: 32.86,
+    zoom: 1.9,
+  },
+  portrait: {
+    centerLon: 109.88,
+    centerLat: 22.85,
+    zoom: 1.41,
+  },
 };
+
+function getMapViewDefaults() {
+  return window.innerWidth >= window.innerHeight ? mapViewPresets.landscape : mapViewPresets.portrait;
+}
 
 const mapReferenceSize = {
   width: 1720,
@@ -395,7 +450,7 @@ const mapReferenceSize = {
 };
 
 const mapView = {
-  ...mapViewDefaults,
+  ...getMapViewDefaults(),
   minZoom: 0.62,
   maxZoom: 7.2,
 };
@@ -479,8 +534,12 @@ const state = {
   lang: savedLanguage(),
   visibleWorks: [...works],
   activeIndex: 0,
+  activeWorksView: "selected",
+  activeIndexFilter: "all",
+  activeSeriesId: null,
   activePlaceId: null,
   previewHideTimer: 0,
+  previewPinned: false,
   resolvedInitialHash: false,
   mapDrag: null,
   mapPinch: null,
@@ -488,6 +547,7 @@ const state = {
   mapPointers: new Map(),
   activeMapRegionKey: null,
   resizeFrame: 0,
+  returnFocus: null,
 };
 
 const els = {
@@ -512,6 +572,8 @@ const els = {
   prevWork: document.querySelector("#prevWork"),
   nextWork: document.querySelector("#nextWork"),
   workGallery: document.querySelector("#workGallery"),
+  worksIntro: document.querySelector("#worksIntro"),
+  worksTabs: document.querySelectorAll("[data-works-view]"),
 };
 
 let landDots = els.canvas ? buildFallbackLandDots() : [];
@@ -587,9 +649,9 @@ function getPreviewWork(place) {
   return getPlaceWorks(place)[0];
 }
 
-function openWork(workId) {
-  const index = works.findIndex((work) => work.id === workId);
-  if (index >= 0) openLightbox(index);
+function openWork(workId, visibleWorks = works) {
+  const index = visibleWorks.findIndex((work) => work.id === workId);
+  if (index >= 0) openLightbox(index, visibleWorks);
 }
 
 function setupGalleryReveal() {
@@ -624,63 +686,236 @@ function setupGalleryReveal() {
   });
 }
 
-function resolveInitialGalleryHash() {
-  if (state.resolvedInitialHash || !els.workGallery || !location.hash) return;
+function worksByIds(ids = []) {
+  return ids.map((id) => works.find((work) => work.id === id)).filter(Boolean);
+}
 
-  const target = document.getElementById(location.hash.slice(1));
-  if (!target) return;
+function makePhotoTile(work, visibleWorks, index = 0) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "photo-tile";
+  button.dataset.workId = work.id;
+  button.setAttribute("aria-label", localText(work.title));
+  button.addEventListener("click", () => openWork(work.id, visibleWorks));
 
-  state.resolvedInitialHash = true;
-  requestAnimationFrame(() => {
-    target.scrollIntoView({ block: "start" });
+  const image = document.createElement("img");
+  image.src = displaySrc(work);
+  image.alt = localText(work.title);
+  image.loading = index < 3 ? "eager" : "lazy";
+  if (index < 3) image.fetchPriority = "high";
+  image.decoding = "async";
+
+  button.appendChild(image);
+  return button;
+}
+
+function makePhotoWall(visibleWorks, className = "") {
+  const wall = document.createElement("div");
+  wall.className = `photo-wall ${className}`.trim();
+  visibleWorks.forEach((work, index) => wall.appendChild(makePhotoTile(work, visibleWorks, index)));
+  return wall;
+}
+
+function updateWorksHeading() {
+  const introKeys = {
+    selected: "works.selectedIntro",
+    series: "works.seriesIntro",
+    index: "works.indexIntro",
+  };
+  if (els.worksIntro) els.worksIntro.textContent = copy[state.lang][introKeys[state.activeWorksView]];
+  els.worksTabs.forEach((button) => {
+    const isActive = button.dataset.worksView === state.activeWorksView;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+}
+
+function renderSelectedView() {
+  const selectedWorks = worksByIds(portfolioData.selectedPhotoIds);
+  const section = document.createElement("section");
+  section.className = "gallery-section selected-section";
+  section.id = "worksSelected";
+  section.appendChild(makePhotoWall(selectedWorks, "selected-wall"));
+  return section;
+}
+
+function setWorksHash(value) {
+  const nextHash = `#${value}`;
+  if (location.hash === nextHash) return;
+  history.pushState(null, "", nextHash);
+}
+
+function renderSeriesView() {
+  const wrapper = document.createElement("section");
+  wrapper.className = "series-view";
+  wrapper.id = "worksSeries";
+
+  const grid = document.createElement("div");
+  grid.className = "series-grid";
+
+  portfolioData.series.forEach((series, seriesIndex) => {
+    const seriesWorks = worksByIds(series.photoIds);
+    const cover = works.find((work) => work.id === series.coverPhotoId) || seriesWorks[0];
+    if (!cover) return;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "series-card";
+    button.classList.toggle("is-active", state.activeSeriesId === series.id);
+    button.setAttribute("aria-expanded", String(state.activeSeriesId === series.id));
+    button.addEventListener("click", () => {
+      state.activeSeriesId = series.id;
+      setWorksHash(`series-${series.id}`);
+      renderGallery();
+      requestAnimationFrame(() => document.querySelector("#seriesDetail")?.scrollIntoView({
+        behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        block: "start",
+      }));
+    });
+
+    const image = document.createElement("img");
+    image.src = displaySrc(cover);
+    image.alt = "";
+    image.loading = seriesIndex < 2 ? "eager" : "lazy";
+    if (seriesIndex < 2) image.fetchPriority = "high";
+    image.decoding = "async";
+
+    const text = document.createElement("span");
+    text.className = "series-card-copy";
+    const title = document.createElement("strong");
+    title.textContent = localText(series.title);
+    const description = document.createElement("span");
+    description.textContent = localText(series.description);
+    text.append(title, description);
+    button.append(image, text);
+    grid.appendChild(button);
+  });
+
+  wrapper.appendChild(grid);
+
+  const activeSeries = portfolioData.series.find((series) => series.id === state.activeSeriesId);
+  if (activeSeries) {
+    const seriesWorks = worksByIds(activeSeries.photoIds);
+    const detail = document.createElement("section");
+    detail.className = "gallery-section series-detail";
+    detail.id = "seriesDetail";
+    const header = document.createElement("div");
+    header.className = "gallery-section-header series-detail-header";
+    const title = document.createElement("h2");
+    title.textContent = localText(activeSeries.title);
+    const description = document.createElement("p");
+    description.textContent = localText(activeSeries.description);
+    header.append(title, description);
+    detail.append(header, makePhotoWall(seriesWorks));
+    wrapper.appendChild(detail);
+  }
+
+  return wrapper;
+}
+
+function worksForFilter(filter) {
+  if (!filter || filter.id === "all") return [...works];
+  if (filter.photoIds) {
+    const ids = new Set(filter.photoIds);
+    return works.filter((work) => ids.has(work.id));
+  }
+  if (filter.excludePhotoIds) {
+    const excluded = new Set(filter.excludePhotoIds);
+    return works.filter((work) => !excluded.has(work.id));
+  }
+  if (filter.categories) {
+    const categories = new Set(filter.categories);
+    return works.filter((work) => categories.has(work.category));
+  }
+  return [...works];
+}
+
+function renderIndexView() {
+  const wrapper = document.createElement("section");
+  wrapper.className = "index-view";
+  wrapper.id = "worksIndex";
+
+  const filters = document.createElement("div");
+  filters.className = "index-filters";
+  filters.setAttribute("aria-label", state.lang === "zh" ? "作品筛选" : "Filter works");
+
+  portfolioData.indexFilters.forEach((filter) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = localText(filter.label);
+    const isActive = filter.id === state.activeIndexFilter;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+    button.addEventListener("click", () => {
+      state.activeIndexFilter = filter.id;
+      setWorksHash(filter.id === "all" ? "index" : `index-${filter.id}`);
+      renderGallery();
+    });
+    filters.appendChild(button);
+  });
+
+  const activeFilter = portfolioData.indexFilters.find((filter) => filter.id === state.activeIndexFilter);
+  const visibleWorks = worksForFilter(activeFilter);
+  wrapper.append(filters, makePhotoWall(visibleWorks, "index-wall"));
+  return wrapper;
+}
+
+function readWorksStateFromHash() {
+  if (!els.workGallery) return;
+  const hash = location.hash.slice(1);
+  const legacyCategoryMap = { city: "city", landscape: "nature", street: "street", abstract: "fragments" };
+  const legacyCategory = hash.startsWith("gallery-")
+    ? legacyCategoryMap[hash.replace("gallery-", "")]
+    : null;
+  const seriesId = hash.startsWith("series-") ? hash.replace("series-", "") : null;
+  const filterId = hash.startsWith("index-") ? hash.replace("index-", "") : legacyCategory;
+
+  if (seriesId && portfolioData.series.some((series) => series.id === seriesId)) {
+    state.activeWorksView = "series";
+    state.activeSeriesId = seriesId;
+  } else if (hash === "series") {
+    state.activeWorksView = "series";
+  } else if (hash === "index" || filterId) {
+    state.activeWorksView = "index";
+    state.activeIndexFilter = portfolioData.indexFilters.some((filter) => filter.id === filterId) ? filterId : "all";
+  } else {
+    state.activeWorksView = "selected";
+  }
+}
+
+function setupWorksNavigation() {
+  if (!els.workGallery) return;
+  readWorksStateFromHash();
+  els.worksTabs.forEach((button) => {
+    button.addEventListener("click", () => {
+      state.activeWorksView = button.dataset.worksView;
+      const hash = state.activeWorksView === "series" && state.activeSeriesId
+        ? `series-${state.activeSeriesId}`
+        : state.activeWorksView === "index" && state.activeIndexFilter !== "all"
+          ? `index-${state.activeIndexFilter}`
+          : state.activeWorksView;
+      setWorksHash(hash);
+      renderGallery();
+    });
+  });
+  window.addEventListener("hashchange", () => {
+    readWorksStateFromHash();
+    renderGallery();
   });
 }
 
 function renderGallery() {
   if (!els.workGallery) return;
-
-  const fragment = document.createDocumentFragment();
-
-  galleryCollections().forEach((collection) => {
-    const section = document.createElement("section");
-    section.className = "gallery-section";
-    section.id = `gallery-${collection.id}`;
-
-    const header = document.createElement("div");
-    header.className = "gallery-section-header";
-
-    const title = document.createElement("h2");
-    title.textContent = localText(collection.name);
-    header.appendChild(title);
-
-    const wall = document.createElement("div");
-    wall.className = "photo-wall";
-
-    collection.photos.forEach((photo) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "photo-tile";
-      button.dataset.workId = photo.id;
-      button.setAttribute("aria-label", localText(photo.title));
-      button.addEventListener("click", () => openWork(photo.id));
-
-      const image = document.createElement("img");
-      image.src = photo.thumbSrc;
-      image.alt = localText(photo.title);
-      image.loading = "lazy";
-      image.decoding = "async";
-
-      button.appendChild(image);
-      wall.appendChild(button);
-    });
-
-    section.append(header, wall);
-    fragment.appendChild(section);
-  });
-
-  els.workGallery.replaceChildren(fragment);
+  els.workGallery.setAttribute("aria-busy", "true");
+  updateWorksHeading();
+  const view = state.activeWorksView === "series"
+    ? renderSeriesView()
+    : state.activeWorksView === "index"
+      ? renderIndexView()
+      : renderSelectedView();
+  els.workGallery.replaceChildren(view);
+  els.workGallery.setAttribute("aria-busy", "false");
   setupGalleryReveal();
-  resolveInitialGalleryHash();
 }
 
 function applyStaticCopy() {
@@ -886,7 +1121,11 @@ function updateMapView() {
   renderLocations();
   if (state.activePlaceId) {
     const button = document.querySelector(`[data-place-id="${state.activePlaceId}"]`);
-    if (button) positionPreview(button);
+    if (button) {
+      positionPreview(button);
+    } else {
+      hidePreview();
+    }
   }
 }
 
@@ -911,7 +1150,7 @@ function zoomMap(scale, anchor = { x: 50, y: 50 }) {
 }
 
 function resetMapView() {
-  Object.assign(mapView, mapViewDefaults);
+  Object.assign(mapView, getMapViewDefaults());
   updateMapView();
 }
 
@@ -1259,7 +1498,7 @@ function renderLocations() {
     button.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
-      openPlace(place);
+      showPreview(place, button, { pinned: true });
     });
     els.locationLayer.appendChild(button);
   });
@@ -1272,6 +1511,7 @@ function cancelHidePreview() {
 }
 
 function scheduleHidePreview() {
+  if (state.previewPinned) return;
   cancelHidePreview();
   state.previewHideTimer = window.setTimeout(hidePreview, 180);
 }
@@ -1281,11 +1521,12 @@ function openPlaceById(placeId) {
   if (place) openPlace(place);
 }
 
-function showPreview(place, button) {
+function showPreview(place, button, options = {}) {
   const work = getPreviewWork(place);
   if (!work || !els.preview) return;
 
   cancelHidePreview();
+  state.previewPinned = Boolean(options.pinned);
   state.activePlaceId = place.id;
   setActiveMapRegion(regionKeyForPlace(place));
   document.querySelectorAll(".photo-location").forEach((node) => {
@@ -1323,6 +1564,7 @@ function hidePreview() {
   if (!els.preview) return;
 
   cancelHidePreview();
+  state.previewPinned = false;
   state.activePlaceId = null;
   setActiveMapRegion(null);
   delete els.preview.dataset.placeId;
@@ -1353,6 +1595,7 @@ function workMeta(work) {
 function openLightbox(index, visibleWorks = works) {
   if (!els.lightbox) return;
 
+  state.returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
   state.visibleWorks = [...visibleWorks];
   state.activeIndex = index;
   renderLightboxThumbs();
@@ -1403,7 +1646,11 @@ function updateLightbox() {
     button.classList.toggle("is-active", isActive);
     button.setAttribute("aria-current", isActive ? "true" : "false");
     if (isActive) {
-      button.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      button.scrollIntoView({
+        behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        block: "nearest",
+        inline: "center",
+      });
     }
   });
 }
@@ -1413,6 +1660,8 @@ function closeLightbox() {
 
   els.lightbox.close();
   els.body.classList.remove("is-locked");
+  state.returnFocus?.focus({ preventScroll: true });
+  state.returnFocus = null;
 }
 
 function shiftLightbox(direction) {
@@ -1449,6 +1698,7 @@ els.closeLightbox?.addEventListener("click", closeLightbox);
 els.prevWork?.addEventListener("click", () => shiftLightbox(-1));
 els.nextWork?.addEventListener("click", () => shiftLightbox(1));
 setupNavSubmenus();
+setupWorksNavigation();
 setupMapControls();
 setupPlacePreview();
 
