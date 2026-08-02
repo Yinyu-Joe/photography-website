@@ -1473,39 +1473,6 @@ function setupPlacePreview() {
   });
 }
 
-function drawMapRegionHighlight(ctx, rect, viewportScale) {
-  const region = getMapRegion(state.activeMapRegionKey);
-  if (!region) return;
-
-  ctx.save();
-  region.shapes.forEach((shape) => {
-    const center = screenProject(project(shape.cx, shape.cy), viewportScale);
-    const radiusX = (shape.rx / (mapBounds.maxLon - mapBounds.minLon)) * 100 * mapView.zoom * viewportScale.x;
-    const radiusY = (shape.ry / (mapBounds.maxLat - mapBounds.minLat)) * 100 * mapView.zoom * viewportScale.y;
-    const x = (center.x / 100) * rect.width;
-    const y = (center.y / 100) * rect.height;
-    const rx = Math.max((radiusX / 100) * rect.width, 14);
-    const ry = Math.max((radiusY / 100) * rect.height, 10);
-    const rotate = (shape.rotate || 0) * (Math.PI / 180);
-
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(rotate);
-    ctx.beginPath();
-    ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(17, 17, 17, 0.045)";
-    ctx.shadowColor = "rgba(17, 17, 17, 0.12)";
-    ctx.shadowBlur = 32;
-    ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.strokeStyle = "rgba(17, 17, 17, 0.055)";
-    ctx.lineWidth = 1;
-    ctx.stroke();
-    ctx.restore();
-  });
-  ctx.restore();
-}
-
 function drawDot(ctx, x, y, radius, fill) {
   ctx.beginPath();
   ctx.arc(x, y, radius, 0, Math.PI * 2);
@@ -1527,8 +1494,6 @@ function drawMap() {
   ctx.clearRect(0, 0, rect.width, rect.height);
 
   const viewportScale = mapViewportScale(rect);
-  drawMapRegionHighlight(ctx, rect, viewportScale);
-
   const radius = clamp((mapReferenceSize.width * 0.00135) + mapView.zoom * 0.32, 1.55, 4.4);
   landDots.forEach((dot) => {
     const basePoint = dot.x === undefined ? project(dot.lon, dot.lat) : dot;
@@ -1567,6 +1532,12 @@ function renderLocations() {
     button.addEventListener("blur", scheduleHidePreview);
     button.addEventListener("pointerdown", (event) => {
       event.stopPropagation();
+    });
+    button.addEventListener("pointerup", (event) => {
+      if (event.pointerType !== "touch") return;
+      event.preventDefault();
+      event.stopPropagation();
+      showPreview(place, button, { pinned: true });
     });
     button.addEventListener("click", (event) => {
       event.preventDefault();
