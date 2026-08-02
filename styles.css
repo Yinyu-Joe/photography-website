@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap");
-
 :root {
   color-scheme: light;
   --site-font: "Inter", "Noto Sans SC", sans-serif;
@@ -168,6 +166,11 @@ h2 {
   display: block;
   width: 100%;
   height: auto;
+}
+
+.brand-mark {
+  display: block;
+  width: 100%;
 }
 
 .eyebrow,
@@ -649,7 +652,12 @@ html[lang="en"] .section-page-title {
   text-align: left;
 }
 
-.series-card > img {
+.series-card > picture {
+  display: block;
+  overflow: hidden;
+}
+
+.series-card > picture > img {
   width: 100%;
   aspect-ratio: 16 / 10;
   object-fit: cover;
@@ -657,9 +665,9 @@ html[lang="en"] .section-page-title {
   transition: transform 320ms ease, filter 320ms ease;
 }
 
-.series-card:hover > img,
-.series-card:focus-visible > img,
-.series-card.is-active > img {
+.series-card:hover > picture > img,
+.series-card:focus-visible > picture > img,
+.series-card.is-active > picture > img {
   filter: saturate(1);
   transform: scale(1.012);
 }
@@ -785,6 +793,12 @@ html[lang="en"] .lightbox-info h2 {
   transform: scale(1);
   background: var(--bg-soft);
   transition: transform 320ms ease, filter 320ms ease;
+}
+
+.photo-tile picture,
+.story-photo picture {
+  display: block;
+  width: 100%;
 }
 
 .photo-tile:hover img,
@@ -1092,7 +1106,12 @@ html[lang="en"] .lightbox-info h2 {
   filter: saturate(0.92) contrast(1.04);
 }
 
-.photo-preview p {
+.photo-preview-copy {
+  display: grid;
+  align-content: center;
+}
+
+.photo-preview #previewPlace {
   margin: 2px 0 4px;
   font-family: var(--site-font);
   font-size: 1.2rem;
@@ -1116,6 +1135,50 @@ html[lang="en"] .lightbox-info h2 {
 
 .atlas-meta span:first-child {
   color: var(--accent);
+}
+
+.places-fallback {
+  width: min(960px, calc(100% - (var(--page-gutter) * 2)));
+  margin: calc(var(--header-height) + 48px) auto 80px;
+}
+
+.places-fallback h1 {
+  margin-bottom: 28px;
+  font-size: clamp(1.6rem, 3vw, 2.7rem);
+}
+
+.places-fallback ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.places-fallback a:hover,
+.places-fallback a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.error-page {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 16px;
+  min-height: 100vh;
+}
+
+.error-page h1,
+.error-page p {
+  margin: 0;
+}
+
+.error-home-link {
+  margin-top: 12px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid currentColor;
 }
 
 .lightbox {
@@ -1277,6 +1340,12 @@ html[lang="en"] .lightbox-info h2 {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.lightbox-thumb picture {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .lightbox-thumb:hover,

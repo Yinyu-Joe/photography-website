@@ -7,6 +7,9 @@
 - `places.html`：拍摄地点地图
 - `story.html`：故事页面
 - `about.html`：关于与联系方式
+- `404.html`：Cloudflare Pages 使用的真实 404 页面
+- `robots.txt` 与 `sitemap.xml`：搜索引擎抓取与页面发现配置
+- `manifest.webmanifest`：站点名称与图标配置
 - `styles.css`：页面视觉样式
 - `script.js`：语言切换、地图、作品渲染、图片弹窗
 
@@ -52,11 +55,12 @@ const profile = {
 
 ## 怎么预览
 
-直接双击 `index.html` 可以打开。  
-如果想用本地地址预览，可以在这个文件夹里启动一个简单本地服务。
+网站在 Cloudflare Pages 上使用 `/work`、`/places` 等无扩展名网址。为了让本地预览与线上路由和 404 行为一致，建议在这个文件夹里运行 Cloudflare 的本地预览：
 
 ```bash
-python3 -m http.server 4173 --bind 127.0.0.1
+npx wrangler pages dev . --ip 127.0.0.1 --port 4173
 ```
 
 然后打开 `http://127.0.0.1:4173/`。
+
+直接双击 `index.html` 仍可查看首页，但不适合检查无扩展名导航、`robots.txt`、`sitemap.xml` 和真实 404 状态码。

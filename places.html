@@ -1,33 +1,59 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>地点 | Yinyu Zhu 摄影</title>
+    <title>Places | Yinyu Zhu Photography</title>
     <meta
       name="description"
       content="A dotted world map showing photographed places around the world."
     >
+    <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="theme-color" content="#fafafa">
+    <link rel="canonical" href="https://yinyuzhu.com/places">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Yinyu Zhu Photography">
+    <meta property="og:locale" content="zh_CN">
+    <meta property="og:title" content="Places | Yinyu Zhu Photography">
+    <meta property="og:description" content="A dotted world map showing photographed places around the world.">
+    <meta property="og:url" content="https://yinyuzhu.com/places">
+    <meta property="og:image" content="https://yinyuzhu.com/assets/home/home-landscape.jpg">
+    <meta property="og:image:width" content="2400">
+    <meta property="og:image:height" content="1600">
+    <meta property="og:image:alt" content="Yinyu Zhu photography portfolio">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:creator" content="@YinyuZhu83">
+    <meta name="twitter:title" content="Places | Yinyu Zhu Photography">
+    <meta name="twitter:description" content="A dotted world map showing photographed places around the world.">
+    <meta name="twitter:image" content="https://yinyuzhu.com/assets/home/home-landscape.jpg">
+    <meta name="twitter:image:alt" content="Yinyu Zhu photography portfolio">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/assets/icons/favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.webmanifest">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="styles.css?v=20260711-ui-polish">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;display=swap">
+    <link rel="stylesheet" href="/styles.css?v=20260802-seo">
   </head>
   <body>
     <a class="skip-link" href="#main-content" data-i18n="nav.skip">跳到主要内容</a>
     <header class="site-header">
-      <a class="brand-lockup" href="index.html" aria-label="Yinyu Zhu Photography home">
-        <img class="brand-logo" src="assets/logo-yinyu-zhu.png" width="760" height="520" alt="Yinyu Zhu Photography">
+      <a class="brand-lockup" href="/" aria-label="Yinyu Zhu Photography home">
+        <picture class="brand-mark">
+          <source srcset="/assets/logo-yinyu-zhu-344.webp" type="image/webp">
+          <img class="brand-logo" src="/assets/logo-yinyu-zhu.png" width="760" height="520" alt="Yinyu Zhu Photography">
+        </picture>
       </a>
 
       <nav class="main-nav" aria-label="Main navigation">
-        <a href="work.html" data-i18n="nav.work">作品</a>
-        <a href="places.html" aria-current="page" data-i18n="nav.places">地图</a>
-        <a href="story.html" data-i18n="nav.story">故事</a>
-        <a href="about.html" data-i18n="nav.about">关于</a>
+        <a href="/work" data-i18n="nav.work">作品</a>
+        <a href="/places" aria-current="page" data-i18n="nav.places">地图</a>
+        <a href="/story" data-i18n="nav.story">故事</a>
+        <a href="/about" data-i18n="nav.about">关于</a>
       </nav>
 
-      <div class="header-actions" aria-label="Social links and contact">
+      <div class="header-actions" role="group" aria-label="Social links and contact">
         <a class="social-button social-button-xiaohongshu" href="https://xhslink.com/m/3zQMnKDmRw6" target="_blank" rel="noopener noreferrer" aria-label="Xiaohongshu">
           <img src="assets/icons/xiaohongshu.svg" width="24" height="24" alt="">
         </a>
@@ -51,38 +77,76 @@
           <canvas id="worldMapCanvas" class="world-map-canvas" aria-hidden="true"></canvas>
           <div class="location-layer" id="locationLayer"></div>
           <button class="photo-preview" id="photoPreview" type="button" aria-hidden="true" tabindex="-1">
-            <img id="previewImage" alt="">
-            <div>
-              <p id="previewPlace"></p>
+            <img id="previewImage" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" width="116" height="82" loading="lazy" decoding="async" alt="">
+            <span class="photo-preview-copy">
+              <span id="previewPlace"></span>
               <small id="previewMeta"></small>
-            </div>
+            </span>
           </button>
         </div>
 
-        <div class="atlas-meta" aria-label="Photo atlas summary">
+        <div class="atlas-meta" role="group" aria-label="Photo atlas summary">
           <span id="placeCount">0</span>
           <span data-i18n="atlas.placeCount">地点</span>
         </div>
       </section>
+      <noscript>
+        <style>.atlas-hero { display: none; }</style>
+        <section class="places-fallback" aria-labelledby="placesFallbackTitle">
+          <h1 id="placesFallbackTitle">拍摄地点 / Photographed places</h1>
+          <ul>
+            <li><a href="/assets/photos/full/abstract/abstract-01.jpg">东京 / Tokyo</a></li>
+            <li><a href="/assets/photos/full/landscape/landscape-08.jpg">腾冲 / Tengchong</a></li>
+            <li><a href="/assets/photos/full/street/street-08.jpg">伊斯坦布尔 / Istanbul</a></li>
+            <li><a href="/assets/photos/full/street/street-02.jpg">伦敦 / London</a></li>
+            <li><a href="/assets/photos/full/landscape/landscape-16.jpg">蓝洞 / Great Blue Hole</a></li>
+            <li><a href="/assets/photos/full/city/city-10.jpg">华盛顿DC / Washington DC</a></li>
+            <li><a href="/assets/photos/full/street/street-04.jpg">南京 / Nanjing</a></li>
+            <li><a href="/assets/photos/full/landscape/landscape-15.jpg">安提瓜 / Antigua Guatemala</a></li>
+            <li><a href="/assets/photos/full/landscape/landscape-14.jpg">阿蒂特兰湖 / Lake Atitlan</a></li>
+            <li><a href="/assets/photos/full/city/city-08.jpg">台北 / Taipei</a></li>
+            <li><a href="/assets/photos/full/street/street-10.jpg">台南 / Tainan</a></li>
+            <li><a href="/assets/photos/full/street/street-11.jpg">基隆 / Keelung</a></li>
+            <li><a href="/assets/photos/full/street/street-28.jpg">哈瓦那 / Havana</a></li>
+            <li><a href="/assets/photos/full/abstract/abstract-02.jpg">卡帕多奇亚 / Cappadocia</a></li>
+            <li><a href="/assets/photos/full/city/city-13.jpg">塞维利亚 / Seville</a></li>
+            <li><a href="/assets/photos/full/street/street-21.jpg">圣米格尔 / San Miguel de Allende</a></li>
+            <li><a href="/assets/photos/full/landscape/landscape-18.jpg">巴卡拉尔 / Bacalar</a></li>
+            <li><a href="/assets/photos/full/street/street-22.jpg">瓜纳华托 / Guanajuato</a></li>
+            <li><a href="/assets/photos/full/street/street-24.jpg">瓦哈卡 / Oaxaca</a></li>
+            <li><a href="/assets/photos/full/city/city-14.jpg">墨西哥城 / Mexico City</a></li>
+            <li><a href="/assets/photos/full/landscape/landscape-05.jpg">巴塞罗那 / Barcelona</a></li>
+            <li><a href="/assets/photos/full/city/city-07.jpg">曼谷 / Bangkok</a></li>
+            <li><a href="/assets/photos/full/landscape/landscape-01.jpg">波士顿 / Boston</a></li>
+            <li><a href="/assets/photos/full/landscape/landscape-02.jpg">采尔马特 / Zermatt</a></li>
+            <li><a href="/assets/photos/full/city/city-01.jpg">纽约 / New York</a></li>
+            <li><a href="/assets/photos/full/street/street-01.jpg">Cape Cod</a></li>
+            <li><a href="/assets/photos/full/city/city-09.jpg">胡志明 / Ho Chi Minh City</a></li>
+            <li><a href="/assets/photos/full/abstract/abstract-05.jpg">马拉加 / Malaga</a></li>
+            <li><a href="/assets/photos/full/city/city-05.jpg">香港 / Hong Kong</a></li>
+          </ul>
+        </section>
+      </noscript>
     </main>
 
     <dialog class="lightbox" id="lightbox" aria-labelledby="lightboxTitle" aria-describedby="lightboxMeta">
       <button class="lightbox-close" type="button" id="closeLightbox" data-i18n-aria="lightbox.close" aria-label="关闭">×</button>
       <button class="lightbox-control lightbox-prev" type="button" id="prevWork" data-i18n-aria="lightbox.prev" aria-label="上一张">‹</button>
       <div class="lightbox-media" aria-live="polite">
-        <img id="lightboxImage" decoding="async" alt="">
+        <img id="lightboxImage" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" decoding="async" alt="">
       </div>
       <button class="lightbox-control lightbox-next" type="button" id="nextWork" data-i18n-aria="lightbox.next" aria-label="下一张">›</button>
       <div class="lightbox-info">
-        <h2 id="lightboxTitle"></h2>
-        <p id="lightboxMeta"></p>
+        <h2 id="lightboxTitle">作品详情</h2>
+        <p id="lightboxMeta">Yinyu Zhu Photography</p>
       </div>
-      <div class="lightbox-thumbs" id="lightboxThumbs" aria-label="Photo thumbnails"></div>
+      <div class="lightbox-thumbs" id="lightboxThumbs" role="group" aria-label="Photo thumbnails"></div>
       <p class="sr-only" id="lightboxCaption"></p>
     </dialog>
 
-    <script src="assets/photos/photo-manifest.js?v=20260704-cleanup"></script>
-    <script src="assets/photos/place-manifest.js?v=20260704-cleanup"></script>
-    <script src="script.js?v=20260711-ui-polish"></script>
+    <script src="/assets/photos/photo-manifest.js?v=20260704-cleanup"></script>
+    <script src="/assets/photos/photo-dimensions.js?v=20260802-seo"></script>
+    <script src="/assets/photos/place-manifest.js?v=20260704-cleanup"></script>
+    <script src="/script.js?v=20260802-seo"></script>
   </body>
 </html>

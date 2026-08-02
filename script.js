@@ -159,6 +159,7 @@ const copy = {
 const importedPhotoCollections = Array.isArray(globalThis.photoCollections) ? globalThis.photoCollections : [];
 const importedPlaceCollections = Array.isArray(globalThis.placePhotoCollections) ? globalThis.placePhotoCollections : [];
 const portfolioData = globalThis.portfolioData || { selectedPhotoIds: [], series: [], indexFilters: [] };
+const photoAssetDimensions = globalThis.photoAssetDimensions || {};
 
 const works = [
   {
@@ -614,6 +615,55 @@ function fullSrc(work) {
   return work.fullSrc || work.src;
 }
 
+function photoAssetKey(work) {
+  return displaySrc(work).split("/").pop()?.replace(/\.[^.]+$/, "") || work.id;
+}
+
+function photoDimensions(work) {
+  return photoAssetDimensions[photoAssetKey(work)] || null;
+}
+
+function responsiveThumbSources(work) {
+  const src = displaySrc(work);
+  if (!/assets\/photos\/thumb\/.+\.jpe?g$/i.test(src)) return null;
+
+  return {
+    small: src.replace("assets/photos/thumb/", "assets/photos/thumb-webp-480/").replace(/\.jpe?g$/i, ".webp"),
+    medium: src.replace("assets/photos/thumb/", "assets/photos/thumb-webp-720/").replace(/\.jpe?g$/i, ".webp"),
+    large: src.replace("assets/photos/thumb/", "assets/photos/thumb-webp/").replace(/\.jpe?g$/i, ".webp"),
+  };
+}
+
+function makeResponsivePhotoMedia(work, options = {}) {
+  const picture = document.createElement("picture");
+  const dimensions = photoDimensions(work);
+  const webp = responsiveThumbSources(work);
+
+  if (webp) {
+    const source = document.createElement("source");
+    const largeWidth = dimensions?.[0] || 1000;
+    source.srcset = largeWidth > 720
+      ? `${webp.small} 480w, ${webp.medium} 720w, ${webp.large} ${largeWidth}w`
+      : `${webp.small} 480w, ${webp.large} ${largeWidth}w`;
+    source.sizes = options.sizes || "(max-width: 620px) calc(100vw - 36px), 33vw";
+    source.type = "image/webp";
+    picture.appendChild(source);
+  }
+
+  const image = document.createElement("img");
+  image.src = displaySrc(work);
+  image.alt = options.alt || "";
+  image.loading = options.eager ? "eager" : "lazy";
+  if (options.eager) image.fetchPriority = "high";
+  image.decoding = "async";
+  if (dimensions) {
+    [image.width, image.height] = dimensions;
+  }
+
+  picture.appendChild(image);
+  return picture;
+}
+
 function galleryCollections() {
   if (importedPhotoCollections.length) return importedPhotoCollections;
 
@@ -691,22 +741,21 @@ function worksByIds(ids = []) {
 }
 
 function makePhotoTile(work, visibleWorks, index = 0) {
-  const button = document.createElement("button");
-  button.type = "button";
-  button.className = "photo-tile";
-  button.dataset.workId = work.id;
-  button.setAttribute("aria-label", localText(work.title));
-  button.addEventListener("click", () => openWork(work.id, visibleWorks));
+  const link = document.createElement("a");
+  link.className = "photo-tile";
+  link.dataset.workId = work.id;
+  link.href = fullSrc(work);
+  link.setAttribute("aria-label", localText(work.title));
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    openWork(work.id, visibleWorks);
+  });
 
-  const image = document.createElement("img");
-  image.src = displaySrc(work);
-  image.alt = localText(work.title);
-  image.loading = index < 3 ? "eager" : "lazy";
-  if (index < 3) image.fetchPriority = "high";
-  image.decoding = "async";
-
-  button.appendChild(image);
-  return button;
+  link.appendChild(makeResponsivePhotoMedia(work, {
+    alt: localText(work.title),
+    eager: index === 0,
+  }));
+  return link;
 }
 
 function makePhotoWall(visibleWorks, className = "") {
@@ -773,12 +822,11 @@ function renderSeriesView() {
       }));
     });
 
-    const image = document.createElement("img");
-    image.src = displaySrc(cover);
-    image.alt = "";
-    image.loading = seriesIndex < 2 ? "eager" : "lazy";
-    if (seriesIndex < 2) image.fetchPriority = "high";
-    image.decoding = "async";
+    const media = makeResponsivePhotoMedia(cover, {
+      alt: "",
+      eager: seriesIndex === 0,
+      sizes: "(max-width: 620px) calc(100vw - 36px), 50vw",
+    });
 
     const text = document.createElement("span");
     text.className = "series-card-copy";
@@ -787,7 +835,7 @@ function renderSeriesView() {
     const description = document.createElement("span");
     description.textContent = localText(series.description);
     text.append(title, description);
-    button.append(image, text);
+    button.append(media, text);
     grid.appendChild(button);
   });
 
@@ -1476,9 +1524,9 @@ function renderLocations() {
     const point = screenProject(project(place.lon, place.lat), viewportScale);
     if (point.x < -6 || point.x > 106 || point.y < -6 || point.y > 106) return;
 
-    const button = document.createElement("button");
+    const button = document.createElement("a");
     const placeWorks = getPlaceWorks(place);
-    button.type = "button";
+    button.href = placeWorks[0] ? fullSrc(placeWorks[0]) : "/places";
     button.className = "photo-location";
     button.dataset.placeId = place.id;
     button.style.left = `${point.x}%`;
@@ -1533,7 +1581,7 @@ function showPreview(place, button, options = {}) {
     node.classList.toggle("is-active", node === button);
   });
 
-  els.previewImage.src = displaySrc(work);
+  els.previewImage.src = responsiveThumbSources(work)?.small || displaySrc(work);
   els.previewImage.alt = localText(work.title);
   els.previewPlace.textContent = localText(place.name);
 
@@ -1619,12 +1667,10 @@ function renderLightboxThumbs() {
       updateLightbox();
     });
 
-    const image = document.createElement("img");
-    image.src = displaySrc(work);
-    image.alt = "";
-    image.loading = "lazy";
-    image.decoding = "async";
-    button.appendChild(image);
+    button.appendChild(makeResponsivePhotoMedia(work, {
+      alt: "",
+      sizes: "86px",
+    }));
     fragment.appendChild(button);
   });
 
@@ -1637,6 +1683,10 @@ function updateLightbox() {
 
   els.lightboxImage.src = fullSrc(work);
   els.lightboxImage.alt = localText(work.title);
+  const dimensions = photoDimensions(work);
+  if (dimensions) {
+    [els.lightboxImage.width, els.lightboxImage.height] = dimensions;
+  }
   els.lightboxTitle.textContent = localText(work.title);
   els.lightboxCaption.textContent = localText(work.caption);
   els.lightboxMeta.textContent = workMeta(work);

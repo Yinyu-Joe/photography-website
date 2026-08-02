@@ -1,30 +1,56 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>作品 | Yinyu Zhu 摄影</title>
-    <meta name="description" content="Selected photography work and visual directions.">
+    <title>Works | Yinyu Zhu Photography</title>
+    <meta name="description" content="Selected photography by Yinyu Zhu, organized across series, places and visual themes.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="theme-color" content="#fafafa">
+    <link rel="canonical" href="https://yinyuzhu.com/work">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Yinyu Zhu Photography">
+    <meta property="og:locale" content="zh_CN">
+    <meta property="og:title" content="Works | Yinyu Zhu Photography">
+    <meta property="og:description" content="Selected photography by Yinyu Zhu, organized across series, places and visual themes.">
+    <meta property="og:url" content="https://yinyuzhu.com/work">
+    <meta property="og:image" content="https://yinyuzhu.com/assets/home/home-landscape.jpg">
+    <meta property="og:image:width" content="2400">
+    <meta property="og:image:height" content="1600">
+    <meta property="og:image:alt" content="Yinyu Zhu photography portfolio">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:creator" content="@YinyuZhu83">
+    <meta name="twitter:title" content="Works | Yinyu Zhu Photography">
+    <meta name="twitter:description" content="Selected photography by Yinyu Zhu, organized across series, places and visual themes.">
+    <meta name="twitter:image" content="https://yinyuzhu.com/assets/home/home-landscape.jpg">
+    <meta name="twitter:image:alt" content="Yinyu Zhu photography portfolio">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/assets/icons/favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.webmanifest">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="styles.css?v=20260711-ui-polish">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;display=swap">
+    <link rel="stylesheet" href="/styles.css?v=20260802-seo">
   </head>
   <body>
     <a class="skip-link" href="#main-content" data-i18n="nav.skip">跳到主要内容</a>
     <header class="site-header">
-      <a class="brand-lockup" href="index.html" aria-label="Yinyu Zhu Photography home">
-        <img class="brand-logo" src="assets/logo-yinyu-zhu.png" width="760" height="520" alt="Yinyu Zhu Photography">
+      <a class="brand-lockup" href="/" aria-label="Yinyu Zhu Photography home">
+        <picture class="brand-mark">
+          <source srcset="/assets/logo-yinyu-zhu-344.webp" type="image/webp">
+          <img class="brand-logo" src="/assets/logo-yinyu-zhu.png" width="760" height="520" alt="Yinyu Zhu Photography">
+        </picture>
       </a>
 
       <nav class="main-nav" aria-label="Main navigation">
-        <a href="work.html" aria-current="page" data-i18n="nav.work">作品</a>
-        <a href="places.html" data-i18n="nav.places">地图</a>
-        <a href="story.html" data-i18n="nav.story">故事</a>
-        <a href="about.html" data-i18n="nav.about">关于</a>
+        <a href="/work" aria-current="page" data-i18n="nav.work">作品</a>
+        <a href="/places" data-i18n="nav.places">地图</a>
+        <a href="/story" data-i18n="nav.story">故事</a>
+        <a href="/about" data-i18n="nav.about">关于</a>
       </nav>
 
-      <div class="header-actions" aria-label="Social links and contact">
+      <div class="header-actions" role="group" aria-label="Social links and contact">
         <a class="social-button social-button-xiaohongshu" href="https://xhslink.com/m/3zQMnKDmRw6" target="_blank" rel="noopener noreferrer" aria-label="Xiaohongshu">
           <img src="assets/icons/xiaohongshu.svg" width="24" height="24" alt="">
         </a>
@@ -45,7 +71,7 @@
     <main class="content-page work-page" id="main-content" tabindex="-1">
       <section class="works-heading" aria-labelledby="worksTitle">
         <h1 class="section-page-title" id="worksTitle" data-i18n="works.title">作品</h1>
-        <div class="works-tabs" aria-label="Works views">
+        <div class="works-tabs" role="group" aria-label="Works views">
           <button type="button" class="is-active" data-works-view="selected" data-i18n="works.selected">精选</button>
           <button type="button" data-works-view="series" data-i18n="works.series">系列</button>
           <button type="button" data-works-view="index" data-i18n="works.index">索引</button>
@@ -54,26 +80,140 @@
           在移动、停留与观看之间，选出一些安静但重要的瞬间。
         </p>
       </section>
-      <div class="work-gallery" id="workGallery" aria-live="polite" aria-label="Photography gallery"></div>
+      <section class="work-gallery" id="workGallery" aria-live="polite" aria-label="Photography gallery">
+        <section class="gallery-section selected-section" id="worksSelected">
+          <div class="photo-wall selected-wall">
+            <a class="photo-tile is-visible" href="/assets/photos/full/city/city-01.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/city/city-01.webp 480w, /assets/photos/thumb-webp/city/city-01.webp 667w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/city/city-01.jpg" width="667" height="1000" loading="eager" fetchpriority="high" decoding="async" alt="城市 01">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/abstract/abstract-12.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/abstract/abstract-12.webp 480w, /assets/photos/thumb-webp-720/abstract/abstract-12.webp 720w, /assets/photos/thumb-webp/abstract/abstract-12.webp 1000w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/abstract/abstract-12.jpg" width="1000" height="667" loading="lazy" decoding="async" alt="片段 12">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/street/street-24.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/street/street-24.webp 480w, /assets/photos/thumb-webp/street/street-24.webp 667w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/street/street-24.jpg" width="667" height="1000" loading="lazy" decoding="async" alt="街头 24">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/landscape/landscape-02.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/landscape/landscape-02.webp 480w, /assets/photos/thumb-webp-720/landscape/landscape-02.webp 720w, /assets/photos/thumb-webp/landscape/landscape-02.webp 750w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/landscape/landscape-02.jpg" width="750" height="1000" loading="lazy" decoding="async" alt="风光 02">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/abstract/abstract-09.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/abstract/abstract-09.webp 480w, /assets/photos/thumb-webp/abstract/abstract-09.webp 667w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/abstract/abstract-09.jpg" width="667" height="1000" loading="lazy" decoding="async" alt="片段 09">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/city/city-09.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/city/city-09.webp 480w, /assets/photos/thumb-webp-720/city/city-09.webp 720w, /assets/photos/thumb-webp/city/city-09.webp 1000w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/city/city-09.jpg" width="1000" height="667" loading="lazy" decoding="async" alt="城市 09">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/street/street-26.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/street/street-26.webp 480w, /assets/photos/thumb-webp-720/street/street-26.webp 720w, /assets/photos/thumb-webp/street/street-26.webp 1000w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/street/street-26.jpg" width="1000" height="563" loading="lazy" decoding="async" alt="街头 26">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/abstract/abstract-05.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/abstract/abstract-05.webp 480w, /assets/photos/thumb-webp-720/abstract/abstract-05.webp 720w, /assets/photos/thumb-webp/abstract/abstract-05.webp 800w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/abstract/abstract-05.jpg" width="800" height="1000" loading="lazy" decoding="async" alt="片段 05">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/landscape/landscape-15.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/landscape/landscape-15.webp 480w, /assets/photos/thumb-webp-720/landscape/landscape-15.webp 720w, /assets/photos/thumb-webp/landscape/landscape-15.webp 1000w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/landscape/landscape-15.jpg" width="1000" height="563" loading="lazy" decoding="async" alt="风光 15">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/city/city-03.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/city/city-03.webp 480w, /assets/photos/thumb-webp/city/city-03.webp 667w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/city/city-03.jpg" width="667" height="1000" loading="lazy" decoding="async" alt="城市 03">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/street/street-19.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/street/street-19.webp 480w, /assets/photos/thumb-webp-720/street/street-19.webp 720w, /assets/photos/thumb-webp/street/street-19.webp 1000w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/street/street-19.jpg" width="1000" height="667" loading="lazy" decoding="async" alt="街头 19">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/abstract/abstract-03.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/abstract/abstract-03.webp 480w, /assets/photos/thumb-webp/abstract/abstract-03.webp 667w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/abstract/abstract-03.jpg" width="667" height="1000" loading="lazy" decoding="async" alt="片段 03">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/landscape/landscape-06.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/landscape/landscape-06.webp 480w, /assets/photos/thumb-webp-720/landscape/landscape-06.webp 720w, /assets/photos/thumb-webp/landscape/landscape-06.webp 1000w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/landscape/landscape-06.jpg" width="1000" height="563" loading="lazy" decoding="async" alt="风光 06">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/street/street-08.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/street/street-08.webp 480w, /assets/photos/thumb-webp-720/street/street-08.webp 720w, /assets/photos/thumb-webp/street/street-08.webp 1000w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/street/street-08.jpg" width="1000" height="563" loading="lazy" decoding="async" alt="街头 08">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/city/city-17.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/city/city-17.webp 480w, /assets/photos/thumb-webp/city/city-17.webp 594w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/city/city-17.jpg" width="594" height="1000" loading="lazy" decoding="async" alt="城市 17">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/abstract/abstract-07.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/abstract/abstract-07.webp 480w, /assets/photos/thumb-webp/abstract/abstract-07.webp 667w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/abstract/abstract-07.jpg" width="667" height="1000" loading="lazy" decoding="async" alt="片段 07">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/street/street-27.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/street/street-27.webp 480w, /assets/photos/thumb-webp-720/street/street-27.webp 720w, /assets/photos/thumb-webp/street/street-27.webp 1000w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/street/street-27.jpg" width="1000" height="667" loading="lazy" decoding="async" alt="街头 27">
+              </picture>
+            </a>
+            <a class="photo-tile is-visible" href="/assets/photos/full/landscape/landscape-12.jpg">
+              <picture>
+                <source srcset="/assets/photos/thumb-webp-480/landscape/landscape-12.webp 480w, /assets/photos/thumb-webp-720/landscape/landscape-12.webp 720w, /assets/photos/thumb-webp/landscape/landscape-12.webp 1000w" sizes="(max-width: 620px) calc(100vw - 36px), 33vw" type="image/webp">
+                <img src="/assets/photos/thumb/landscape/landscape-12.jpg" width="1000" height="563" loading="lazy" decoding="async" alt="风光 12">
+              </picture>
+            </a>
+          </div>
+        </section>
+      </section>
     </main>
 
     <dialog class="lightbox" id="lightbox" aria-labelledby="lightboxTitle" aria-describedby="lightboxMeta">
       <button class="lightbox-close" type="button" id="closeLightbox" data-i18n-aria="lightbox.close" aria-label="关闭">×</button>
       <button class="lightbox-control lightbox-prev" type="button" id="prevWork" data-i18n-aria="lightbox.prev" aria-label="上一张">‹</button>
       <div class="lightbox-media" aria-live="polite">
-        <img id="lightboxImage" decoding="async" alt="">
+        <img id="lightboxImage" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" decoding="async" alt="">
       </div>
       <button class="lightbox-control lightbox-next" type="button" id="nextWork" data-i18n-aria="lightbox.next" aria-label="下一张">›</button>
       <div class="lightbox-info">
-        <h2 id="lightboxTitle"></h2>
-        <p id="lightboxMeta"></p>
+        <h2 id="lightboxTitle">作品详情</h2>
+        <p id="lightboxMeta">Yinyu Zhu Photography</p>
       </div>
-      <div class="lightbox-thumbs" id="lightboxThumbs" aria-label="Photo thumbnails"></div>
+      <div class="lightbox-thumbs" id="lightboxThumbs" role="group" aria-label="Photo thumbnails"></div>
       <p class="sr-only" id="lightboxCaption"></p>
     </dialog>
 
-    <script src="assets/photos/photo-manifest.js?v=20260704-cleanup"></script>
-    <script src="assets/photos/portfolio-data.js?v=20260711-works-ia"></script>
-    <script src="script.js?v=20260711-ui-polish"></script>
+    <script src="/assets/photos/photo-manifest.js?v=20260704-cleanup"></script>
+    <script src="/assets/photos/photo-dimensions.js?v=20260802-seo"></script>
+    <script src="/assets/photos/portfolio-data.js?v=20260711-works-ia"></script>
+    <script src="/script.js?v=20260802-seo"></script>
   </body>
 </html>

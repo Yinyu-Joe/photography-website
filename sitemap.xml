@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://yinyuzhu.com/</loc>
+  </url>
+  <url>
+    <loc>https://yinyuzhu.com/work</loc>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/city/city-01.jpg</image:loc><image:title>Urban 01</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/abstract/abstract-12.jpg</image:loc><image:title>Fragments 12</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/street/street-24.jpg</image:loc><image:title>Streets 24</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/landscape/landscape-02.jpg</image:loc><image:title>Landscapes 02</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/abstract/abstract-09.jpg</image:loc><image:title>Fragments 09</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/city/city-09.jpg</image:loc><image:title>Urban 09</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/street/street-26.jpg</image:loc><image:title>Streets 26</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/abstract/abstract-05.jpg</image:loc><image:title>Fragments 05</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/landscape/landscape-15.jpg</image:loc><image:title>Landscapes 15</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/city/city-03.jpg</image:loc><image:title>Urban 03</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/street/street-19.jpg</image:loc><image:title>Streets 19</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/abstract/abstract-03.jpg</image:loc><image:title>Fragments 03</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/landscape/landscape-06.jpg</image:loc><image:title>Landscapes 06</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/street/street-08.jpg</image:loc><image:title>Streets 08</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/city/city-17.jpg</image:loc><image:title>Urban 17</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/abstract/abstract-07.jpg</image:loc><image:title>Fragments 07</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/street/street-27.jpg</image:loc><image:title>Streets 27</image:title></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/photos/full/landscape/landscape-12.jpg</image:loc><image:title>Landscapes 12</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://yinyuzhu.com/places</loc>
+  </url>
+  <url>
+    <loc>https://yinyuzhu.com/story</loc>
+    <image:image><image:loc>https://yinyuzhu.com/assets/story/20260130-7C200963.jpg</image:loc></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/story/20260129-7C200452.jpg</image:loc></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/story/20260210-7C200360.jpg</image:loc></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/story/20250525-_7C20284.jpg</image:loc></image:image>
+    <image:image><image:loc>https://yinyuzhu.com/assets/story/20250806-_7C20019.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://yinyuzhu.com/about</loc>
+  </url>
+</urlset>

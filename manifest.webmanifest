@@ -1,0 +1,17 @@
+{
+  "name": "Yinyu Zhu Photography",
+  "short_name": "Yinyu Zhu",
+  "description": "Photography by Yinyu Zhu, featuring travel, cities, portraits and everyday life.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "minimal-ui",
+  "background_color": "#fafafa",
+  "theme_color": "#fafafa",
+  "icons": [
+    {
+      "src": "/assets/icons/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
