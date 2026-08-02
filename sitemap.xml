@@ -3,6 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://yinyuzhu.com/</loc>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://yinyuzhu.com/work</loc>
@@ -38,5 +39,6 @@
   </url>
   <url>
     <loc>https://yinyuzhu.com/about</loc>
+    <lastmod>2026-08-02</lastmod>
   </url>
 </urlset>

@@ -1,6 +1,6 @@
 const profile = {
   name: {
-    zh: "Yinyu Zhu",
+    zh: "朱垠宇",
     en: "Yinyu Zhu",
   },
   role: {
@@ -58,7 +58,7 @@ const copy = {
     "about.eyebrow": "关于",
     "about.title": "以安静的观察，记录人、城市与自然的瞬间。",
     "about.bodyOne":
-      "我是一名以旅行，人像，城市与日常景观为主要方向的摄影创作者。我的作品关注人在不同地域中的移动、停留与观看，并试图记录那些介于陌生与熟悉之间的瞬间。",
+      "我是朱垠宇（Yinyu Zhu），一名以旅行、人像、城市与日常景观为主要方向的摄影创作者。我的作品关注人在不同地域中的移动、停留与观看，并试图记录那些介于陌生与熟悉之间的瞬间。",
     "about.bodyTwo":
       "这个网站收录了我在不同国家和城市拍摄的作品，并通过地图与系列项目的方式整理这些影像。相比单纯展示目的地，我更关心照片如何保存一种具体的经验：当我经过那里时，世界曾经以这样的方式出现。",
     "contact.wechatLabel": "微信",
@@ -128,7 +128,7 @@ const copy = {
     "about.eyebrow": "ABOUT",
     "about.title": "Quiet observation of people, cities, nature, and still moments.",
     "about.bodyOne":
-      "I am a photographer working across travel, cities, and everyday landscapes. My work focuses on movement, place, and the quiet moments that appear between the unfamiliar and the familiar.",
+      "I am Yinyu Zhu (朱垠宇), a photographer working across travel, portraits, cities, and everyday landscapes. My work focuses on movement, place, and the quiet moments that appear between the unfamiliar and the familiar.",
     "about.bodyTwo":
       "This website brings together photographs made across different countries and cities, organized through series and a map-based archive.",
     "contact.wechatLabel": "WeChat",
@@ -1034,15 +1034,22 @@ function applyStaticCopy() {
 function updateDocumentTitle() {
   const currentName = profile.name.en;
   const activePageKey = document.querySelector(".main-nav [aria-current='page']")?.dataset.i18n;
+  const siteName = `${currentName} Photography`;
 
   if (!activePageKey) {
-    document.title = state.lang === "zh" ? `${currentName} 摄影` : `${currentName} Photography`;
+    document.title = siteName;
+    return;
+  }
+
+  if (activePageKey === "nav.about") {
+    document.title = state.lang === "zh"
+      ? `关于朱垠宇（${currentName}） | ${siteName}`
+      : `About ${currentName} (朱垠宇) | ${siteName}`;
     return;
   }
 
   const pageName = copy[state.lang][activePageKey] || copy.zh[activePageKey] || "";
-  const suffix = state.lang === "zh" ? `${currentName} 摄影` : `${currentName} Photography`;
-  document.title = `${pageName} | ${suffix}`;
+  document.title = `${pageName} | ${siteName}`;
 }
 
 function degreesToRadians(value) {
