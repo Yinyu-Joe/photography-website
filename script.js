@@ -788,6 +788,31 @@ function renderSelectedView() {
   return section;
 }
 
+function hydrateStaticSelectedView() {
+  if (!els.workGallery || state.activeWorksView !== "selected") return false;
+
+  const selectedWorks = worksByIds(portfolioData.selectedPhotoIds);
+  const tiles = [...els.workGallery.querySelectorAll("#worksSelected .photo-tile")];
+  if (tiles.length !== selectedWorks.length) return false;
+
+  tiles.forEach((tile, index) => {
+    const work = selectedWorks[index];
+    tile.dataset.workId = work.id;
+    tile.href = fullSrc(work);
+    tile.setAttribute("aria-label", localText(work.title));
+    const image = tile.querySelector("img");
+    if (image) image.alt = localText(work.title);
+    tile.addEventListener("click", (event) => {
+      event.preventDefault();
+      openWork(work.id, selectedWorks);
+    });
+  });
+
+  updateWorksHeading();
+  setupGalleryReveal();
+  return true;
+}
+
 function setWorksHash(value) {
   const nextHash = `#${value}`;
   if (location.hash === nextHash) return;
@@ -1720,9 +1745,11 @@ function shiftLightbox(direction) {
   updateLightbox();
 }
 
-function render() {
+function render(options = {}) {
   applyStaticCopy();
-  renderGallery();
+  if (!options.preferStaticGallery || !hydrateStaticSelectedView()) {
+    renderGallery();
+  }
   renderLocations();
   drawMap();
   if (els.lightbox?.open) updateLightbox();
@@ -1802,5 +1829,5 @@ window.addEventListener("resize", () => {
   });
 });
 
-render();
+render({ preferStaticGallery: true });
 if (els.canvas) loadLandDots().then(drawMap);
