@@ -35,7 +35,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;display=swap">
-    <link rel="stylesheet" href="/styles.css?v=20260802-seo">
+    <link rel="stylesheet" href="/styles.css?v=20260805-home-photo-type">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -71,8 +71,8 @@
     <header class="site-header home-header">
       <a class="brand-lockup" href="/" aria-label="Yinyu Zhu Photography home">
         <picture class="brand-mark">
-          <source srcset="/assets/logo-yinyu-zhu-344.webp" type="image/webp">
-          <img class="brand-logo" src="/assets/logo-yinyu-zhu.png" width="760" height="520" alt="Yinyu Zhu Photography">
+          <source srcset="/assets/logo-yinyu-zhu-signature-520.webp" type="image/webp">
+          <img class="brand-logo" src="/assets/logo-yinyu-zhu-signature.png" width="1672" height="941" alt="Yinyu Zhu Photography">
         </picture>
       </a>
 
@@ -101,27 +101,87 @@
       </div>
     </header>
 
-    <main id="main-content" tabindex="-1">
-      <section class="home-hero" aria-labelledby="homeTitle">
-        <picture class="home-hero-media" aria-hidden="true">
-          <source srcset="/assets/home/webp/home-landscape-1200.webp 1200w, /assets/home/webp/home-landscape-2400.webp 2400w" sizes="100vw" media="(orientation: landscape)" type="image/webp" width="2400" height="1600">
-          <source srcset="/assets/home/home-landscape.jpg" media="(orientation: landscape)" width="2400" height="1600">
-          <source srcset="/assets/home/webp/home-portrait-720.webp 720w, /assets/home/webp/home-portrait-1350.webp 1350w" sizes="100vw" type="image/webp" width="1350" height="2400">
-          <img class="home-hero-image" src="/assets/home/home-portrait.jpg" width="1350" height="2400" loading="eager" fetchpriority="high" decoding="async" alt="">
-        </picture>
-        <div class="home-shade" aria-hidden="true"></div>
+    <main class="home-main" id="main-content" tabindex="-1">
+      <h1 id="homeTitle" class="sr-only">Yinyu Zhu Photography｜朱垠宇摄影</h1>
 
-        <nav class="home-menu" aria-label="Site sections">
-          <a href="/work" data-i18n="nav.work">作品</a>
-          <a href="/places" data-i18n="nav.places">地图</a>
-          <a href="/story" data-i18n="nav.story">故事</a>
-          <a href="/about" data-i18n="nav.about">关于</a>
-        </nav>
-
-        <h1 id="homeTitle" class="sr-only">Yinyu Zhu Photography｜朱垠宇摄影</h1>
+      <!-- Placeholder selection: replace these nine image paths after the final homepage edit is chosen. -->
+      <section class="home-collage" aria-labelledby="homeTitle" data-i18n-aria="home.galleryLabel">
+        <a class="home-frame home-frame-one" href="/work" data-i18n-aria="home.viewAll">
+          <picture>
+            <source srcset="/assets/photos/thumb-webp-480/landscape/landscape-15.webp 480w, /assets/photos/thumb-webp-720/landscape/landscape-15.webp 720w, /assets/photos/thumb-webp/landscape/landscape-15.webp 1000w" sizes="(max-width: 620px) 86vw, 55vw" type="image/webp">
+            <img src="/assets/photos/thumb/landscape/landscape-15.jpg" width="1000" height="563" loading="eager" fetchpriority="high" decoding="async" alt="">
+          </picture>
+        </a>
+        <a class="home-frame home-frame-two" href="/work" data-i18n-aria="home.viewAll">
+          <picture>
+            <source srcset="/assets/photos/thumb-webp-480/city/city-03.webp 480w, /assets/photos/thumb-webp/city/city-03.webp 667w" sizes="(max-width: 620px) 45vw, 28vw" type="image/webp">
+            <img src="/assets/photos/thumb/city/city-03.jpg" width="667" height="1000" loading="eager" fetchpriority="high" decoding="async" alt="">
+          </picture>
+        </a>
+        <a class="home-frame home-frame-three" href="/work" data-i18n-aria="home.viewAll">
+          <picture>
+            <source srcset="/assets/photos/thumb-webp-480/city/city-09.webp 480w, /assets/photos/thumb-webp-720/city/city-09.webp 720w, /assets/photos/thumb-webp/city/city-09.webp 1000w" sizes="(max-width: 620px) 76vw, 39vw" type="image/webp">
+            <img src="/assets/photos/thumb/city/city-09.jpg" width="1000" height="667" loading="lazy" decoding="async" alt="">
+          </picture>
+        </a>
+        <a class="home-frame home-frame-four" href="/work" data-i18n-aria="home.viewAll">
+          <picture>
+            <source srcset="/assets/photos/thumb-webp-480/street/street-26.webp 480w, /assets/photos/thumb-webp-720/street/street-26.webp 720w, /assets/photos/thumb-webp/street/street-26.webp 1000w" sizes="(max-width: 620px) 91vw, 55vw" type="image/webp">
+            <img src="/assets/photos/thumb/street/street-26.jpg" width="1000" height="563" loading="lazy" decoding="async" alt="">
+          </picture>
+        </a>
+        <a class="home-frame home-frame-five" href="/work" data-i18n-aria="home.viewAll">
+          <picture>
+            <source srcset="/assets/photos/thumb-webp-480/abstract/abstract-05.webp 480w, /assets/photos/thumb-webp-720/abstract/abstract-05.webp 720w, /assets/photos/thumb-webp/abstract/abstract-05.webp 800w" sizes="(max-width: 620px) 45vw, 29vw" type="image/webp">
+            <img src="/assets/photos/thumb/abstract/abstract-05.jpg" width="800" height="1000" loading="lazy" decoding="async" alt="">
+          </picture>
+        </a>
+        <a class="home-frame home-frame-six" href="/work" data-i18n-aria="home.viewAll">
+          <picture>
+            <source srcset="/assets/photos/thumb-webp-480/abstract/abstract-12.webp 480w, /assets/photos/thumb-webp-720/abstract/abstract-12.webp 720w, /assets/photos/thumb-webp/abstract/abstract-12.webp 1000w" sizes="(max-width: 620px) 72vw, 31vw" type="image/webp">
+            <img src="/assets/photos/thumb/abstract/abstract-12.jpg" width="1000" height="667" loading="lazy" decoding="async" alt="">
+          </picture>
+        </a>
+        <a class="home-frame home-frame-seven" href="/work" data-i18n-aria="home.viewAll">
+          <picture>
+            <source srcset="/assets/photos/thumb-webp-480/street/street-19.webp 480w, /assets/photos/thumb-webp-720/street/street-19.webp 720w, /assets/photos/thumb-webp/street/street-19.webp 1000w" sizes="(max-width: 620px) 91vw, 55vw" type="image/webp">
+            <img src="/assets/photos/thumb/street/street-19.jpg" width="1000" height="667" loading="lazy" decoding="async" alt="">
+          </picture>
+        </a>
+        <a class="home-frame home-frame-eight" href="/work" data-i18n-aria="home.viewAll">
+          <picture>
+            <source srcset="/assets/photos/thumb-webp-480/city/city-17.webp 480w, /assets/photos/thumb-webp/city/city-17.webp 594w" sizes="(max-width: 620px) 45vw, 29vw" type="image/webp">
+            <img src="/assets/photos/thumb/city/city-17.jpg" width="594" height="1000" loading="lazy" decoding="async" alt="">
+          </picture>
+        </a>
+        <a class="home-frame home-frame-nine" href="/work" data-i18n-aria="home.viewAll">
+          <picture>
+            <source srcset="/assets/photos/thumb-webp-480/landscape/landscape-02.webp 480w, /assets/photos/thumb-webp-720/landscape/landscape-02.webp 720w, /assets/photos/thumb-webp/landscape/landscape-02.webp 750w" sizes="(max-width: 620px) 76vw, 46vw" type="image/webp">
+            <img src="/assets/photos/thumb/landscape/landscape-02.jpg" width="750" height="1000" loading="lazy" decoding="async" alt="">
+          </picture>
+        </a>
       </section>
+
+      <section class="home-statement" aria-labelledby="homeStatementTitle">
+        <p class="eyebrow" data-i18n="home.eyebrow">摄影档案</p>
+        <h2 id="homeStatementTitle" data-i18n="home.title">光、距离，以及记忆里安静的地理。</h2>
+        <div class="home-statement-copy">
+          <p data-i18n="home.intro">朱垠宇的旅行、城市与日常摄影。这里收录我在不同地域移动、停留与观看时留下的片段。</p>
+          <a class="home-text-link" href="/work"><span data-i18n="home.viewAll">查看全部作品</span><span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+
+      <section class="home-contact-strip" aria-labelledby="homeContactTitle">
+        <h2 id="homeContactTitle" data-i18n="contact.title">如果你喜欢这些影像，我们可以从一次简短交流开始。</h2>
+        <a href="mailto:yinyu.zhu@outlook.com"><span data-i18n="home.contactLink">聊聊你的想法</span><span aria-hidden="true">↗</span></a>
+      </section>
+
+      <footer class="home-footer">
+        <p>© Yinyu Zhu Photography 2026</p>
+        <a href="/about" data-i18n="nav.about">关于</a>
+      </footer>
     </main>
 
-    <script src="/script.js?v=20260802-seo"></script>
+    <script src="/script.js?v=20260802-home-redesign"></script>
   </body>
 </html>
