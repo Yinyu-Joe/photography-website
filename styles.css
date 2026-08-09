@@ -166,8 +166,6 @@ h2 {
   width: 148.1%;
   max-width: none;
   height: auto;
-  filter: grayscale(1) contrast(5);
-  mix-blend-mode: multiply;
 }
 
 .brand-mark {
