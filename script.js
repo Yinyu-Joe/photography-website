@@ -1023,7 +1023,7 @@ function applyStaticCopy() {
   document.querySelectorAll("[data-profile='email']").forEach((node) => {
     node.textContent = profile.email;
   });
-  document.querySelectorAll("a[href^='mailto:']").forEach((node) => {
+  document.querySelectorAll("[data-email-link]").forEach((node) => {
     node.href = `mailto:${profile.email}`;
   });
 
