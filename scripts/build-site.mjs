@@ -602,7 +602,7 @@ await fs.writeFile(path.join(outputRoot, "_headers"), `/*\n  X-Content-Type-Opti
 
 const manifest = {
   generatedAt: new Date().toISOString(),
-  outputRoot,
+  outputRoot: path.relative(projectRoot, outputRoot),
   routes: allRoutes.length,
   photos: content.photos.length,
   places: content.places.length,

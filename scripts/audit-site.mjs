@@ -180,6 +180,7 @@ if (!/^\/story \/stories 301$/m.test(redirects)) fail("redirect", "missing /stor
 const sitemap = await fs.readFile(path.join(outputRoot, "sitemap.xml"), "utf8");
 const sitemapUrls = [...sitemap.matchAll(/<loc>(https:\/\/yinyuzhu\.com[^<]+)<\/loc>/g)].map((match) => match[1]);
 const manifest = JSON.parse(await fs.readFile(path.join(outputRoot, "build-manifest.json"), "utf8"));
+if (path.isAbsolute(manifest.outputRoot)) fail("manifest", "build manifest must not expose an absolute local output path");
 if (sitemapUrls.length !== manifest.routes) fail("sitemap", `expected ${manifest.routes} URLs, found ${sitemapUrls.length}`);
 for (const url of sitemapUrls) {
   const href = new URL(url).pathname;
