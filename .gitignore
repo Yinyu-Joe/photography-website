@@ -4,3 +4,5 @@ design-qa-implementation.png
 qa-screenshots/
 assets/design-reference/
 .wrangler/
+_site/
+lighthouse-results/

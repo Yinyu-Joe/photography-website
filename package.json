@@ -1,0 +1,13 @@
+{
+  "name": "yinyu-zhu-photography-archive",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "refresh:dimensions": "node scripts/generate-source-dimensions.mjs",
+    "build": "node scripts/build-site.mjs",
+    "build:fast": "SKIP_IMAGE_BUILD=1 node scripts/build-site.mjs",
+    "audit:site": "node scripts/audit-site.mjs",
+    "lighthouse:local": "node scripts/run-lighthouse.mjs",
+    "test": "npm run build:fast && npm run audit:site"
+  }
+}

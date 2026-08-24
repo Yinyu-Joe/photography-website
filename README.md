@@ -1,6 +1,48 @@
-# 个人摄影网站
+# 个人摄影档案网站
 
-这是一个静态个人摄影作品集网站，不需要复杂安装。主要页面包括：
+这是一个无框架的静态摄影档案。源内容与生成脚本保留在 repository 中，正式可预览文件生成到 `_site`。
+
+## 构建与检查
+
+```bash
+npm run build
+npm run audit:site
+```
+
+`npm run build` 会：
+
+- 统一 Photo、Place、Series、Story 内容关系；
+- 生成中文与英文静态路由；
+- 生成照片、地点、系列和故事 permalink；
+- 生成 canonical、hreflang、Open Graph、JSON-LD、robots 和 sitemap；
+- 在 `_site/assets/generated` 中创建 AVIF/WebP 网页衍生图。
+
+原始 JPEG 不会被覆盖或删除。只想快速检查 HTML 时可使用 `npm run build:fast`；该模式使用现有缩略图，不生成新的响应式图片。
+
+## 本地预览
+
+构建后从 `_site` 启动 Cloudflare Pages 预览：
+
+```bash
+npx wrangler pages dev _site --ip 127.0.0.1 --port 4174
+```
+
+然后打开 `http://127.0.0.1:4174/`。4174 用于 archive-v2 验证，不会覆盖当前 4173 的旧基线预览服务。
+
+主要生成路由包括：
+
+- `/work/<photo-slug>`
+- `/series/<series-slug>`
+- `/places/<place-slug>`
+- `/stories/<story-slug>`
+- `/rights`
+- 对应的 `/en/...` 英文页面
+
+旧 `/story` 通过 `_redirects` 永久重定向至 `/stories`。
+
+## 旧版源文件
+
+以下文件继续保留，作为视觉与内容来源：
 
 - `index.html`：极简首页
 - `work.html`：作品入口，包含 Selected、Series、Index 三种浏览方式
@@ -53,9 +95,9 @@ const profile = {
 
 原有 `city`、`landscape`、`street`、`abstract` 分类仍保留，并作为 Index 的快速筛选使用。
 
-## 怎么预览
+## 旧版直接预览
 
-网站在 Cloudflare Pages 上使用 `/work`、`/places` 等无扩展名网址。为了让本地预览与线上路由和 404 行为一致，建议在这个文件夹里运行 Cloudflare 的本地预览：
+旧版根目录仍可用于对照原有页面：
 
 ```bash
 npx wrangler pages dev . --ip 127.0.0.1 --port 4173
