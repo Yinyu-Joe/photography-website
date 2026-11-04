@@ -1,4 +1,16 @@
 window.portfolioData = {
+  // 首页拼贴固定 9 张，顺序对应首页的九个位置（第 1、4、7 张显示得最大）。
+  homePhotoIds: [
+    "landscape-15",
+    "city-03",
+    "city-09",
+    "street-26",
+    "abstract-05",
+    "abstract-12",
+    "street-19",
+    "city-17",
+    "landscape-02"
+  ],
   selectedPhotoIds: [
     "city-01",
     "abstract-12",

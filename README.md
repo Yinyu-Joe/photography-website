@@ -47,69 +47,45 @@ npx wrangler pages dev _site --ip 127.0.0.1 --port 4174
 旧 `/story` 通过 `_redirects` 永久重定向至 `/stories`。
 旧 `/copyright` 永久重定向至 `/rights`。
 
-## 旧版源文件
+## 改内容去哪里
 
-以下文件继续保留，作为视觉与内容来源：
+所有页面都由 `scripts/build-site.mjs` 生成。改完任何一项，都要重新运行 `npm run build`。
 
-- `index.html`：极简首页
-- `work.html`：作品入口，包含 Selected、Series、Index 三种浏览方式
-- `places.html`：拍摄地点地图
-- `story.html`：故事页面
-- `about.html`：关于与联系方式
-- `404.html`：Cloudflare Pages 使用的真实 404 页面
-- `robots.txt` 与 `sitemap.xml`：搜索引擎抓取与页面发现配置
-- `manifest.webmanifest`：站点名称与图标配置
-- `styles.css`：页面视觉样式
-- `script.js`：语言切换、地图、作品渲染、图片弹窗
+| 想改的内容 | 文件 |
+| --- | --- |
+| 首页文案、关于页、版权说明、联系方式、社交链接、故事 | `content/site-content.mjs` |
+| 照片的手写标题和说明 | `content/photo-text.json` |
+| 首页 9 张照片、精选顺序、系列、全部作品筛选 | `assets/photos/portfolio-data.js` |
+| 照片清单、年份、原始文件对应 | `assets/photos/photo-manifest.js` |
+| 拍摄地点和地图坐标 | `assets/photos/place-manifest.js` |
+| 视觉样式 | `styles.css` |
+| 页面结构和生成逻辑 | `scripts/build-site.mjs`、`scripts/lib/content-model.mjs` |
+| 地图交互 / 灯箱 / 手机导航收起 | `assets/archive-map.js` / `assets/archive-interactions.js` / `assets/site-header.js` |
 
-## 怎么改成你的信息
+几点说明：
 
-打开 `script.js`，最上方的 `profile` 可以修改：
+- `content/photo-text.json` 按照片 id 填写，例如 `city-03`。哪种语言留空，那种语言就继续用自动生成的“某年拍摄于某地”，所以可以一张一张慢慢补。写错 id 时构建会报错。
+- `homePhotoIds` 必须正好 9 张，顺序对应首页拼贴的九个位置，第 1、4、7 张显示得最大。
+- `styles.css` 是按时间往后叠加的，后面的段落会覆盖前面的同名规则。新增的规则加在文件末尾，并写一行注释说明用途。
+- 新增照片：先在 `photo-manifest.js` 里加基础信息，要进精选或系列，再把 id 加进 `portfolio-data.js`。
 
-```js
-const profile = {
-  name: {
-    zh: "Your Name",
-    en: "Your Name",
-  },
-  email: "你的邮箱",
-  wechat: "你的微信号",
-};
+## 发布
+
+完整构建要在 Mac 上运行，因为生成 AVIF 用的是 macOS 自带的 `sips`。确认要发布时：
+
+```bash
+npm run validate
+npx wrangler pages deploy _site --project-name photography-website
 ```
 
-## 怎么替换照片
+只在本地修改设计，并不代表可以发布；发布前先在本地预览确认。
 
-真实作品图片现在放在 `assets/photos`：
+## 旧版文件（不参与构建）
 
-- `assets/photos/thumb`：页面照片墙和地图预览用的缩略图
-- `assets/photos/full`：点击打开详情时用的高清图
-- `assets/photos/photo-manifest.js`：缩略图和高清图的一一对应清单
-- `assets/photos/portfolio-data.js`：精选顺序、系列结构和 Index 筛选配置
+根目录的 `index.html`、`work.html`、`places.html`、`story.html`、`about.html`、`404.html`、`robots.txt`、`sitemap.xml` 和 `script.js` 是早期版本，构建不会读取它们，改了网站也不会有任何变化。真正被复制进 `_site` 的根目录文件只有 `styles.css`、`favicon.ico` 和 `manifest.webmanifest`，另外还有整个 `assets` 文件夹。
 
-如果之后继续替换照片，可以保持同样结构，并在 `photo-manifest.js` 里维护每张照片的 `thumbSrc` 与 `fullSrc`：
-
-- `thumbSrc`：缩略图路径
-- `fullSrc`：高清图路径
-- `title`：中英文标题
-- `caption`：中英文说明
-- `year`：年份
-
-新增照片后，先在 `photo-manifest.js` 维护基础信息。若要把照片放入精选或系列，再在 `portfolio-data.js` 中加入对应照片 `id`：
-
-- `selectedPhotoIds`：Selected 的照片与展示顺序（建议 12–18 张）
-- `series`：系列名称、说明、封面与包含的照片
-- `indexFilters`：Index 中人物、黑白等跨分类筛选
-
-原有 `city`、`landscape`、`street`、`abstract` 分类仍保留，并作为 Index 的快速筛选使用。
-
-## 旧版直接预览
-
-旧版根目录仍可用于对照原有页面：
+需要对照早期版本时，可以这样预览：
 
 ```bash
 npx wrangler pages dev . --ip 127.0.0.1 --port 4173
 ```
-
-然后打开 `http://127.0.0.1:4173/`。
-
-直接双击 `index.html` 仍可查看首页，但不适合检查无扩展名导航、`robots.txt`、`sitemap.xml` 和真实 404 状态码。

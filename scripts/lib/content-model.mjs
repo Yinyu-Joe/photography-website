@@ -47,6 +47,20 @@ export async function buildContentModel() {
   } catch (error) {
     if (error?.code !== "ENOENT") throw error;
   }
+  let photoText = {};
+  try {
+    photoText = JSON.parse(await fs.readFile(path.join(projectRoot, "content/photo-text.json"), "utf8"));
+  } catch (error) {
+    if (error?.code !== "ENOENT") throw error;
+  }
+  const knownPhotoIds = new Set(collections.flatMap((collection) => (collection.photos ?? []).map((photo) => photo.id)));
+  for (const id of Object.keys(photoText)) {
+    if (!id.startsWith("_") && !knownPhotoIds.has(id)) throw new Error(`content/photo-text.json: unknown photo id "${id}"`);
+  }
+  const writtenText = (id, field, locale) => {
+    const value = photoText[id]?.[field]?.[locale];
+    return typeof value === "string" ? value.trim() : "";
+  };
   const selectedIds = new Set(portfolio.selectedPhotoIds ?? []);
   const fullSourceToPlace = new Map();
 
@@ -77,9 +91,10 @@ export async function buildContentModel() {
       width: width ?? null,
       height: height ?? null,
       aspectRatio: width && height ? width / height : null,
-      alt: { ...photo.title },
-      title: { ...photo.title },
+      alt: { zh: writtenText(photo.id, "title", "zh") || photo.title.zh, en: writtenText(photo.id, "title", "en") || photo.title.en },
+      title: { zh: writtenText(photo.id, "title", "zh") || photo.title.zh, en: writtenText(photo.id, "title", "en") || photo.title.en },
       description: { ...photo.caption },
+      writtenCaption: { zh: writtenText(photo.id, "caption", "zh") || null, en: writtenText(photo.id, "caption", "en") || null },
       category: collection.id,
       series,
       places: placeId ? [placeId] : [],
@@ -132,7 +147,8 @@ export async function buildContentModel() {
     places: Object.freeze(places),
     series: Object.freeze(series),
     stories: Object.freeze(stories.map(freezeEntity)),
-    indexFilters: Object.freeze(portfolio.indexFilters ?? [])
+    indexFilters: Object.freeze(portfolio.indexFilters ?? []),
+    homePhotoIds: Object.freeze([...(portfolio.homePhotoIds ?? [])])
   });
 }
 

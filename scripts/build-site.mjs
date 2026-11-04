@@ -110,6 +110,8 @@ function photoAccessibleText(photo, locale) {
 }
 
 function photoDescription(photo, locale) {
+  const written = photo.writtenCaption?.[locale];
+  if (written) return written;
   const title = text(photo.title, locale);
   const placeNames = photoPlaceNames(photo, locale);
   if (locale === "zh") {
@@ -171,7 +173,7 @@ function equivalentPath(locale, type, slug) {
   return route(locale === "zh" ? "en" : "zh", type, slug);
 }
 
-function headMarkup({ locale, type, slug, title, description, image, imageAlt, ogType = "website", jsonLd = [] }) {
+function headMarkup({ locale, type, slug, title, description, image, imageAlt, ogType = "website", jsonLd = [], headExtra = "" }) {
   const canonicalPath = route(locale, type, slug);
   const zhPath = route("zh", type, slug);
   const enPath = route("en", type, slug);
@@ -216,7 +218,7 @@ ${dimensions ? `    <meta property="og:image:width" content="${dimensions.width}
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;display=swap" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;display=swap"></noscript>
     <link rel="stylesheet" href="/styles.css?v=archive-v2">
-${jsonScripts}`;
+${headExtra}${jsonScripts}`;
 }
 
 function headerMarkup(locale, currentType, equivalentHref) {
@@ -262,11 +264,11 @@ function footerMarkup(locale) {
     </footer>`;
 }
 
-function pageShell({ locale, type, slug = null, title, description, image, imageAlt, main, scripts = [], bodyClass = "", ogType, jsonLd }) {
+function pageShell({ locale, type, slug = null, title, description, image, imageAlt, main, scripts = [], bodyClass = "", ogType, jsonLd, headExtra = "" }) {
   const equivalentHref = equivalentPath(locale, type, slug);
   return `<!DOCTYPE html>
 <html lang="${locale === "zh" ? "zh-CN" : "en"}" data-site-v2>
-  <head>${headMarkup({ locale, type, slug, title, description, image, imageAlt, ogType, jsonLd })}
+  <head>${headMarkup({ locale, type, slug, title, description, image, imageAlt, ogType, jsonLd, headExtra })}
   </head>
   <body${bodyClass ? ` class="${bodyClass}"` : ""}>${headerMarkup(locale, type, equivalentHref)}
 ${main}
@@ -350,8 +352,8 @@ function personJsonLd() {
 function homePage(locale) {
   const l = labels[locale];
   const home = site.home[locale];
-  const homePhotoIds = ["landscape-15", "city-03", "city-09", "street-26", "abstract-05", "abstract-12", "street-19", "city-17", "landscape-02"];
-  const selected = homePhotoIds.map((id) => photoById.get(id)).filter(Boolean);
+  const selected = content.homePhotoIds.map((id) => photoById.get(id)).filter(Boolean);
+  if (selected.length !== 9) throw new Error(`homePhotoIds in assets/photos/portfolio-data.js must list 9 existing photos, found ${selected.length}`);
   const frames = selected.map((photo, index) => `<a class="home-frame home-frame-${["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"][index]}" href="${photoHref(locale, photo)}" aria-label="${esc(photoAccessibleText(photo, locale))}">${pictureMarkup(photo, locale, { sizes: index % 3 === 0 ? "(max-width: 620px) 70vw, 55vw" : "(max-width: 620px) 45vw, 30vw", eager: index === 0, decorative: true })}</a>`).join("\n        ");
   const description = home.intro;
   return pageShell({
