@@ -588,24 +588,6 @@ const els = {
 let landDots = els.canvas ? buildFallbackLandDots() : [];
 let revealObserver = null;
 
-function setupNavSubmenus() {
-  document.querySelectorAll(".has-submenu").forEach((item) => {
-    const open = () => item.classList.add("is-open");
-    const close = () => item.classList.remove("is-open");
-
-    item.addEventListener("pointerenter", open);
-    item.addEventListener("pointerleave", close);
-    item.addEventListener("focusin", open);
-    item.addEventListener("focusout", (event) => {
-      if (!item.contains(event.relatedTarget)) close();
-    });
-  });
-
-  document.querySelectorAll(".social-button[href='#']").forEach((link) => {
-    link.addEventListener("click", (event) => event.preventDefault());
-  });
-}
-
 function localText(value) {
   return value[state.lang] || value.zh || value.en || "";
 }
@@ -1760,7 +1742,6 @@ els.languageSwitches.forEach((button) => {
 els.closeLightbox?.addEventListener("click", closeLightbox);
 els.prevWork?.addEventListener("click", () => shiftLightbox(-1));
 els.nextWork?.addEventListener("click", () => shiftLightbox(1));
-setupNavSubmenus();
 setupWorksNavigation();
 setupMapControls();
 setupPlacePreview();

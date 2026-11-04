@@ -199,7 +199,7 @@ window.placePhotoCollections = [
     "lon": -87.534,
     "lat": 17.316,
     "name": {
-      "zh": "蓝洞",
+      "zh": "大蓝洞",
       "en": "Great Blue Hole"
     },
     "country": {
@@ -216,7 +216,7 @@ window.placePhotoCollections = [
           "en": "GREAT BLUE HOLE 01"
         },
         "caption": {
-          "zh": "蓝洞",
+          "zh": "大蓝洞",
           "en": "Great Blue Hole"
         },
         "thumbSrc": "assets/photos/thumb/landscape/landscape-16.jpg",
@@ -231,7 +231,7 @@ window.placePhotoCollections = [
           "en": "GREAT BLUE HOLE 02"
         },
         "caption": {
-          "zh": "蓝洞",
+          "zh": "大蓝洞",
           "en": "Great Blue Hole"
         },
         "thumbSrc": "assets/photos/thumb/landscape/landscape-17.jpg",
@@ -244,7 +244,7 @@ window.placePhotoCollections = [
     "lon": -77.0369,
     "lat": 38.9072,
     "name": {
-      "zh": "华盛顿DC",
+      "zh": "华盛顿特区",
       "en": "Washington DC"
     },
     "country": {
@@ -257,11 +257,11 @@ window.placePhotoCollections = [
         "original": "20241218-_7C20194-已增强-降噪.jpg",
         "year": "2024",
         "title": {
-          "zh": "华盛顿DC 01",
+          "zh": "华盛顿特区 01",
           "en": "WASHINGTON DC 01"
         },
         "caption": {
-          "zh": "华盛顿DC",
+          "zh": "华盛顿特区",
           "en": "Washington DC"
         },
         "thumbSrc": "assets/photos/thumb/city/city-10.jpg",
@@ -272,11 +272,11 @@ window.placePhotoCollections = [
         "original": "20241219-_7C20165.jpg",
         "year": "2024",
         "title": {
-          "zh": "华盛顿DC 02",
+          "zh": "华盛顿特区 02",
           "en": "WASHINGTON DC 02"
         },
         "caption": {
-          "zh": "华盛顿DC",
+          "zh": "华盛顿特区",
           "en": "Washington DC"
         },
         "thumbSrc": "assets/photos/thumb/street/street-12.jpg",
@@ -287,11 +287,11 @@ window.placePhotoCollections = [
         "original": "20241219-_7C20216.jpg",
         "year": "2024",
         "title": {
-          "zh": "华盛顿DC 03",
+          "zh": "华盛顿特区 03",
           "en": "WASHINGTON DC 03"
         },
         "caption": {
-          "zh": "华盛顿DC",
+          "zh": "华盛顿特区",
           "en": "Washington DC"
         },
         "thumbSrc": "assets/photos/thumb/street/street-13.jpg",
@@ -302,11 +302,11 @@ window.placePhotoCollections = [
         "original": "20241220-_7C20039-已增强-降噪.jpg",
         "year": "2024",
         "title": {
-          "zh": "华盛顿DC 04",
+          "zh": "华盛顿特区 04",
           "en": "WASHINGTON DC 04"
         },
         "caption": {
-          "zh": "华盛顿DC",
+          "zh": "华盛顿特区",
           "en": "Washington DC"
         },
         "thumbSrc": "assets/photos/thumb/street/street-14.jpg",
@@ -317,11 +317,11 @@ window.placePhotoCollections = [
         "original": "20241221-_7C20706.jpg",
         "year": "2024",
         "title": {
-          "zh": "华盛顿DC 05",
+          "zh": "华盛顿特区 05",
           "en": "WASHINGTON DC 05"
         },
         "caption": {
-          "zh": "华盛顿DC",
+          "zh": "华盛顿特区",
           "en": "Washington DC"
         },
         "thumbSrc": "assets/photos/thumb/city/city-11.jpg",
@@ -814,7 +814,7 @@ window.placePhotoCollections = [
     "lon": -100.744,
     "lat": 20.914,
     "name": {
-      "zh": "圣米格尔",
+      "zh": "圣米格尔-德阿连德",
       "en": "San Miguel de Allende"
     },
     "country": {
@@ -831,7 +831,7 @@ window.placePhotoCollections = [
           "en": "SAN MIGUEL DE ALLENDE 01"
         },
         "caption": {
-          "zh": "圣米格尔",
+          "zh": "圣米格尔-德阿连德",
           "en": "San Miguel de Allende"
         },
         "thumbSrc": "assets/photos/thumb/street/street-21.jpg",
@@ -846,7 +846,7 @@ window.placePhotoCollections = [
           "en": "SAN MIGUEL DE ALLENDE 02"
         },
         "caption": {
-          "zh": "圣米格尔",
+          "zh": "圣米格尔-德阿连德",
           "en": "San Miguel de Allende"
         },
         "thumbSrc": "assets/photos/thumb/landscape/landscape-13.jpg",
@@ -1504,7 +1504,7 @@ window.placePhotoCollections = [
     "lon": -70.2962,
     "lat": 41.6688,
     "name": {
-      "zh": "Cape Cod",
+      "zh": "科德角",
       "en": "Cape Cod"
     },
     "country": {
@@ -1517,11 +1517,11 @@ window.placePhotoCollections = [
         "original": "20230221-_DSC0526.jpg",
         "year": "2023",
         "title": {
-          "zh": "Cape Cod 01",
+          "zh": "科德角 01",
           "en": "CAPE COD 01"
         },
         "caption": {
-          "zh": "Cape Cod",
+          "zh": "科德角",
           "en": "Cape Cod"
         },
         "thumbSrc": "assets/photos/thumb/street/street-01.jpg",
@@ -1534,7 +1534,7 @@ window.placePhotoCollections = [
     "lon": 106.6602,
     "lat": 10.7626,
     "name": {
-      "zh": "胡志明",
+      "zh": "胡志明市",
       "en": "Ho Chi Minh City"
     },
     "country": {
@@ -1547,11 +1547,11 @@ window.placePhotoCollections = [
         "original": "20240824-_7C20257.jpg",
         "year": "2024",
         "title": {
-          "zh": "胡志明 01",
+          "zh": "胡志明市 01",
           "en": "HO CHI MINH CITY 01"
         },
         "caption": {
-          "zh": "胡志明",
+          "zh": "胡志明市",
           "en": "Ho Chi Minh City"
         },
         "thumbSrc": "assets/photos/thumb/city/city-09.jpg",
@@ -1562,11 +1562,11 @@ window.placePhotoCollections = [
         "original": "20240824-_7C20444.jpg",
         "year": "2024",
         "title": {
-          "zh": "胡志明 02",
+          "zh": "胡志明市 02",
           "en": "HO CHI MINH CITY 02"
         },
         "caption": {
-          "zh": "胡志明",
+          "zh": "胡志明市",
           "en": "Ho Chi Minh City"
         },
         "thumbSrc": "assets/photos/thumb/abstract/abstract-03.jpg",

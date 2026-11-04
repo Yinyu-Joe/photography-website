@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { createHash } from "node:crypto";
 import { buildContentModel, projectRoot } from "./lib/content-model.mjs";
 import { availableVariantWidths, buildResponsiveImages, variantUrl } from "./lib/image-pipeline.mjs";
 
@@ -10,6 +11,8 @@ const photoById = new Map(content.photos.map((photo) => [photo.id, photo]));
 const placeById = new Map(content.places.map((place) => [place.id, place]));
 const seriesById = new Map(content.series.map((series) => [series.id, series]));
 const site = content.site;
+const worldDotsSource = await fs.readFile(path.join(projectRoot, "assets/world-dots.json"));
+const worldDotsVersion = createHash("sha256").update(worldDotsSource).digest("hex").slice(0, 12);
 
 if (path.basename(outputRoot) !== "_site" || path.dirname(outputRoot) !== projectRoot) {
   throw new Error(`Refusing to clean unexpected output path: ${outputRoot}`);
@@ -33,7 +36,7 @@ const labels = {
     about: "关于",
     rights: "版权",
     series: "系列",
-    index: "索引",
+    index: "全部作品",
     selected: "精选",
     viewAll: "查看全部作品",
     photographedPlaces: "拍摄地点",
@@ -59,7 +62,7 @@ const labels = {
     about: "About",
     rights: "Rights",
     series: "Series",
-    index: "Index",
+    index: "All work",
     selected: "Selected",
     viewAll: "View all work",
     photographedPlaces: "Photographed places",
@@ -90,6 +93,44 @@ function esc(value) {
 
 function text(value, locale) {
   return value?.[locale] || value?.zh || value?.en || "";
+}
+
+function photoPlaces(photo) {
+  return photo.places.map((id) => placeById.get(id)).filter(Boolean);
+}
+
+function photoPlaceNames(photo, locale) {
+  return photoPlaces(photo).map((place) => text(place.name, locale)).join(", ");
+}
+
+function photoAccessibleText(photo, locale) {
+  return [text(photo.title, locale), photoPlaceNames(photo, locale), photo.year]
+    .filter(Boolean)
+    .join(locale === "zh" ? "，" : ", ");
+}
+
+function photoDescription(photo, locale) {
+  const title = text(photo.title, locale);
+  const placeNames = photoPlaceNames(photo, locale);
+  if (locale === "zh") {
+    if (placeNames && photo.year) return `${title}。${photo.year} 年拍摄于${placeNames}。`;
+    if (placeNames) return `${title}。拍摄于${placeNames}。`;
+    if (photo.year) return `${title}。拍摄于 ${photo.year} 年。`;
+  } else {
+    if (placeNames && photo.year) return `${title}, photographed in ${placeNames} in ${photo.year}.`;
+    if (placeNames) return `${title}, photographed in ${placeNames}.`;
+    if (photo.year) return `${title}, photographed in ${photo.year}.`;
+  }
+  return text(photo.description, locale) || title;
+}
+
+function imageDimensions(image) {
+  if (!image) return null;
+  const photo = content.photos.find((entry) => entry.source === image);
+  if (photo?.width && photo?.height) return { width: photo.width, height: photo.height };
+  const story = content.stories.find((entry) => entry.coverPhoto === image);
+  if (story?.width && story?.height) return { width: story.width, height: story.height };
+  return null;
 }
 
 function localePrefix(locale) {
@@ -135,6 +176,7 @@ function headMarkup({ locale, type, slug, title, description, image, imageAlt, o
   const zhPath = route("zh", type, slug);
   const enPath = route("en", type, slug);
   const imageUrl = image ? absolute(image) : absolute("/assets/home/home-landscape.jpg");
+  const dimensions = imageDimensions(image);
   const jsonScripts = jsonLd.map((entry) => {
     const serialized = JSON.stringify(entry).replaceAll("</script", "<\\/script");
     return `    <script type="application/ld+json">${serialized}</script>`;
@@ -158,6 +200,8 @@ function headMarkup({ locale, type, slug, title, description, image, imageAlt, o
     <meta property="og:url" content="${absolute(canonicalPath)}">
     <meta property="og:image" content="${imageUrl}">
     <meta property="og:image:alt" content="${esc(imageAlt || "Yinyu Zhu Photography")}">
+${dimensions ? `    <meta property="og:image:width" content="${dimensions.width}">
+    <meta property="og:image:height" content="${dimensions.height}">` : ""}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${esc(title)}">
     <meta name="twitter:description" content="${esc(description)}">
@@ -191,7 +235,7 @@ function headerMarkup(locale, currentType, equivalentHref) {
       <a class="brand-lockup" href="${prefix || "/"}" aria-label="Yinyu Zhu Photography home">
         <picture class="brand-mark">
           <source srcset="/assets/logo-yinyu-zhu-signature-transparent-520.webp" type="image/webp">
-          <img class="brand-logo" src="/assets/logo-yinyu-zhu-signature-transparent.png" width="1672" height="941" alt="Yinyu Zhu Photography">
+          <img class="brand-logo" src="/assets/logo-yinyu-zhu-signature-transparent-520.png" width="520" height="292" alt="Yinyu Zhu Photography">
         </picture>
       </a>
       <nav class="main-nav" aria-label="${locale === "zh" ? "主导航" : "Main navigation"}">
@@ -237,7 +281,7 @@ function photoHref(locale, photo) {
 }
 
 function pictureMarkup(photo, locale, { sizes = "(max-width: 640px) 70vw, 33vw", eager = false, decorative = false, className = "" } = {}) {
-  const alt = decorative ? "" : text(photo.alt, locale);
+  const alt = decorative ? "" : photoAccessibleText(photo, locale);
   const loading = eager ? "eager" : "lazy";
   const priority = eager ? ' fetchpriority="high"' : ' fetchpriority="low"';
   const width = photo.width || 1000;
@@ -267,9 +311,14 @@ function storyPictureMarkup(story, locale, { eager = false, sizes = "(max-width:
 }
 
 function photoTile(photo, locale, index = 1, className = "", group = "archive", sizes) {
-  const places = photo.places.map((id) => placeById.get(id)).filter(Boolean);
+  const places = photoPlaces(photo);
   const meta = [places.map((place) => text(place.name, locale)).join(", "), photo.year].filter(Boolean).join(" · ");
-  return `<a class="photo-tile is-visible ${className}" href="${photoHref(locale, photo)}" data-lightbox-item data-lightbox-group="${esc(group)}" data-photo-id="${photo.id}" data-full-src="${photo.source}" data-title="${esc(text(photo.title, locale))}" data-caption="${esc(text(photo.description, locale))}" data-meta="${esc(meta)}">
+  const variantWidths = availableVariantWidths(photo);
+  const lightboxWidth = variantWidths.at(-1);
+  const optimizedAttributes = skipImageBuild ? "" : ` data-lightbox-avif-src="${variantUrl(photo, lightboxWidth, "avif")}" data-lightbox-webp-src="${variantUrl(photo, lightboxWidth, "webp")}"`;
+  const accessibleText = photoAccessibleText(photo, locale);
+  const linkLabel = locale === "zh" ? `查看${accessibleText}` : `View ${accessibleText}`;
+  return `<a class="photo-tile is-visible ${className}" href="${photoHref(locale, photo)}" aria-label="${esc(linkLabel)}" data-lightbox-item data-lightbox-group="${esc(group)}" data-photo-id="${photo.id}" data-full-src="${photo.source}"${optimizedAttributes} data-title="${esc(text(photo.title, locale))}" data-alt="${esc(accessibleText)}" data-caption="${esc(photoDescription(photo, locale))}" data-meta="${esc(meta)}">
           <figure>${pictureMarkup(photo, locale, { eager: index === 0, ...(sizes ? { sizes } : {}) })}</figure>
         </a>`;
 }
@@ -280,7 +329,7 @@ function lightboxMarkup(locale) {
     <dialog class="lightbox archive-lightbox" id="lightbox" aria-labelledby="lightboxTitle" aria-describedby="lightboxMeta">
       <button class="lightbox-close" type="button" data-lightbox-close aria-label="${l.close}">×</button>
       <button class="lightbox-control lightbox-prev" type="button" data-lightbox-prev aria-label="${l.previous}">‹</button>
-      <div class="lightbox-media"><img data-lightbox-image decoding="async" alt=""></div>
+      <div class="lightbox-media"><picture data-lightbox-picture><source type="image/avif" data-lightbox-avif><source type="image/webp" data-lightbox-webp><img data-lightbox-image decoding="async" alt=""></picture></div>
       <button class="lightbox-control lightbox-next" type="button" data-lightbox-next aria-label="${l.next}">›</button>
       <div class="lightbox-info"><h2 id="lightboxTitle" data-lightbox-title></h2><p id="lightboxMeta" data-lightbox-meta></p><p data-lightbox-caption></p></div>
     </dialog>`;
@@ -303,7 +352,7 @@ function homePage(locale) {
   const home = site.home[locale];
   const homePhotoIds = ["landscape-15", "city-03", "city-09", "street-26", "abstract-05", "abstract-12", "street-19", "city-17", "landscape-02"];
   const selected = homePhotoIds.map((id) => photoById.get(id)).filter(Boolean);
-  const frames = selected.map((photo, index) => `<a class="home-frame home-frame-${["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"][index]}" href="${photoHref(locale, photo)}" aria-label="${esc(text(photo.title, locale))}">${pictureMarkup(photo, locale, { sizes: index % 3 === 0 ? "(max-width: 620px) 70vw, 55vw" : "(max-width: 620px) 45vw, 30vw", eager: index === 0, decorative: true })}</a>`).join("\n        ");
+  const frames = selected.map((photo, index) => `<a class="home-frame home-frame-${["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"][index]}" href="${photoHref(locale, photo)}" aria-label="${esc(photoAccessibleText(photo, locale))}">${pictureMarkup(photo, locale, { sizes: index % 3 === 0 ? "(max-width: 620px) 70vw, 55vw" : "(max-width: 620px) 45vw, 30vw", eager: index === 0, decorative: true })}</a>`).join("\n        ");
   const description = home.intro;
   return pageShell({
     locale,
@@ -311,7 +360,7 @@ function homePage(locale) {
     title: locale === "zh" ? "Yinyu Zhu Photography｜朱垠宇摄影" : "Yinyu Zhu Photography Archive",
     description,
     image: selected[0]?.source,
-    imageAlt: text(selected[0]?.alt, locale),
+    imageAlt: selected[0] ? photoAccessibleText(selected[0], locale) : "",
     jsonLd: [personJsonLd(), {
       "@context": "https://schema.org",
       "@type": "WebSite",
@@ -327,7 +376,7 @@ function homePage(locale) {
       <section class="home-statement" aria-labelledby="homeStatementTitle">
         <p class="eyebrow">${home.eyebrow}</p>
         <h2 id="homeStatementTitle">${home.title}</h2>
-        <div class="home-statement-copy"><p>${home.intro}</p><a class="home-text-link" href="${route(locale, "work")}"><span>${l.viewAll}</span><span aria-hidden="true">↗</span></a></div>
+        <div class="home-statement-copy"><p>${home.intro}</p><a class="home-text-link" href="${route(locale, "work", "archive")}"><span>${l.viewAll}</span><span aria-hidden="true">↗</span></a></div>
       </section>
     </main>`
   });
@@ -343,7 +392,7 @@ function workPage(locale) {
     title: locale === "zh" ? "作品 | Yinyu Zhu Photography" : "Works | Yinyu Zhu Photography",
     description: intro,
     image: selected[0]?.source,
-    imageAlt: text(selected[0]?.alt, locale),
+    imageAlt: selected[0] ? photoAccessibleText(selected[0], locale) : "",
     scripts: ["/assets/archive-interactions.js?v=archive-v2"],
     main: `    <main class="content-page work-page works-page" id="main-content" tabindex="-1">
       <section class="works-heading" aria-labelledby="worksTitle"><h1 class="section-page-title" id="worksTitle">${l.work}</h1><nav class="works-tabs" aria-label="${l.work}"><a class="is-active" href="${route(locale, "work")}" aria-current="page">${l.selected}</a><a href="${route(locale, "series")}">${l.series}</a><a href="${route(locale, "work", "archive")}">${l.index}</a></nav><p class="works-intro">${intro}</p></section>
@@ -360,10 +409,10 @@ function workIndexPage(locale) {
     locale,
     type: "work",
     slug: "archive",
-    title: locale === "zh" ? "作品索引 | Yinyu Zhu Photography" : "Work Index | Yinyu Zhu Photography",
+    title: locale === "zh" ? "全部作品 | Yinyu Zhu Photography" : "All Work | Yinyu Zhu Photography",
     description: intro,
     image: content.photos[0]?.source,
-    imageAlt: text(content.photos[0]?.alt, locale),
+    imageAlt: content.photos[0] ? photoAccessibleText(content.photos[0], locale) : "",
     scripts: ["/assets/archive-interactions.js?v=archive-v2"],
     main: `    <main class="content-page work-page works-page" id="main-content" tabindex="-1">
       <section class="works-heading" aria-labelledby="archiveIndexTitle"><h1 class="section-page-title" id="archiveIndexTitle">${l.index}</h1><nav class="works-tabs" aria-label="${l.work}"><a href="${route(locale, "work")}">${l.selected}</a><a href="${route(locale, "series")}">${l.series}</a><a class="is-active" href="${route(locale, "work", "archive")}" aria-current="page">${l.index}</a></nav><p class="works-intro">${intro}</p></section>
@@ -400,7 +449,7 @@ function seriesDetailPage(locale, entry) {
     title: `${text(entry.title, locale)} | Yinyu Zhu Photography`,
     description: text(entry.description, locale),
     image: cover?.source,
-    imageAlt: text(cover?.alt, locale),
+    imageAlt: cover ? photoAccessibleText(cover, locale) : "",
     scripts: ["/assets/archive-interactions.js?v=archive-v2"],
     main: `    <main class="content-page work-page works-page" id="main-content" tabindex="-1"><section class="works-heading"><p class="eyebrow"><a href="${route(locale, "series")}">${l.allSeries}</a></p><h1 class="section-page-title">${esc(text(entry.title, locale))}</h1><p class="works-intro">${esc(text(entry.description, locale))}</p></section><section class="work-gallery"><div class="photo-wall">${photos.map((photo, index) => photoTile(photo, locale, index, "", `series-${entry.id}`, "(max-width: 620px) 44vw, (max-width: 900px) 50vw, 33vw")).join("\n")}</div></section></main>${lightboxMarkup(locale)}`
   });
@@ -416,9 +465,11 @@ function placesIndexPage(locale) {
     const placeName = text(place.name, locale);
     const placeCountry = text(place.country, locale);
     const markerLabel = locale === "zh" ? `查看${placeName}的摄影作品` : `View photographs from ${placeName}`;
-    return `<a class="archive-map-marker" href="${route(locale, "places", place.slug)}" style="--marker-x:${left.toFixed(3)}%;--marker-y:${top.toFixed(3)}%" aria-label="${esc(markerLabel)}" title="${esc(placeName)} · ${esc(placeCountry)}"><span aria-hidden="true"></span></a>`;
+    return `<a class="archive-map-marker" href="${route(locale, "places", place.slug)}" style="--marker-x:${left.toFixed(3)}%;--marker-y:${top.toFixed(3)}%" aria-label="${esc(markerLabel)}" title="${esc(placeName)} · ${esc(placeCountry)}" data-place-label="${esc(placeName)}" data-place-country="${esc(placeCountry)}"><span aria-hidden="true"></span></a>`;
   }).join("\n");
-  const list = places.map((place) => `<li><a href="${route(locale, "places", place.slug)}"><span>${esc(text(place.name, locale))}</span><small>${esc(text(place.country, locale))}</small></a></li>`).join("\n");
+  const mapLabel = locale === "zh"
+    ? "世界摄影地图。将鼠标移至地图并滚动滚轮缩放，也可以使用加号、减号或零键。"
+    : "World photography map. Use the mouse wheel, plus, minus, or zero to zoom.";
   return pageShell({
     locale,
     type: "places",
@@ -426,7 +477,7 @@ function placesIndexPage(locale) {
     description: locale === "zh" ? `朱垠宇摄影档案中的 ${places.length} 个拍摄地点。` : `${places.length} photographed places in the Yinyu Zhu Photography archive.`,
     image: firstCover?.source,
     scripts: ["/assets/archive-map.js?v=archive-v2"],
-    main: `    <main id="main-content" tabindex="-1"><section class="atlas-hero archive-atlas" aria-labelledby="placesTitle"><h1 class="sr-only" id="placesTitle">${l.photographedPlaces}</h1><div class="map-stage"><canvas id="worldMapCanvas" class="world-map-canvas" aria-hidden="true"></canvas><div class="archive-marker-layer">${markers}</div></div><div class="atlas-meta"><strong>${places.length}</strong><span>${l.photographedPlaces}</span></div></section><section class="places-directory" aria-labelledby="placesDirectoryTitle"><div class="gallery-section-header"><h2 id="placesDirectoryTitle">${l.photographedPlaces}</h2><p>${places.length}</p></div><ul>${list}</ul></section></main>`
+    main: `    <main id="main-content" tabindex="-1"><section class="atlas-hero archive-atlas" aria-labelledby="placesTitle"><h1 class="sr-only" id="placesTitle">${l.photographedPlaces}</h1><div class="map-stage" tabindex="0" aria-label="${esc(mapLabel)}"><canvas id="worldMapCanvas" class="world-map-canvas" aria-hidden="true" data-world-dots-src="/assets/world-dots.json?v=${worldDotsVersion}"></canvas><div class="archive-marker-layer">${markers}</div></div><div class="atlas-meta"><strong>${places.length}</strong><span>${l.photographedPlaces}</span></div></section></main>`
   });
 }
 
@@ -443,7 +494,7 @@ function placeDetailPage(locale, place) {
     title: `${titleText}${locale === "zh" ? "摄影" : " Photography"} | Yinyu Zhu Photography`,
     description,
     image: cover?.source,
-    imageAlt: text(cover?.alt, locale),
+    imageAlt: cover ? photoAccessibleText(cover, locale) : "",
     scripts: ["/assets/archive-interactions.js?v=archive-v2"],
     main: `    <main class="content-page work-page works-page" id="main-content" tabindex="-1"><section class="works-heading"><p class="eyebrow"><a href="${route(locale, "places")}">${l.allPlaces}</a></p><h1 class="section-page-title">${esc(titleText)}</h1><p class="works-intro">${esc(text(place.country, locale))} · ${photos.length} ${l.photos}</p></section><section class="work-gallery"><div class="photo-wall">${photos.map((photo, index) => photoTile(photo, locale, index, "", `place-${place.id}`, "(max-width: 620px) 44vw, (max-width: 900px) 50vw, 33vw")).join("\n")}</div></section></main>${lightboxMarkup(locale)}`
   });
@@ -451,7 +502,10 @@ function placeDetailPage(locale, place) {
 
 function storiesIndexPage(locale) {
   const l = labels[locale];
-  const entries = content.stories.map((story, index) => `<article class="story-index-entry"><a class="story-index-image" href="${route(locale, "stories", story.slug)}">${storyPictureMarkup(story, locale, { eager: index === 0, sizes: "(max-width: 640px) calc(100vw - 36px), 38vw" })}</a><div><p class="eyebrow">${l.story} ${story.archiveNumber}</p><p>${esc(story.excerpt[locale])}…</p><a class="home-text-link" href="${route(locale, "stories", story.slug)}">${locale === "zh" ? "阅读故事" : "Read story"}<span aria-hidden="true">↗</span></a></div></article>`).join("\n");
+  const entries = content.stories.map((story, index) => {
+    const storyTitle = text(story.title, locale);
+    return `<article class="story-index-entry"><a class="story-index-image" href="${route(locale, "stories", story.slug)}" aria-label="${esc(storyTitle)}">${storyPictureMarkup(story, locale, { eager: index === 0, sizes: "(max-width: 640px) calc(100vw - 36px), 38vw" })}</a><div><p class="eyebrow">${l.story} ${story.archiveNumber}</p><h2><a href="${route(locale, "stories", story.slug)}">${esc(storyTitle)}</a></h2><p>${esc(story.excerpt[locale])}…</p><a class="home-text-link" href="${route(locale, "stories", story.slug)}">${locale === "zh" ? "阅读故事" : "Read story"}<span aria-hidden="true">↗</span></a></div></article>`;
+  }).join("\n");
   const first = content.stories[0];
   return pageShell({
     locale,
@@ -467,12 +521,18 @@ function storiesIndexPage(locale) {
 function storyDetailPage(locale, story) {
   const l = labels[locale];
   const label = `${l.story} ${story.archiveNumber}`;
+  const titleText = text(story.title, locale);
   const description = story.excerpt[locale];
+  const index = content.stories.findIndex((entry) => entry.id === story.id);
+  const previous = content.stories[index - 1];
+  const next = content.stories[index + 1];
+  const storyLink = (entry, direction) => entry ? `<a rel="${direction}" href="${route(locale, "stories", entry.slug)}"><span>${direction === "prev" ? (locale === "zh" ? "上一篇" : "Previous story") : (locale === "zh" ? "下一篇" : "Next story")}</span><strong>${esc(text(entry.title, locale))}</strong></a>` : "";
+  const pagination = `<nav class="story-pagination" aria-label="${locale === "zh" ? "继续阅读" : "Continue reading"}"><a class="story-pagination-index" href="${route(locale, "stories")}">${l.allStories}</a>${storyLink(previous, "prev")}${storyLink(next, "next")}</nav>`;
   return pageShell({
     locale,
     type: "stories",
     slug: story.slug,
-    title: `${label} | Yinyu Zhu Photography`,
+    title: `${titleText} | Yinyu Zhu Photography`,
     description,
     image: story.coverPhoto,
     imageAlt: text(story.alt, locale),
@@ -481,13 +541,13 @@ function storyDetailPage(locale, story) {
       "@context": "https://schema.org",
       "@type": "CreativeWork",
       "@id": absolute(route(locale, "stories", story.slug)),
-      name: label,
+      name: titleText,
       description,
       image: absolute(story.coverPhoto),
       creator: { "@id": `${site.origin}/#yinyu-zhu` },
       inLanguage: locale === "zh" ? "zh-CN" : "en"
     }],
-    main: `    <main class="content-page story-page story-detail-page" id="main-content" tabindex="-1"><article class="story-article"><header class="story-detail-header"><p class="eyebrow"><a href="${route(locale, "stories")}">${l.allStories}</a></p><h1 class="section-page-title">${label}</h1></header><figure class="story-photo story-photo-feature">${storyPictureMarkup(story, locale, { eager: true })}<figcaption>${esc(text(story.alt, locale))}</figcaption></figure><div class="story-caption"><p>${esc(story.body[locale])}</p></div></article></main>`
+    main: `    <main class="content-page story-page story-detail-page" id="main-content" tabindex="-1"><article class="story-article"><header class="story-detail-header"><p class="eyebrow"><a href="${route(locale, "stories")}">${l.allStories}</a> · ${label}</p><h1 class="section-page-title">${esc(titleText)}</h1></header><figure class="story-photo story-photo-feature">${storyPictureMarkup(story, locale, { eager: true })}<figcaption>${esc(text(story.alt, locale))}</figcaption></figure><div class="story-caption"><p>${esc(story.body[locale])}</p></div></article>${pagination}</main>`
   });
 }
 
@@ -523,7 +583,7 @@ function rightsPage(locale) {
 
 function photoDetailPage(locale, photo, index) {
   const l = labels[locale];
-  const places = photo.places.map((id) => placeById.get(id)).filter(Boolean);
+  const places = photoPlaces(photo);
   const relatedSeries = photo.series.map((id) => seriesById.get(id)).filter(Boolean);
   const previous = content.photos[(index - 1 + content.photos.length) % content.photos.length];
   const next = content.photos[(index + 1) % content.photos.length];
@@ -533,16 +593,18 @@ function photoDetailPage(locale, photo, index) {
     ...relatedSeries.map((entry) => `<a href="${route(locale, "series", entry.slug)}">${esc(text(entry.title, locale))}</a>`)
   ].filter(Boolean).join("<span aria-hidden=\"true\"> · </span>");
   const titleText = text(photo.title, locale);
-  const description = text(photo.description, locale) || titleText;
+  const placeNames = places.map((place) => text(place.name, locale)).join(", ");
+  const semanticTitle = [titleText, placeNames, photo.year].filter(Boolean).join(" · ");
+  const description = photoDescription(photo, locale);
   const canonicalPath = route(locale, "work", photo.slug);
   return pageShell({
     locale,
     type: "work",
     slug: photo.slug,
-    title: `${titleText} | Yinyu Zhu Photography`,
+    title: `${semanticTitle} | Yinyu Zhu Photography`,
     description,
     image: photo.source,
-    imageAlt: text(photo.alt, locale),
+    imageAlt: photoAccessibleText(photo, locale),
     ogType: "article",
     jsonLd: [{
       "@context": "https://schema.org",
@@ -551,11 +613,13 @@ function photoDetailPage(locale, photo, index) {
       name: titleText,
       description,
       contentUrl: absolute(photo.source),
-      creator: { "@id": `${site.origin}/#yinyu-zhu` },
-      copyrightNotice: "© Yinyu Zhu",
+      creator: { "@type": "Person", "@id": `${site.origin}/#yinyu-zhu`, name: "Yinyu Zhu" },
+      copyrightNotice: "© Yinyu Zhu. All rights reserved.",
       creditText: "Yinyu Zhu Photography",
       license: absolute(route(locale, "rights")),
       acquireLicensePage: `${absolute(route(locale, "about"))}#contact`,
+      ...(photo.year ? { dateCreated: photo.year } : {}),
+      ...(places.length ? { contentLocation: places.map((place) => ({ "@type": "Place", name: text(place.name, locale) })) } : {}),
       inLanguage: locale === "zh" ? "zh-CN" : "en"
     }],
     main: `    <main class="photo-detail-page" id="main-content" tabindex="-1"><article class="photo-detail"><header><p class="eyebrow"><a href="${route(locale, "work")}">${l.work}</a></p><h1>${esc(titleText)}</h1><p class="photo-detail-meta">${metadata}</p></header><figure>${pictureMarkup(photo, locale, { eager: true, sizes: "(max-width: 760px) 70vw, 78vw" })}<figcaption>${esc(description)}</figcaption></figure><p class="photo-copyright">${photo.copyright}</p><nav class="photo-pagination" aria-label="${locale === "zh" ? "相邻作品" : "Adjacent works"}"><a rel="prev" href="${photoHref(locale, previous)}"><span>${l.previous}</span><strong>${esc(text(previous.title, locale))}</strong></a><a rel="next" href="${photoHref(locale, next)}"><span>${l.next}</span><strong>${esc(text(next.title, locale))}</strong></a></nav></article></main>`
@@ -564,7 +628,26 @@ function photoDetailPage(locale, photo, index) {
 
 function notFoundPage(locale = "zh") {
   const prefix = localePrefix(locale);
-  return `<!DOCTYPE html><html lang="${locale === "zh" ? "zh-CN" : "en"}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>404 | Yinyu Zhu Photography</title><link rel="stylesheet" href="/styles.css?v=archive-v2"></head><body><main class="not-found-page"><p class="eyebrow">404</p><h1>${locale === "zh" ? "页面不存在" : "Page not found"}</h1><p><a class="home-text-link" href="${prefix || "/"}">${locale === "zh" ? "返回首页" : "Return home"}<span aria-hidden="true">↗</span></a></p><p><a href="${prefix}/work">${labels[locale].work}</a></p></main></body></html>\n`;
+  const equivalentHref = locale === "zh" ? "/en/404" : "/404";
+  const message = locale === "zh"
+    ? "这个页面可能已经移动，或者链接并不存在。"
+    : "This page may have moved, or the link may not exist.";
+  return `<!DOCTYPE html>
+<html lang="${locale === "zh" ? "zh-CN" : "en"}" data-site-v2>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, follow">
+    <meta name="theme-color" content="#fafafa">
+    <title>${locale === "zh" ? "页面不存在" : "Page not found"} | Yinyu Zhu Photography</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="stylesheet" href="/styles.css?v=archive-v2">
+  </head>
+  <body>${headerMarkup(locale, null, equivalentHref)}
+    <main class="not-found-page" id="main-content" tabindex="-1"><p class="eyebrow">404</p><h1>${locale === "zh" ? "页面不存在" : "Page not found"}</h1><p>${message}</p><p><a class="home-text-link" href="${prefix || "/"}">${locale === "zh" ? "返回首页" : "Return home"}<span aria-hidden="true">↗</span></a></p></main>
+${footerMarkup(locale)}
+  </body>
+</html>\n`;
 }
 
 for (const locale of ["zh", "en"]) {
@@ -583,6 +666,8 @@ for (const locale of ["zh", "en"]) {
 }
 
 await fs.writeFile(path.join(outputRoot, "404.html"), notFoundPage("zh"));
+await fs.mkdir(path.join(outputRoot, "en"), { recursive: true });
+await fs.writeFile(path.join(outputRoot, "en/404.html"), notFoundPage("en"));
 
 const allRoutes = [];
 for (const locale of ["zh", "en"]) {
@@ -594,11 +679,11 @@ for (const locale of ["zh", "en"]) {
   for (const story of content.stories) allRoutes.push({ path: route(locale, "stories", story.slug), image: story.coverPhoto });
 }
 
-const sitemapRows = allRoutes.map((entry) => `  <url>\n    <loc>${esc(absolute(entry.path))}</loc>\n    <lastmod>${site.buildDate}</lastmod>${entry.image ? `\n    <image:image><image:loc>${esc(absolute(entry.image))}</image:loc></image:image>` : ""}\n  </url>`).join("\n");
+const sitemapRows = allRoutes.map((entry) => `  <url>\n    <loc>${esc(absolute(entry.path))}</loc>${entry.image ? `\n    <image:image><image:loc>${esc(absolute(entry.image))}</image:loc></image:image>` : ""}\n  </url>`).join("\n");
 await fs.writeFile(path.join(outputRoot, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${sitemapRows}\n</urlset>\n`);
 await fs.writeFile(path.join(outputRoot, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${site.origin}/sitemap.xml\n`);
-await fs.writeFile(path.join(outputRoot, "_redirects"), `/story /stories 301\n/en/story /en/stories 301\n/story.html /stories 301\n/work.html /work 301\n/places.html /places 301\n/about.html /about 301\n`);
-await fs.writeFile(path.join(outputRoot, "_headers"), `/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n\n/assets/generated/*\n  Cache-Control: public, max-age=31536000, immutable\n`);
+await fs.writeFile(path.join(outputRoot, "_redirects"), `/story /stories 301\n/en/story /en/stories 301\n/story.html /stories 301\n/work.html /work 301\n/places.html /places 301\n/about.html /about 301\n/copyright /rights 301\n/copyright.html /rights 301\n/en/copyright /en/rights 301\n`);
+await fs.writeFile(path.join(outputRoot, "_headers"), `/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n  Strict-Transport-Security: max-age=31536000\n  Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'\n  X-Frame-Options: DENY\n\n/assets/generated/*\n  Cache-Control: public, max-age=31536000, immutable\n\n/assets/world-dots.json\n  Cache-Control: public, max-age=31536000, immutable\n`);
 
 const manifest = {
   generatedAt: new Date().toISOString(),

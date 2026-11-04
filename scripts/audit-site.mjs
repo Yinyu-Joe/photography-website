@@ -56,6 +56,9 @@ for (const [label, entities] of [["photo", content.photos], ["place", content.pl
     for (const duplicate of duplicateValues(entities.map((entry) => entry[field]))) fail("content", `duplicate ${label} ${field}: ${duplicate}`);
   }
 }
+for (const story of content.stories) {
+  if (!story.title?.zh || !story.title?.en) fail("content", `story ${story.id} is missing a human semantic title`);
+}
 
 const photoIds = new Set(content.photos.map((photo) => photo.id));
 const placeIds = new Set(content.places.map((place) => place.id));
@@ -90,7 +93,25 @@ function routeFile(href) {
 for (const file of htmlFiles) {
   const relative = path.relative(outputRoot, file);
   const html = await fs.readFile(file, "utf8");
-  const is404 = relative === "404.html";
+  const is404 = path.basename(relative) === "404.html";
+  const prefix = relative === "en.html" || relative.startsWith(`en${path.sep}`) ? "/en" : "";
+  if (relative === "index.html" || relative === "en.html") {
+    const allWorkLink = html.match(/<a class="home-text-link" href="([^"]+)"><span>(?:查看全部作品|View all work)<\/span>/)?.[1];
+    if (allWorkLink !== `${prefix}/work/archive`) fail("navigation", `${relative}: all-work entry must lead to the complete archive`);
+  }
+  if (/stories[/\\][^/\\]+\.html$/.test(relative)) {
+    const slug = path.basename(relative, ".html");
+    const index = content.stories.findIndex((story) => story.slug === slug);
+    const navigation = html.match(/<nav class="story-pagination"[^>]*>([\s\S]*?)<\/nav>/)?.[1] || "";
+    if (!navigation.includes(`href="${prefix}/stories"`)) fail("navigation", `${relative}: missing end-of-story return to list`);
+    for (const [relation, offset] of [["prev", -1], ["next", 1]]) {
+      const expected = content.stories[index + offset];
+      const target = navigation.match(new RegExp(`<a rel="${relation}" href="([^"]+)"`))?.[1];
+      if (target !== (expected ? `${prefix}/stories/${expected.slug}` : undefined)) {
+        fail("navigation", `${relative}: incorrect ${relation} story link`);
+      }
+    }
+  }
   if (placeholderPattern.test(html)) fail("placeholder", relative);
   if (/id="placeCount"[^>]*>0</i.test(html) || />0<\/[^>]+>\s*<[^>]+>\s*(地点|photo places)/i.test(html)) fail("places-count", relative);
 
@@ -124,6 +145,22 @@ for (const file of htmlFiles) {
     if (markerLinks.length !== content.places.length) {
       fail("interaction", `${relative}: expected ${content.places.length} interactive map markers, found ${markerLinks.length}`);
     }
+    if (/\bclass="[^"]*\bplaces-directory\b/i.test(html)) {
+      fail("layout", `${relative}: photographed places directory must not appear below the map`);
+    }
+    if (!/<div\b[^>]*\bclass="map-stage"[^>]*\btabindex="0"[^>]*\baria-label="[^"]+"/i.test(html)) {
+      fail("interaction", `${relative}: map must expose accessible zoom controls`);
+    }
+  }
+
+  if (is404) {
+    const expectedLanguage = relative.startsWith(`en${path.sep}`) ? "en" : "zh-CN";
+    if (!new RegExp(`<html lang="${expectedLanguage}"`, "i").test(html)) fail("localization", `${relative}: incorrect 404 language`);
+    if (!/<header class="site-header">/i.test(html) || !/<nav class="main-nav"/i.test(html)) fail("localization", `${relative}: 404 missing site navigation`);
+  }
+
+  if (/stories[/\\][^/\\]+\.html$/.test(relative)) {
+    if (/<h1[^>]*>\s*(?:故事|Story)\s+\d+/i.test(html)) fail("semantics", `${relative}: archive number is still the primary heading`);
   }
 
   if (!is404) {
@@ -176,12 +213,28 @@ for (const file of htmlFiles) {
 
 const redirects = await fs.readFile(path.join(outputRoot, "_redirects"), "utf8");
 if (!/^\/story \/stories 301$/m.test(redirects)) fail("redirect", "missing /story permanent redirect");
+if (!/^\/copyright \/rights 301$/m.test(redirects)) fail("redirect", "missing /copyright permanent redirect");
+if (!/^\/en\/copyright \/en\/rights 301$/m.test(redirects)) fail("redirect", "missing English /copyright permanent redirect");
+
+for (const sourceFile of ["styles.css", "script.js"]) {
+  const source = await fs.readFile(path.join(projectRoot, sourceFile), "utf8");
+  if (/has-submenu|nav-submenu|nav-link|nav-item/.test(source)) fail("css", `${sourceFile}: obsolete submenu implementation remains`);
+}
 
 const sitemap = await fs.readFile(path.join(outputRoot, "sitemap.xml"), "utf8");
 const sitemapUrls = [...sitemap.matchAll(/<loc>(https:\/\/yinyuzhu\.com[^<]+)<\/loc>/g)].map((match) => match[1]);
 const manifest = JSON.parse(await fs.readFile(path.join(outputRoot, "build-manifest.json"), "utf8"));
 if (path.isAbsolute(manifest.outputRoot)) fail("manifest", "build manifest must not expose an absolute local output path");
 if (sitemapUrls.length !== manifest.routes) fail("sitemap", `expected ${manifest.routes} URLs, found ${sitemapUrls.length}`);
+if (/<lastmod>/i.test(sitemap)) fail("sitemap", "unreliable global lastmod must be omitted");
+if (!await exists(path.join(outputRoot, "en/404.html"))) fail("localization", "missing English 404 page");
+if (!manifest.imageBuild.skipped) {
+  for (const relative of ["work.html", path.join("en", "work.html")]) {
+    const html = await fs.readFile(path.join(outputRoot, relative), "utf8");
+    if (!/data-lightbox-avif-src="\/assets\/generated\/photos\//i.test(html)) fail("image", `${relative}: lightbox missing AVIF source`);
+    if (!/data-lightbox-webp-src="\/assets\/generated\/photos\//i.test(html)) fail("image", `${relative}: lightbox missing WebP source`);
+  }
+}
 for (const url of sitemapUrls) {
   const href = new URL(url).pathname;
   if (!await exists(routeFile(href))) fail("sitemap", `dead route ${href}`);

@@ -5,6 +5,8 @@ import { promisify } from "node:util";
 
 const run = promisify(execFile);
 const widths = [480, 768, 960, 1280, 1600, 2048];
+const creator = "Yinyu Zhu";
+const rightsNotice = "© Yinyu Zhu. All rights reserved. https://yinyuzhu.com/rights";
 
 async function exists(file) {
   try {
@@ -25,9 +27,23 @@ export function availableVariantWidths(photo) {
 
 async function createVariant(source, destination, width, format, temporaryDir) {
   const resized = path.join(temporaryDir, `${path.basename(destination)}.jpg`);
-  await run("sips", ["--resampleWidth", String(width), source, "--out", resized], { maxBuffer: 1024 * 1024 });
+  await run("ffmpeg", [
+    "-y",
+    "-hide_banner",
+    "-loglevel", "error",
+    "-i", source,
+    "-vf", `scale=${width}:-2`,
+    "-map_metadata", "-1",
+    "-q:v", "2",
+    resized
+  ], { maxBuffer: 1024 * 1024 });
+  await run("sips", [
+    "-s", "artist", creator,
+    "-s", "copyright", rightsNotice,
+    resized
+  ], { maxBuffer: 1024 * 1024 });
   if (format === "webp") {
-    await run("cwebp", ["-quiet", "-q", "84", "-metadata", "none", resized, "-o", destination], { maxBuffer: 1024 * 1024 });
+    await run("cwebp", ["-quiet", "-q", "84", "-metadata", "all", resized, "-o", destination], { maxBuffer: 1024 * 1024 });
   } else {
     await run("sips", ["-s", "format", "avif", "-s", "formatOptions", "64", resized, "--out", destination], { maxBuffer: 1024 * 1024 });
   }

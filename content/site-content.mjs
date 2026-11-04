@@ -1,6 +1,5 @@
 export const site = {
   origin: "https://yinyuzhu.com",
-  buildDate: "2026-08-24",
   author: {
     name: { zh: "朱垠宇", en: "Yinyu Zhu" },
     displayName: "Yinyu Zhu",
@@ -59,7 +58,10 @@ export const stories = [
   {
     id: "story-20260130-7c200963",
     slug: "20260130-7c200963",
-    title: { zh: null, en: null },
+    title: {
+      zh: "夜空与喷发火山的红色熔岩",
+      en: "Red lava erupting beneath a star-filled night sky"
+    },
     location: { zh: null, en: null },
     date: null,
     coverPhoto: "/assets/story/20260130-7C200963.jpg",
@@ -74,7 +76,10 @@ export const stories = [
   {
     id: "story-20260129-7c200452",
     slug: "20260129-7c200452",
-    title: { zh: null, en: null },
+    title: {
+      zh: "阳光下山坡墓地里的彩色十字架",
+      en: "Colorful crosses in a hillside cemetery under sunlight"
+    },
     location: { zh: null, en: null },
     date: null,
     coverPhoto: "/assets/story/20260129-7C200452.jpg",
@@ -89,7 +94,10 @@ export const stories = [
   {
     id: "story-20260210-7c200360",
     slug: "20260210-7c200360",
-    title: { zh: null, en: null },
+    title: {
+      zh: "城市广场中的大型锈蚀雕塑与行人",
+      en: "A large rusted sculpture and people in a city square"
+    },
     location: { zh: null, en: null },
     date: null,
     coverPhoto: "/assets/story/20260210-7C200360.jpg",
@@ -104,7 +112,10 @@ export const stories = [
   {
     id: "story-20250525-7c20284",
     slug: "20250525-7c20284",
-    title: { zh: null, en: null },
+    title: {
+      zh: "石墙前垃圾桶里的纸杯、瓶子和纸袋",
+      en: "A paper cup, bottle, and bag in a bin beside a stone wall"
+    },
     location: { zh: null, en: null },
     date: null,
     coverPhoto: "/assets/story/20250525-_7C20284.jpg",
@@ -119,7 +130,10 @@ export const stories = [
   {
     id: "story-20250806-7c20019",
     slug: "20250806-7c20019",
-    title: { zh: null, en: null },
+    title: {
+      zh: "黑白画面中破裂表面的裂痕与反光",
+      en: "Cracks and reflections across a fractured surface in black and white"
+    },
     location: { zh: null, en: null },
     date: null,
     coverPhoto: "/assets/story/20250806-_7C20019.jpg",

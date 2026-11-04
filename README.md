@@ -7,6 +7,7 @@
 ```bash
 npm run build
 npm run audit:site
+npm run audit:images
 ```
 
 `npm run build` 会：
@@ -16,8 +17,12 @@ npm run audit:site
 - 生成照片、地点、系列和故事 permalink；
 - 生成 canonical、hreflang、Open Graph、JSON-LD、robots 和 sitemap；
 - 在 `_site/assets/generated` 中创建 AVIF/WebP 网页衍生图。
+- 为公开衍生图移除相机、精确时间与编辑流程 metadata，并保留作者和版权链接；
+- 让 Lightbox 优先使用最大 2048px 的 AVIF/WebP，原 JPEG 只作 fallback。
 
 原始 JPEG 不会被覆盖或删除。只想快速检查 HTML 时可使用 `npm run build:fast`；该模式使用现有缩略图，不生成新的响应式图片。
+
+完整图片构建依赖本机已有的 `ffmpeg`、`sips` 与 `cwebp`。`npm run validate` 会执行完整构建、站点审计和五张跨类别图片的 metadata 抽查。
 
 ## 本地预览
 
@@ -37,8 +42,10 @@ npx wrangler pages dev _site --ip 127.0.0.1 --port 4174
 - `/stories/<story-slug>`
 - `/rights`
 - 对应的 `/en/...` 英文页面
+- 中文 `/404.html` 与英文 `/en/404.html`（Cloudflare Pages 会按目录使用最近的 404 页面）
 
 旧 `/story` 通过 `_redirects` 永久重定向至 `/stories`。
+旧 `/copyright` 永久重定向至 `/rights`。
 
 ## 旧版源文件
 

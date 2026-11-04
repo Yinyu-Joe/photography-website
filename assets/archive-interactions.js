@@ -4,6 +4,8 @@
   if (!dialog || !allTiles.length || typeof dialog.showModal !== "function") return;
 
   const image = dialog.querySelector("[data-lightbox-image]");
+  const avifSource = dialog.querySelector("[data-lightbox-avif]");
+  const webpSource = dialog.querySelector("[data-lightbox-webp]");
   const title = dialog.querySelector("[data-lightbox-title]");
   const caption = dialog.querySelector("[data-lightbox-caption]");
   const meta = dialog.querySelector("[data-lightbox-meta]");
@@ -17,16 +19,21 @@
 
   function preloadNext() {
     const nextTile = tiles[(activeIndex + 1) % tiles.length];
-    if (!nextTile?.dataset.fullSrc) return;
+    const preloadSource = nextTile?.dataset.lightboxWebpSrc || nextTile?.dataset.lightboxAvifSrc;
+    if (!preloadSource) return;
     const preload = new Image();
-    preload.src = nextTile.dataset.fullSrc;
+    preload.src = preloadSource;
   }
 
   function update(index, historyMode = "none") {
     activeIndex = (index + tiles.length) % tiles.length;
     const tile = tiles[activeIndex];
+    if (tile.dataset.lightboxAvifSrc) avifSource.srcset = tile.dataset.lightboxAvifSrc;
+    else avifSource.removeAttribute("srcset");
+    if (tile.dataset.lightboxWebpSrc) webpSource.srcset = tile.dataset.lightboxWebpSrc;
+    else webpSource.removeAttribute("srcset");
     image.src = tile.dataset.fullSrc;
-    image.alt = tile.dataset.title || "";
+    image.alt = tile.dataset.alt || tile.dataset.title || "";
     title.textContent = tile.dataset.title || "";
     caption.textContent = tile.dataset.caption || "";
     meta.textContent = tile.dataset.meta || "";
