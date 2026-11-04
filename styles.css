@@ -3486,3 +3486,33 @@ a {
     transition: none;
   }
 }
+
+/* Photo walls: let each photo fill its column. Browsers give <figure> 40px side margins by default. */
+.photo-tile figure {
+  margin: 0;
+}
+
+/* Phones: place and series pages show one photo per row; All work stays a two-column index. */
+@media (max-width: 620px) {
+  .stack-wall {
+    --photo-gap: 18px;
+    column-count: 1;
+  }
+}
+
+/* Phones: the header slides away while scrolling down and returns on scroll up (assets/site-header.js). */
+@media (max-width: 720px) {
+  .site-header {
+    transition: transform 320ms var(--ease-apple);
+  }
+
+  .site-header.is-hidden {
+    transform: translateY(calc(-100% - 16px));
+  }
+}
+
+@media (max-width: 720px) and (prefers-reduced-motion: reduce) {
+  .site-header {
+    transition: none;
+  }
+}

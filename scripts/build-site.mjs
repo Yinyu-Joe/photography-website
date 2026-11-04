@@ -271,7 +271,7 @@ function pageShell({ locale, type, slug = null, title, description, image, image
   <body${bodyClass ? ` class="${bodyClass}"` : ""}>${headerMarkup(locale, type, equivalentHref)}
 ${main}
 ${footerMarkup(locale)}
-${scripts.map((script) => `    <script src="${script}" defer></script>`).join("\n")}
+${[...scripts, "/assets/site-header.js?v=1"].map((script) => `    <script src="${script}" defer></script>`).join("\n")}
   </body>
 </html>\n`;
 }
@@ -396,7 +396,7 @@ function workPage(locale) {
     scripts: ["/assets/archive-interactions.js?v=archive-v2"],
     main: `    <main class="content-page work-page works-page" id="main-content" tabindex="-1">
       <section class="works-heading" aria-labelledby="worksTitle"><h1 class="section-page-title" id="worksTitle">${l.work}</h1><nav class="works-tabs" aria-label="${l.work}"><a class="is-active" href="${route(locale, "work")}" aria-current="page">${l.selected}</a><a href="${route(locale, "series")}">${l.series}</a><a href="${route(locale, "work", "archive")}">${l.index}</a></nav><p class="works-intro">${intro}</p></section>
-      <section class="work-gallery" aria-label="${locale === "zh" ? "精选摄影作品" : "Selected photography"}"><div class="photo-wall selected-wall">${selected.map((photo, index) => photoTile(photo, locale, index, "", "selected")).join("\n")}</div></section>
+      <section class="work-gallery" aria-label="${locale === "zh" ? "精选摄影作品" : "Selected photography"}"><div class="photo-wall selected-wall">${selected.map((photo, index) => photoTile(photo, locale, index, "", "selected", "(max-width: 620px) calc(100vw - 32px), (max-width: 900px) 50vw, 33vw")).join("\n")}</div></section>
     </main>${lightboxMarkup(locale)}`
   });
 }
@@ -451,7 +451,7 @@ function seriesDetailPage(locale, entry) {
     image: cover?.source,
     imageAlt: cover ? photoAccessibleText(cover, locale) : "",
     scripts: ["/assets/archive-interactions.js?v=archive-v2"],
-    main: `    <main class="content-page work-page works-page" id="main-content" tabindex="-1"><section class="works-heading"><p class="eyebrow"><a href="${route(locale, "series")}">${l.allSeries}</a></p><h1 class="section-page-title">${esc(text(entry.title, locale))}</h1><p class="works-intro">${esc(text(entry.description, locale))}</p></section><section class="work-gallery"><div class="photo-wall">${photos.map((photo, index) => photoTile(photo, locale, index, "", `series-${entry.id}`, "(max-width: 620px) 44vw, (max-width: 900px) 50vw, 33vw")).join("\n")}</div></section></main>${lightboxMarkup(locale)}`
+    main: `    <main class="content-page work-page works-page" id="main-content" tabindex="-1"><section class="works-heading"><p class="eyebrow"><a href="${route(locale, "series")}">${l.allSeries}</a></p><h1 class="section-page-title">${esc(text(entry.title, locale))}</h1><p class="works-intro">${esc(text(entry.description, locale))}</p></section><section class="work-gallery"><div class="photo-wall stack-wall">${photos.map((photo, index) => photoTile(photo, locale, index, "", `series-${entry.id}`, "(max-width: 620px) calc(100vw - 32px), (max-width: 900px) 50vw, 33vw")).join("\n")}</div></section></main>${lightboxMarkup(locale)}`
   });
 }
 
@@ -496,7 +496,7 @@ function placeDetailPage(locale, place) {
     image: cover?.source,
     imageAlt: cover ? photoAccessibleText(cover, locale) : "",
     scripts: ["/assets/archive-interactions.js?v=archive-v2"],
-    main: `    <main class="content-page work-page works-page" id="main-content" tabindex="-1"><section class="works-heading"><p class="eyebrow"><a href="${route(locale, "places")}">${l.allPlaces}</a></p><h1 class="section-page-title">${esc(titleText)}</h1><p class="works-intro">${esc(text(place.country, locale))} · ${photos.length} ${l.photos}</p></section><section class="work-gallery"><div class="photo-wall">${photos.map((photo, index) => photoTile(photo, locale, index, "", `place-${place.id}`, "(max-width: 620px) 44vw, (max-width: 900px) 50vw, 33vw")).join("\n")}</div></section></main>${lightboxMarkup(locale)}`
+    main: `    <main class="content-page work-page works-page" id="main-content" tabindex="-1"><section class="works-heading"><p class="eyebrow"><a href="${route(locale, "places")}">${l.allPlaces}</a></p><h1 class="section-page-title">${esc(titleText)}</h1><p class="works-intro">${esc(text(place.country, locale))} · ${photos.length} ${l.photos}</p></section><section class="work-gallery"><div class="photo-wall stack-wall">${photos.map((photo, index) => photoTile(photo, locale, index, "", `place-${place.id}`, "(max-width: 620px) calc(100vw - 32px), (max-width: 900px) 50vw, 33vw")).join("\n")}</div></section></main>${lightboxMarkup(locale)}`
   });
 }
 
