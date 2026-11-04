@@ -3516,3 +3516,8 @@ a {
     transition: none;
   }
 }
+
+/* Homepage: the photo statement now opens the page, so it needs no divider above it. */
+.home-main > .home-statement {
+  border-top: 0;
+}

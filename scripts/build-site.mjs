@@ -354,7 +354,7 @@ function homePage(locale) {
   const home = site.home[locale];
   const selected = content.homePhotoIds.map((id) => photoById.get(id)).filter(Boolean);
   if (selected.length !== 9) throw new Error(`homePhotoIds in assets/photos/portfolio-data.js must list 9 existing photos, found ${selected.length}`);
-  const frames = selected.map((photo, index) => `<a class="home-frame home-frame-${["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"][index]}" href="${photoHref(locale, photo)}" aria-label="${esc(photoAccessibleText(photo, locale))}">${pictureMarkup(photo, locale, { sizes: index % 3 === 0 ? "(max-width: 620px) 70vw, 55vw" : "(max-width: 620px) 45vw, 30vw", eager: index === 0, decorative: true })}</a>`).join("\n        ");
+  const frames = selected.map((photo, index) => `<a class="home-frame home-frame-${["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"][index]}" href="${photoHref(locale, photo)}" aria-label="${esc(photoAccessibleText(photo, locale))}">${pictureMarkup(photo, locale, { sizes: index % 3 === 0 ? "(max-width: 620px) 70vw, 55vw" : "(max-width: 620px) 45vw, 30vw", eager: false, decorative: true })}</a>`).join("\n        ");
   const description = home.intro;
   return pageShell({
     locale,
@@ -363,6 +363,7 @@ function homePage(locale) {
     description,
     image: selected[0]?.source,
     imageAlt: selected[0] ? photoAccessibleText(selected[0], locale) : "",
+    headExtra: `    <link rel="preload" as="image" href="/assets/home/home-statement-volcano-1920.webp" imagesrcset="/assets/home/home-statement-volcano-1920.webp 1x, /assets/home/home-statement-volcano-3840.webp 2x" fetchpriority="high">\n`,
     jsonLd: [personJsonLd(), {
       "@context": "https://schema.org",
       "@type": "WebSite",
@@ -374,12 +375,12 @@ function homePage(locale) {
     }],
     main: `    <main class="home-main" id="main-content" tabindex="-1">
       <h1 class="sr-only">Yinyu Zhu Photography｜朱垠宇摄影</h1>
-      <section class="home-collage" aria-label="${locale === "zh" ? "精选摄影作品" : "Selected photography"}">${frames}</section>
       <section class="home-statement" aria-labelledby="homeStatementTitle">
         <p class="eyebrow">${home.eyebrow}</p>
         <h2 id="homeStatementTitle">${home.title}</h2>
         <div class="home-statement-copy"><p>${home.intro}</p><a class="home-text-link" href="${route(locale, "work", "archive")}"><span>${l.viewAll}</span><span aria-hidden="true">↗</span></a></div>
       </section>
+      <section class="home-collage" aria-label="${locale === "zh" ? "精选摄影作品" : "Selected photography"}">${frames}</section>
     </main>`
   });
 }
