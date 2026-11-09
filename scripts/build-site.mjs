@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { buildContentModel, projectRoot } from "./lib/content-model.mjs";
-import { availableVariantWidths, buildResponsiveImages, variantUrl } from "./lib/image-pipeline.mjs";
+import { availableVariantWidths, buildResponsiveImages, variantUrl, stripPublishedJpegs } from "./lib/image-pipeline.mjs";
 
 const outputRoot = path.join(projectRoot, "_site");
 const skipImageBuild = process.env.SKIP_IMAGE_BUILD === "1";
@@ -26,6 +26,8 @@ for (const file of ["styles.css", "favicon.ico", "manifest.webmanifest"]) {
 }
 
 const imageBuild = await buildResponsiveImages(content, projectRoot, outputRoot, { skip: skipImageBuild });
+// Only the published copies change; the originals in assets/ keep their metadata.
+await stripPublishedJpegs(path.join(outputRoot, "assets"));
 
 const labels = {
   zh: {
@@ -363,7 +365,7 @@ function homePage(locale) {
     description,
     image: selected[0]?.source,
     imageAlt: selected[0] ? photoAccessibleText(selected[0], locale) : "",
-    headExtra: `    <link rel="preload" as="image" href="/assets/home/home-statement-volcano-1920.webp" imagesrcset="/assets/home/home-statement-volcano-1920.webp 1x, /assets/home/home-statement-volcano-3840.webp 2x" fetchpriority="high">\n`,
+    headExtra: `    <link rel="preload" as="image" href="/assets/home/home-statement-volcano-phone.webp" media="(max-width: 620px)" fetchpriority="high">\n    <link rel="preload" as="image" href="/assets/home/home-statement-volcano-1920.webp" imagesrcset="/assets/home/home-statement-volcano-1920.webp 1x, /assets/home/home-statement-volcano-3840.webp 2x" media="(min-width: 621px)" fetchpriority="high">\n`,
     jsonLd: [personJsonLd(), {
       "@context": "https://schema.org",
       "@type": "WebSite",
@@ -463,16 +465,17 @@ function placesIndexPage(locale) {
   const places = content.places;
   const firstCover = photoById.get(places[0]?.coverPhoto);
   const markers = places.map((place) => {
-    const left = ((place.coordinates.longitude + 180) / 360) * 100;
-    const top = ((90 - place.coordinates.latitude) / 180) * 100;
+    // world-dots.json is a cropped world map, so these values are fitted to its coastlines.
+    const left = place.coordinates.longitude * 0.287 + 48;
+    const top = place.coordinates.latitude * -0.712 + 59.4;
     const placeName = text(place.name, locale);
     const placeCountry = text(place.country, locale);
     const markerLabel = locale === "zh" ? `查看${placeName}的摄影作品` : `View photographs from ${placeName}`;
     return `<a class="archive-map-marker" href="${route(locale, "places", place.slug)}" style="--marker-x:${left.toFixed(3)}%;--marker-y:${top.toFixed(3)}%" aria-label="${esc(markerLabel)}" title="${esc(placeName)} · ${esc(placeCountry)}" data-place-label="${esc(placeName)}" data-place-country="${esc(placeCountry)}"><span aria-hidden="true"></span></a>`;
   }).join("\n");
   const mapLabel = locale === "zh"
-    ? "世界摄影地图。将鼠标移至地图并滚动滚轮缩放，也可以使用加号、减号或零键。"
-    : "World photography map. Use the mouse wheel, plus, minus, or zero to zoom.";
+    ? "世界摄影地图。可用滚轮、双指或加号、减号、零键缩放，放大后可拖动或用方向键移动。"
+    : "World photography map. Zoom with the mouse wheel, two fingers, or the plus, minus and zero keys. When zoomed in, drag or use the arrow keys to move.";
   return pageShell({
     locale,
     type: "places",
@@ -503,18 +506,26 @@ function placeDetailPage(locale, place) {
   });
 }
 
+function storyHeading(story, locale) {
+  if (locale !== "zh") return esc(text(story.title, locale));
+  if (story.titlePhrases.join("") !== story.title.zh) {
+    throw new Error(`${story.id}: titlePhrases must add up to the Chinese title`);
+  }
+  return story.titlePhrases.map(esc).join("<wbr>");
+}
+
 function storiesIndexPage(locale) {
   const l = labels[locale];
   const entries = content.stories.map((story, index) => {
     const storyTitle = text(story.title, locale);
-    return `<article class="story-index-entry"><a class="story-index-image" href="${route(locale, "stories", story.slug)}" aria-label="${esc(storyTitle)}">${storyPictureMarkup(story, locale, { eager: index === 0, sizes: "(max-width: 640px) calc(100vw - 36px), 38vw" })}</a><div><p class="eyebrow">${l.story} ${story.archiveNumber}</p><h2><a href="${route(locale, "stories", story.slug)}">${esc(storyTitle)}</a></h2><p>${esc(story.excerpt[locale])}…</p><a class="home-text-link" href="${route(locale, "stories", story.slug)}">${locale === "zh" ? "阅读故事" : "Read story"}<span aria-hidden="true">↗</span></a></div></article>`;
+    return `<article class="story-index-entry"><a class="story-index-image" href="${route(locale, "stories", story.slug)}" aria-label="${esc(storyTitle)}">${storyPictureMarkup(story, locale, { eager: index === 0, sizes: "(max-width: 640px) calc(100vw - 36px), 38vw" })}</a><div><p class="eyebrow">${l.story} ${story.archiveNumber}</p><h2><a href="${route(locale, "stories", story.slug)}">${storyHeading(story, locale)}</a></h2><p>${esc(story.excerpt[locale])}</p><a class="home-text-link" href="${route(locale, "stories", story.slug)}">${locale === "zh" ? "阅读故事" : "Read story"}<span aria-hidden="true">↗</span></a></div></article>`;
   }).join("\n");
   const first = content.stories[0];
   return pageShell({
     locale,
     type: "stories",
     title: locale === "zh" ? "故事 | Yinyu Zhu Photography" : "Stories | Yinyu Zhu Photography",
-    description: locale === "zh" ? "朱垠宇摄影作品背后的文字与观看。" : "Writing and observations behind selected photographs by Yinyu Zhu.",
+    description: locale === "zh" ? "朱垠宇写在照片旁边的话。" : "Notes written beside photographs by Yinyu Zhu.",
     image: first?.coverPhoto,
     imageAlt: text(first?.alt, locale),
     main: `    <main class="content-page story-page story-index-page" id="main-content" tabindex="-1"><header class="story-index-header"><h1 class="section-page-title">${l.stories}</h1></header><section class="story-index-list">${entries}</section></main>`
@@ -526,6 +537,8 @@ function storyDetailPage(locale, story) {
   const label = `${l.story} ${story.archiveNumber}`;
   const titleText = text(story.title, locale);
   const description = story.excerpt[locale];
+  const photoNote = [text(story.location, locale), story.date].filter(Boolean).join(" · ");
+  const paragraphs = text(story.body, locale).map((paragraph) => `<p>${esc(paragraph)}</p>`).join("");
   const index = content.stories.findIndex((entry) => entry.id === story.id);
   const previous = content.stories[index - 1];
   const next = content.stories[index + 1];
@@ -550,7 +563,7 @@ function storyDetailPage(locale, story) {
       creator: { "@id": `${site.origin}/#yinyu-zhu` },
       inLanguage: locale === "zh" ? "zh-CN" : "en"
     }],
-    main: `    <main class="content-page story-page story-detail-page" id="main-content" tabindex="-1"><article class="story-article"><header class="story-detail-header"><p class="eyebrow"><a href="${route(locale, "stories")}">${l.allStories}</a> · ${label}</p><h1 class="section-page-title">${esc(titleText)}</h1></header><figure class="story-photo story-photo-feature">${storyPictureMarkup(story, locale, { eager: true })}<figcaption>${esc(text(story.alt, locale))}</figcaption></figure><div class="story-caption"><p>${esc(story.body[locale])}</p></div></article>${pagination}</main>`
+    main: `    <main class="content-page story-page story-detail-page" id="main-content" tabindex="-1"><article class="story-article"><header class="story-detail-header"><p class="eyebrow"><a href="${route(locale, "stories")}">${l.allStories}</a> · ${label}</p><h1 class="section-page-title">${storyHeading(story, locale)}</h1></header><figure class="story-photo story-photo-feature">${storyPictureMarkup(story, locale, { eager: true })}<figcaption>${esc(photoNote)}</figcaption></figure><div class="story-caption">${paragraphs}</div></article>${pagination}</main>`
   });
 }
 

@@ -3,7 +3,7 @@ import path from "node:path";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { buildContentModel, projectRoot } from "./lib/content-model.mjs";
-import { availableVariantWidths, variantUrl } from "./lib/image-pipeline.mjs";
+import { availableVariantWidths, jpegPrivateSegments, publishedJpegs, variantUrl } from "./lib/image-pipeline.mjs";
 
 const run = promisify(execFile);
 const outputRoot = path.join(projectRoot, "_site");
@@ -42,8 +42,17 @@ for (const id of sampleIds) {
   }
 }
 
+const jpegs = await publishedJpegs(path.join(outputRoot, "assets"));
+for (const file of jpegs) {
+  const buffer = await fs.readFile(file);
+  const relative = path.relative(outputRoot, file);
+  if (jpegPrivateSegments(buffer).length) failures.push(`${relative}: still carries EXIF, XMP or Photoshop metadata`);
+  if (!buffer.includes("yinyuzhu.com/rights")) failures.push(`${relative}: missing rights notice`);
+}
+
 const report = {
   status: failures.length ? "FAIL" : "PASS",
+  jpegsChecked: jpegs.length,
   samples,
   failures
 };

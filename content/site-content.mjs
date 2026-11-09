@@ -15,7 +15,8 @@ export const site = {
   home: {
     zh: {
       eyebrow: "摄影档案",
-      title: "光、距离，以及记忆里安静的地理。",
+      // <wbr> 标出标题可以换行的位置，其他地方不会把词拆开。
+      title: "光、距离，<wbr>以及记忆里<wbr>安静的地理。",
       intro: "朱垠宇的旅行、城市与日常摄影。这里收录我在不同地域移动、停留与观看时留下的片段。"
     },
     en: {
@@ -59,98 +60,163 @@ export const stories = [
     id: "story-20260130-7c200963",
     slug: "20260130-7c200963",
     title: {
-      zh: "夜空与喷发火山的红色熔岩",
-      en: "Red lava erupting beneath a star-filled night sky"
+      zh: "三十秒",
+      en: "Thirty Seconds"
     },
-    location: { zh: null, en: null },
-    date: null,
+    // 标题只在这些词组之间换行，拼起来要和中文标题完全一致。
+    // body 是段落数组；excerpt 是故事列表里显示的一句话，也用作页面描述；location 和 date 显示在照片下方，没有就留 null。
+    titlePhrases: ["三十秒"],
+    location: { zh: "危地马拉", en: "Guatemala" },
+    date: "2026",
     coverPhoto: "/assets/story/20260130-7C200963.jpg",
     width: 1425,
     height: 2400,
     alt: { zh: "夜空与喷发火山的红色熔岩", en: "Red lava erupting beneath a star-filled night sky" },
     body: {
-      zh: "夜色把山体压低，把天空打开。星光很安静，火山口却在远处持续喷发，红色的熔岩从黑暗中升起，又落回山的轮廓里。画面里没有多余的东西，只有天空、山和火。它不是一场壮观的表演，更像一次短暂的显露：大地在夜里露出自己的内部，安静，却无法忽视。",
-      en: "Night presses the mountain low and opens the sky. The stars are quiet, while the crater continues to erupt in the distance, red lava rising out of the darkness and falling back into the outline of the mountain. There is nothing extra in the frame, only sky, mountain, and fire. It is not a spectacular performance so much as a brief revealing: at night, the earth exposes its interior, quietly, but impossible to ignore."
+      zh: [
+        "这座山叫 Fuego，西班牙语里就是“火”。名字起得这样直，好像它从来没打算做别的。",
+        "快门开了三十秒。照片里那团火像只开了一瞬，其实是这半分钟里飞出去、又落回山上的全部，一层叠一层，叠成了一朵花。同样这半分钟，星星只挪了一点点。山在烧，天在头顶慢慢地转。",
+        "快十点了，天还蓝成这样。那晚的月亮再过两三天就圆，它不在画面里，可这片蓝、山坡上那层薄薄的光，都是它给的。山下很远的地方，还亮着一小撮灯。"
+      ],
+      en: [
+        "The mountain is called Fuego, which is simply Spanish for fire. A name that plain, as if it never meant to be anything else.",
+        "The shutter stayed open for thirty seconds. What looks like a single bloom of fire is the whole half minute: everything that flew out and fell back onto the slope, layered until it opened like a flower. In the same half minute, the stars barely moved. The mountain burned, and the sky turned slowly overhead.",
+        "It was nearly ten, and the sky was still this blue. The moon was two or three days from full. It isn't in the frame, but the blue is its doing, and so is the thin light along the slope. Far below, a small scatter of lights was still on."
+      ]
+    },
+    excerpt: {
+      zh: "快门开了三十秒。飞出去又落回来的火，一层叠一层，叠成了一朵花。",
+      en: "The shutter stayed open for thirty seconds, and the fire that flew out and fell back layered itself into a flower."
     }
   },
   {
     id: "story-20260129-7c200452",
     slug: "20260129-7c200452",
     title: {
-      zh: "阳光下山坡墓地里的彩色十字架",
-      en: "Colorful crosses in a hillside cemetery under sunlight"
+      zh: "合影",
+      en: "Group Photo"
     },
-    location: { zh: null, en: null },
-    date: null,
+    titlePhrases: ["合影"],
+    location: { zh: "危地马拉", en: "Guatemala" },
+    date: "2026",
     coverPhoto: "/assets/story/20260129-7C200452.jpg",
     width: 1600,
     height: 2400,
     alt: { zh: "阳光下山坡墓地里的彩色十字架", en: "Colorful crosses in a hillside cemetery under sunlight" },
     body: {
-      zh: "山坡上的墓地被阳光照亮，蓝色、粉色、绿色和黄色散落在草丛之间。这里没有把死亡藏进阴影里，而是让它站在明亮的空气中。每一个十字架都很小，每一个名字都很具体。颜色让记忆变得接近生活，也让这个地方少了一点距离感。人离开之后，留下的不只是石碑，还有被继续照看的形状、文字和土地。",
-      en: "Sunlight falls across the hillside cemetery, scattering blue, pink, green, and yellow among the grass. Death is not hidden in shadow here; it stands in bright air. Each cross is small, and every name is specific. Color brings memory closer to ordinary life and makes the place feel less distant. After people leave, what remains is not only stone, but forms, words, and land that continue to be cared for."
+      zh: [
+        "十字架是水泥浇的，字是人蘸着漆，一笔一笔写上去的。竖杠上排着三个字母：E、P、D。En Paz Descanse，愿你安息。横臂上写名字和日子，写到头了，年份就挪到竖杠底下，2017，2020，像一句话说到一半，换了一行接着说。",
+        "有的坟前插着塑料瓶，瓶里的花早就干了，还插得好好的。",
+        "中午十二点多，太阳直直地照下来。长焦把整面山坡压扁，蓝的、粉的、绿的挤在一起，一个挨着一个，像一大家子人好不容易聚齐了，站在坡上，等着拍一张合影。"
+      ],
+      en: [
+        "The crosses are poured cement, and the letters were painted on by hand, stroke by stroke. Down the upright run three letters: E, P, D. En Paz Descanse, rest in peace. The name and the date go across the arms, and when the arms run out, the year drops to the stem below. 2017. 2020. Like a sentence that ran out of room and carried on to the next line.",
+        "Some graves have a plastic bottle for a vase. The flowers in them dried long ago, and they are still standing.",
+        "Just past noon, the sun came straight down. A long lens pressed the whole hillside flat, and the blues and pinks and greens crowded in, shoulder to shoulder, like a big family finally all together on the slope, waiting for someone to take the picture."
+      ]
+    },
+    excerpt: {
+      zh: "名字写满了横臂，年份就挪到竖杠底下，像一句话说到一半，换了一行接着说。",
+      en: "When the name fills the arms of the cross, the year moves down the stem, like a sentence carried on to the next line."
     }
   },
   {
     id: "story-20260210-7c200360",
     slug: "20260210-7c200360",
     title: {
-      zh: "城市广场中的大型锈蚀雕塑与行人",
-      en: "A large rusted sculpture and people in a city square"
+      zh: "锈走得比它远",
+      en: "The Rust Went Further"
     },
-    location: { zh: null, en: null },
-    date: null,
+    titlePhrases: ["锈走得", "比它远"],
+    location: { zh: "哈瓦那", en: "Havana" },
+    date: "2026",
     coverPhoto: "/assets/story/20260210-7C200360.jpg",
     width: 1425,
     height: 2400,
     alt: { zh: "城市广场中的大型锈蚀雕塑与行人", en: "A large rusted sculpture and people in a city square" },
     body: {
-      zh: "城市广场上，一座巨大的雕塑弯着身体，占据了画面的前方。它沉重、锈蚀、安静，和背后的高楼一起构成了城市的尺度。旁边的人坐着、弯腰、低头看手机，生活照常进行。纪念性的物体和普通的一天被放在同一片光里。重量并没有打断日常，只是成为人们经过、停留、继续生活的一部分。",
-      en: "In a city square, a massive sculpture bends forward and occupies the foreground. Heavy, rusted, and quiet, it shares the frame with the tall buildings behind it, giving the city its sense of scale. Nearby, people sit, bend down, and look at their phones as life continues as usual. A commemorative object and an ordinary day are placed in the same light. Its weight does not interrupt daily life; it becomes part of what people pass, where they pause, and how they continue."
+      zh: [
+        "铁人弯着腰，背上压着一个比它还宽的大家伙，头低得快要碰到胸口。不知道它已经背了多久。",
+        "后面的水泥台上种着仙人掌，有个人也弯着腰，不知在看地上的什么。穿红衣服的老人坐在台沿，低着头，一只手拿着手机，一只手去够脚上的拖鞋。三个都弯着腰，谁也没有抬头看谁。",
+        "太阳已经低了，影子拖得很长。铁人脚下那片地被锈染成了橘红，雨水把锈一点点带出去。它自己一步也没挪过，锈倒是替它走出去好远。"
+      ],
+      en: [
+        "The iron figure bends under a load wider than itself, its head sunk almost to its chest. There's no telling how long it has been carrying it.",
+        "On the concrete planter behind it, among the cacti, someone else is bent over, looking at something on the ground. The old person in red sits on the ledge, head down, a phone in one hand, the other reaching for a sandal. All three of them are bent, and none of them looks up at the others.",
+        "The sun was low by then, the shadows long. The ground around the iron feet has turned a deep orange, the rust carried a little further out with every rain. The figure has never taken a step. Its rust has walked a long way on its behalf."
+      ]
+    },
+    excerpt: {
+      zh: "三个都弯着腰，谁也没有抬头看谁。",
+      en: "All three of them are bent, and none of them looks up at the others."
     }
   },
   {
     id: "story-20250525-7c20284",
     slug: "20250525-7c20284",
     title: {
-      zh: "石墙前垃圾桶里的纸杯、瓶子和纸袋",
-      en: "A paper cup, bottle, and bag in a bin beside a stone wall"
+      zh: "远远地",
+      en: "From a Distance"
     },
-    location: { zh: null, en: null },
-    date: null,
+    titlePhrases: ["远远地"],
+    location: { zh: "腾冲", en: "Tengchong" },
+    date: "2025",
     coverPhoto: "/assets/story/20250525-_7C20284.jpg",
     width: 1800,
     height: 2400,
     alt: { zh: "石墙前垃圾桶里的纸杯、瓶子和纸袋", en: "A paper cup, bottle, and bag in a bin beside a stone wall" },
     body: {
-      zh: "在一面粗粝的石墙前，几个被使用过的物件被随手放进垃圾桶里。纸杯、饮料瓶、白色纸袋，原本只是城市消费里最轻的东西，却因为红色塑料袋的包裹，突然拥有了一种临时的秩序。它们没有人物，也没有事件，却记录了一个动作刚刚结束的痕迹。有人停留过，喝完了，离开了。日常在这里不是背景，而是主角。",
-      en: "In front of a rough stone wall, several used objects have been casually placed in a trash bin. A paper cup, a drink bottle, and a white paper bag were originally among the lightest things in urban consumption, but wrapped by the red plastic bag, they suddenly take on a temporary order. There are no people and no event, yet the frame records the trace of an action that has just ended. Someone stopped here, finished a drink, and left. The everyday is not the background here; it is the subject."
+      zh: [
+        "这张是 200mm 拍的。一个垃圾桶，我站得远远的，像在拍一只怕人的鸟，好像再走近一步，它就会飞走。",
+        "橙色的麦咖啡杯，盖子还好好地盖着。旁边是喝空的饮料瓶，一只白纸袋，袋口剪成细细的锯齿，提手是拧成绳的纸。红塑料袋翻在桶沿上，一圈一圈地起褶，像谁替它们铺好的一块红绸。桶身上还绕着一圈凸起的花纹，弯弯曲曲，绣花似的。不知道是谁，在一只垃圾桶上花了这样的心思。",
+        "背后是腾冲的石墙，火山石砌的，满是气孔。很久很久以前，它也红过，也烫过。"
+      ],
+      en: [
+        "I shot this at 200mm. It's a trash can, and I kept my distance, the way you would with a bird that scares easily, as if one step closer and it would be gone.",
+        "An orange McCafé cup, the lid still neatly on. Beside it an empty bottle and a white paper bag, its edge cut in a fine zigzag, its handles twisted from paper. The red liner folds over the rim in pleat after pleat, like a length of red silk someone laid out for them. Around the can runs a raised pattern, looping and curling, almost like embroidery. Someone took that much care over a trash can.",
+        "The wall behind is Tengchong stone, volcanic, riddled with air holes. Long, long ago it was red too, and hot."
+      ]
+    },
+    excerpt: {
+      zh: "一个垃圾桶，我站得远远的，像在拍一只怕人的鸟。",
+      en: "It's a trash can, and I kept my distance, the way you would with a bird that scares easily."
     }
   },
   {
     id: "story-20250806-7c20019",
     slug: "20250806-7c20019",
     title: {
-      zh: "黑白画面中破裂表面的裂痕与反光",
-      en: "Cracks and reflections across a fractured surface in black and white"
+      zh: "海岸线",
+      en: "Coastline"
     },
+    titlePhrases: ["海岸线"],
     location: { zh: null, en: null },
-    date: null,
+    date: "2025",
     coverPhoto: "/assets/story/20250806-_7C20019.jpg",
     width: 1800,
     height: 2400,
     alt: { zh: "黑白画面中破裂表面的裂痕与反光", en: "Cracks and reflections across a fractured surface in black and white" },
     body: {
-      zh: "镜头贴近一片破裂的表面。颜色被拿走以后，裂痕、反光和灰尘变得更清楚。它不再只是一个损坏的物体，而是一块被时间打开的平面。边缘翘起，暗部下沉，光落在不规则的纹理上，让一张普通的桌面变成了可以被观看的地形。破损没有被修复，也没有被美化，只是安静地存在着。",
-      en: "The lens moves close to a fractured surface. Once color is removed, the cracks, reflections, and dust become clearer. It is no longer merely a damaged object, but a plane opened by time. Edges lift, shadows sink, and light falls across irregular textures, turning an ordinary tabletop into terrain that can be looked at. The damage is not repaired or beautified. It simply exists, quietly."
+      zh: [
+        "光圈开到 1.4，清楚的只有中间窄窄的一带。再往前，再往后，都慢慢化开了，后面的砖墙只剩一点影子。",
+        "表面那层皮裂开了，边缘一点点卷起来。底下露出来的部分还是黑的，亮的，还映着一点光。",
+        "看久了，像坐夜航的飞机往下望：一道海岸线，一个河口，几座叫不出名字的小岛。",
+        "这个网站有一张地图，标着我拍过照片的地方。这条海岸线，不在上面。"
+      ],
+      en: [
+        "At f/1.4, only a narrow band is sharp. Further in, further out, everything slowly dissolves, until the brick wall behind is little more than a shadow.",
+        "The skin of the surface has cracked, its edges curling up bit by bit. What shows underneath is still black, still glossy, holding a little light.",
+        "Look long enough and it becomes the view from a night flight: a coastline, a river mouth, a few islands you can't name.",
+        "This site has a map of the places I've photographed. This coastline isn't on it."
+      ]
+    },
+    excerpt: {
+      zh: "看久了，像坐夜航的飞机往下望：一道海岸线，一个河口，几座叫不出名字的小岛。",
+      en: "Look long enough and it becomes the view from a night flight: a coastline, a river mouth, a few islands you can't name."
     }
   }
 ].map((story, index) => ({
   ...story,
   archiveNumber: String(index + 1).padStart(2, "0"),
-  photoIds: [],
-  excerpt: {
-    zh: story.body.zh.slice(0, 78),
-    en: story.body.en.slice(0, 150)
-  }
+  photoIds: []
 }));

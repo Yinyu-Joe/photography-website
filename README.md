@@ -18,6 +18,7 @@ npm run audit:images
 - 生成 canonical、hreflang、Open Graph、JSON-LD、robots 和 sitemap；
 - 在 `_site/assets/generated` 中创建 AVIF/WebP 网页衍生图。
 - 为公开衍生图移除相机、精确时间与编辑流程 metadata，并保留作者和版权链接；
+- 为发布到 `_site` 的 JPEG 副本移除 EXIF、XMP 和 Photoshop metadata，保留色彩配置并写入版权说明（不重新压缩，`assets` 里的原图不变）；
 - 让 Lightbox 优先使用最大 2048px 的 AVIF/WebP，原 JPEG 只作 fallback。
 
 原始 JPEG 不会被覆盖或删除。只想快速检查 HTML 时可使用 `npm run build:fast`；该模式使用现有缩略图，不生成新的响应式图片。
@@ -65,6 +66,8 @@ npx wrangler pages dev _site --ip 127.0.0.1 --port 4174
 几点说明：
 
 - `content/photo-text.json` 按照片 id 填写，例如 `city-03`。哪种语言留空，那种语言就继续用自动生成的“某年拍摄于某地”，所以可以一张一张慢慢补。写错 id 时构建会报错。
+- 中文标题要控制换行时：首页标题在 `content/site-content.mjs` 里用 `<wbr>` 标出换行位置；故事标题用 `titlePhrases` 分词组，拼起来必须和中文标题完全一致，否则构建会报错。
+- 故事正文 `body` 按段落写成数组；`excerpt` 是故事列表显示的一句话，也用作页面描述；`location` 和 `date` 显示在详情页照片下方，没有就留 `null`。`alt` 只给读屏和图片加载失败时使用，不在页面上显示。
 - `homePhotoIds` 必须正好 9 张，顺序对应首页拼贴的九个位置，第 1、4、7 张显示得最大。
 - `styles.css` 是按时间往后叠加的，后面的段落会覆盖前面的同名规则。新增的规则加在文件末尾，并写一行注释说明用途。
 - 新增照片：先在 `photo-manifest.js` 里加基础信息，要进精选或系列，再把 id 加进 `portfolio-data.js`。

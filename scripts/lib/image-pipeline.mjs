@@ -17,6 +17,68 @@ async function exists(file) {
   }
 }
 
+// Walks the header of a JPEG and yields each segment, stopping where the image data begins.
+function* jpegSegments(buffer) {
+  let offset = 2;
+  while (offset + 4 <= buffer.length && buffer[offset] === 0xff) {
+    const marker = buffer[offset + 1];
+    if (marker === 0xff) {
+      offset += 1;
+      continue;
+    }
+    if (marker === 0xda) return;
+    const end = offset + 2 + buffer.readUInt16BE(offset + 2);
+    yield { marker, start: offset, end };
+    offset = end;
+  }
+}
+
+// EXIF, XMP and Photoshop blocks hold the camera, capture time and editing history.
+const privateJpegMarkers = new Set([0xe1, 0xed]);
+
+export function jpegPrivateSegments(buffer) {
+  return [...jpegSegments(buffer)].filter((segment) => privateJpegMarkers.has(segment.marker));
+}
+
+// Removes those blocks without re-encoding the photo; colour profiles stay in place.
+export function removeJpegMetadata(buffer) {
+  const notice = Buffer.from(`${creator}. ${rightsNotice}`, "utf8");
+  const comment = Buffer.alloc(4);
+  comment.writeUInt16BE(0xfffe, 0);
+  comment.writeUInt16BE(notice.length + 2, 2);
+
+  const segments = [...jpegSegments(buffer)];
+  const parts = [buffer.subarray(0, 2)];
+  let cursor = 2;
+  if (segments[0]?.marker === 0xe0) {
+    parts.push(buffer.subarray(2, segments[0].end));
+    cursor = segments[0].end;
+  }
+  parts.push(comment, notice);
+  for (const segment of segments) {
+    if (!privateJpegMarkers.has(segment.marker)) continue;
+    parts.push(buffer.subarray(cursor, segment.start));
+    cursor = segment.end;
+  }
+  parts.push(buffer.subarray(cursor));
+  return Buffer.concat(parts);
+}
+
+export async function publishedJpegs(root) {
+  const entries = await fs.readdir(root, { recursive: true, withFileTypes: true });
+  return entries
+    .filter((entry) => entry.isFile() && /\.jpe?g$/i.test(entry.name))
+    .map((entry) => path.join(entry.parentPath, entry.name));
+}
+
+export async function stripPublishedJpegs(root) {
+  const files = await publishedJpegs(root);
+  for (const file of files) {
+    await fs.writeFile(file, removeJpegMetadata(await fs.readFile(file)));
+  }
+  return files.length;
+}
+
 export function variantUrl(photo, width, format) {
   return `/assets/generated/photos/${photo.id}-${width}.${format}`;
 }

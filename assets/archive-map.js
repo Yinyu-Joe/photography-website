@@ -11,11 +11,18 @@
     y: Number.parseFloat(marker.style.getPropertyValue("--marker-y")) / 100
   }));
   const isEnglish = document.documentElement.lang === "en";
+  // world-dots.json is a 767.95 × 376.83 crop; the map keeps that shape on every screen.
+  const mapAspect = 767.95 / 376.83;
+  const maxZoom = 5;
   const view = { zoom: 1, x: 0, y: 0 };
   let dots = [];
   let activeCluster = null;
   let observedWidth = 0;
   let observedHeight = 0;
+  let renderQueued = false;
+  let drag = null;
+  let touch = null;
+  let suppressClick = false;
 
   const chooser = document.createElement("div");
   chooser.className = "archive-map-chooser";
@@ -141,6 +148,12 @@
     }
   }
 
+  function mapBox(width, height) {
+    const boxWidth = Math.min(width, height * mapAspect);
+    const boxHeight = boxWidth / mapAspect;
+    return { left: (width - boxWidth) / 2, top: (height - boxHeight) / 2, width: boxWidth, height: boxHeight };
+  }
+
   function draw() {
     const bounds = canvas.getBoundingClientRect();
     const ratio = Math.min(devicePixelRatio || 1, 2);
@@ -149,10 +162,12 @@
     context.setTransform(ratio, 0, 0, ratio, 0, 0);
     context.clearRect(0, 0, bounds.width, bounds.height);
     context.fillStyle = "rgba(28, 28, 28, 0.16)";
-    const radius = (bounds.width < 640 ? 1.15 : 1.65) * Math.min(view.zoom, 1.7);
+    const box = mapBox(bounds.width, bounds.height);
+    const dotSpacing = (box.width * view.zoom) / 205;
+    const radius = Math.min(2.8, Math.max(0.62, dotSpacing * 0.24));
     for (const dot of dots) {
-      const x = (dot.x / 100) * bounds.width * view.zoom + view.x;
-      const y = (dot.y / 100) * bounds.height * view.zoom + view.y;
+      const x = (box.left + (dot.x / 100) * box.width) * view.zoom + view.x;
+      const y = (box.top + (dot.y / 100) * box.height) * view.zoom + view.y;
       if (x < -radius || x > bounds.width + radius || y < -radius || y > bounds.height + radius) continue;
       context.beginPath();
       context.arc(x, y, radius, 0, Math.PI * 2);
@@ -166,16 +181,38 @@
   }
 
   function positionMarkers(width, height) {
+    const box = mapBox(width, height);
     for (const { marker, x, y } of markerPositions) {
-      marker.style.setProperty("--marker-x", `${(x * view.zoom + view.x / width) * 100}%`);
-      marker.style.setProperty("--marker-y", `${(y * view.zoom + view.y / height) * 100}%`);
+      marker.style.setProperty("--marker-x", `${(((box.left + x * box.width) * view.zoom + view.x) / width) * 100}%`);
+      marker.style.setProperty("--marker-y", `${(((box.top + y * box.height) * view.zoom + view.y) / height) * 100}%`);
     }
+  }
+
+  function renderView() {
+    renderQueued = false;
+    const bounds = stage.getBoundingClientRect();
+    if (!bounds.width || !bounds.height) return;
+    clampView(bounds.width, bounds.height);
+    stage.classList.toggle("is-zoomed", view.zoom > 1);
+    draw();
+    positionMarkers(bounds.width, bounds.height);
+    setupClusters();
+  }
+
+  function queueRender() {
+    if (renderQueued) return;
+    renderQueued = true;
+    requestAnimationFrame(renderView);
+  }
+
+  function clampZoom(zoom) {
+    return Math.min(maxZoom, Math.max(1, zoom));
   }
 
   function zoomMap(scale, clientX, clientY) {
     const bounds = stage.getBoundingClientRect();
     if (!bounds.width || !bounds.height) return;
-    const nextZoom = Math.min(5, Math.max(1, view.zoom * scale));
+    const nextZoom = clampZoom(view.zoom * scale);
     if (nextZoom === view.zoom) return;
 
     const anchorX = Math.min(bounds.width, Math.max(0, clientX - bounds.left));
@@ -186,25 +223,127 @@
     view.zoom = nextZoom;
     clampView(bounds.width, bounds.height);
     if (!chooser.hidden) closeChooser();
-    draw();
-    positionMarkers(bounds.width, bounds.height);
-    setupClusters();
+    queueRender();
+  }
+
+  function panMap(deltaX, deltaY) {
+    if (view.zoom === 1) return;
+    const bounds = stage.getBoundingClientRect();
+    view.x += deltaX;
+    view.y += deltaY;
+    clampView(bounds.width, bounds.height);
+    if (!chooser.hidden) closeChooser();
+    queueRender();
   }
 
   stage?.addEventListener("wheel", (event) => {
-    event.preventDefault();
     const lineScale = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? stage.clientHeight : 1;
-    zoomMap(Math.exp(-event.deltaY * lineScale * 0.0035), event.clientX, event.clientY);
+    const scale = Math.exp(-event.deltaY * lineScale * 0.0035);
+    // At full size the wheel keeps scrolling the page, so the footer stays reachable.
+    if (clampZoom(view.zoom * scale) === view.zoom || (view.zoom === 1 && window.scrollY > 1)) return;
+    event.preventDefault();
+    zoomMap(scale, event.clientX, event.clientY);
   }, { passive: false });
 
   stage?.addEventListener("keydown", (event) => {
     if (chooser.contains(event.target)) return;
+    const arrows = { ArrowLeft: [80, 0], ArrowRight: [-80, 0], ArrowUp: [0, 80], ArrowDown: [0, -80] };
+    if (arrows[event.key] && view.zoom > 1) {
+      event.preventDefault();
+      panMap(...arrows[event.key]);
+      return;
+    }
     if (!["+", "=", "-", "_", "0"].includes(event.key)) return;
     event.preventDefault();
     const bounds = stage.getBoundingClientRect();
     const scale = event.key === "0" ? 1 / view.zoom : ["+", "="].includes(event.key) ? 1.22 : 1 / 1.22;
     zoomMap(scale, bounds.left + bounds.width / 2, bounds.top + bounds.height / 2);
   });
+
+  // Mouse: drag the map once it is zoomed in.
+  stage?.addEventListener("dragstart", (event) => event.preventDefault());
+  stage?.addEventListener("pointerdown", (event) => {
+    if (event.pointerType === "touch" || event.button !== 0 || view.zoom === 1 || chooser.contains(event.target)) return;
+    drag = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
+  });
+  stage?.addEventListener("pointermove", (event) => {
+    if (!drag || event.pointerId !== drag.id) return;
+    const deltaX = event.clientX - drag.x;
+    const deltaY = event.clientY - drag.y;
+    if (!drag.moved) {
+      if (Math.hypot(deltaX, deltaY) < 4) return;
+      drag.moved = true;
+      stage.setPointerCapture(drag.id);
+      stage.classList.add("is-dragging");
+    }
+    drag.x = event.clientX;
+    drag.y = event.clientY;
+    panMap(deltaX, deltaY);
+  });
+  function endDrag() {
+    if (!drag) return;
+    if (drag.moved) {
+      suppressClick = true;
+      setTimeout(() => { suppressClick = false; }, 0);
+    }
+    stage.classList.remove("is-dragging");
+    drag = null;
+  }
+  stage?.addEventListener("pointerup", endDrag);
+  stage?.addEventListener("pointercancel", endDrag);
+  stage?.addEventListener("click", (event) => {
+    if (!suppressClick) return;
+    event.preventDefault();
+    event.stopPropagation();
+    suppressClick = false;
+  }, true);
+
+  // Touch: pinch with two fingers, then move the zoomed map with one.
+  // At full size one finger is left to the browser, so the page still scrolls.
+  function touchState(touches) {
+    const points = [...touches];
+    const [first, second] = points;
+    return {
+      count: points.length,
+      x: points.reduce((sum, point) => sum + point.clientX, 0) / points.length,
+      y: points.reduce((sum, point) => sum + point.clientY, 0) / points.length,
+      distance: second ? Math.hypot(first.clientX - second.clientX, first.clientY - second.clientY) : 0
+    };
+  }
+
+  stage?.addEventListener("touchstart", (event) => {
+    if (chooser.contains(event.target)) return;
+    if (event.touches.length > 1) event.preventDefault();
+    touch = { ...touchState(event.touches), moved: touch?.moved || false };
+  }, { passive: false });
+
+  stage?.addEventListener("touchmove", (event) => {
+    if (!touch || chooser.contains(event.target)) return;
+    const next = touchState(event.touches);
+    if (next.count === 1 && view.zoom === 1) return;
+    if (next.count !== touch.count) {
+      touch = { ...next, moved: touch.moved };
+      return;
+    }
+    if (next.count === 1 && !touch.moved && Math.hypot(next.x - touch.x, next.y - touch.y) < 6) return;
+    if (event.cancelable) event.preventDefault();
+    if (next.count > 1 && touch.distance) zoomMap(next.distance / touch.distance, next.x, next.y);
+    panMap(next.x - touch.x, next.y - touch.y);
+    touch = { ...next, moved: true };
+  }, { passive: false });
+
+  function endTouch(event) {
+    if (!touch) return;
+    if (event.touches.length) {
+      touch = { ...touchState(event.touches), moved: touch.moved };
+      return;
+    }
+    if (touch.moved && event.cancelable) event.preventDefault();
+    touch = null;
+  }
+  stage?.addEventListener("touchend", endTouch, { passive: false });
+  stage?.addEventListener("touchcancel", endTouch, { passive: false });
+  stage?.addEventListener("gesturestart", (event) => event.preventDefault());
 
   chooser.addEventListener("click", (event) => event.stopPropagation());
   chooser.addEventListener("wheel", (event) => event.stopPropagation(), { passive: true });
@@ -245,10 +384,10 @@
       view.x *= bounds.width / observedWidth;
       view.y *= bounds.height / observedHeight;
       clampView(bounds.width, bounds.height);
-      positionMarkers(bounds.width, bounds.height);
     }
     observedWidth = bounds.width;
     observedHeight = bounds.height;
+    if (sizeChanged) positionMarkers(bounds.width, bounds.height);
     draw();
     if (sizeChanged && chooser.hidden) setupClusters();
   }).observe(canvas);

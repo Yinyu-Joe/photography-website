@@ -3521,3 +3521,64 @@ a {
 .home-main > .home-statement {
   border-top: 0;
 }
+
+/* Homepage statement: keep Chinese words whole, so the title wraps only at the <wbr> marks in site-content.mjs. */
+.home-statement h2 {
+  word-break: keep-all;
+}
+
+/* Story titles: keep Chinese words whole, so titles wrap only between the phrases set in site-content.mjs. */
+.story-index-entry h2,
+.story-detail-header h1 {
+  word-break: keep-all;
+}
+
+/* Map: the grab cursor appears only once the map is zoomed in and can be moved. */
+.map-stage {
+  cursor: default;
+}
+
+.map-stage.is-zoomed {
+  cursor: grab;
+}
+
+.map-stage.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.archive-atlas .map-stage.is-zoomed {
+  touch-action: none;
+}
+
+/* Small text links keep their look but get a larger tap area. */
+.archive-footer a,
+.mobile-social-links a,
+.eyebrow a {
+  position: relative;
+}
+
+.archive-footer a::after,
+.mobile-social-links a::after,
+.eyebrow a::after {
+  content: "";
+  position: absolute;
+  inset: -13px -11px;
+}
+
+.eyebrow a::after {
+  inset: -9px -6px;
+}
+
+/* Homepage photo on phones: a smaller crop with the same framing, so the first screen loads quickly. */
+@media (max-width: 620px) {
+  .home-statement {
+    background-image: url("/assets/home/home-statement-volcano-phone.webp");
+    background-position: center;
+  }
+}
+
+/* Story text: short paragraphs need a clear pause between them. */
+.story-detail-page .story-caption p + p {
+  margin-top: 1.2em;
+}
