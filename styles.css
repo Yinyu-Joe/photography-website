@@ -3268,8 +3268,10 @@ a {
   transform: translate(-50%, 0);
 }
 
+/* A grouped place is drawn only by its group's circle, so no half-covered dots show beside it. */
 .archive-map-marker.is-clustered {
   pointer-events: none;
+  visibility: hidden;
 }
 
 .archive-map-marker.is-clustered::after {
@@ -3295,24 +3297,28 @@ a {
   cursor: pointer;
 }
 
+/* Several nearby places: a larger version of the place dot, with the count set in white. */
 .archive-map-cluster span {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   display: grid;
   place-items: center;
-  border: 1px solid rgb(20 20 20 / 70%);
   border-radius: 50%;
-  background: rgb(250 250 250 / 92%);
-  box-shadow: 0 0 0 4px rgb(250 250 250 / 72%);
-  font-size: 0.64rem;
+  color: #fafafa;
+  background: #171717;
+  box-shadow: 0 0 0 3px rgb(250 250 250 / 82%);
+  font-family: var(--site-font);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
   line-height: 1;
-  transition: transform 180ms ease, background 180ms ease;
+  transition: transform 180ms ease;
 }
 
 .archive-map-cluster:hover span,
 .archive-map-cluster:focus-visible span {
-  background: #fff;
-  transform: scale(1.08);
+  transform: scale(1.15);
 }
 
 .archive-map-cluster:focus-visible {

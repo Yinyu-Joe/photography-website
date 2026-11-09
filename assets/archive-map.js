@@ -132,14 +132,15 @@
         marker.setAttribute("aria-hidden", "true");
         marker.tabIndex = -1;
       }
-      const anchor = group[0];
+      // The group's circle sits in the middle of its places, which are hidden while grouped.
+      const middle = (property) => group.reduce((sum, marker) => sum + Number.parseFloat(marker.style.getPropertyValue(property)), 0) / group.length;
       const cluster = document.createElement("button");
       cluster.className = "archive-map-cluster";
       cluster.type = "button";
       cluster.setAttribute("aria-controls", chooser.id);
       cluster.setAttribute("aria-expanded", "false");
-      cluster.style.setProperty("--marker-x", anchor.style.getPropertyValue("--marker-x"));
-      cluster.style.setProperty("--marker-y", anchor.style.getPropertyValue("--marker-y"));
+      cluster.style.setProperty("--marker-x", `${middle("--marker-x")}%`);
+      cluster.style.setProperty("--marker-y", `${middle("--marker-y")}%`);
       cluster.setAttribute("aria-label", isEnglish ? `${group.length} nearby photographed places` : `${group.length} 个附近拍摄地点`);
       const count = document.createElement("span");
       count.textContent = String(group.length);
