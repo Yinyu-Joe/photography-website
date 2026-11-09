@@ -79,11 +79,29 @@ export async function stripPublishedJpegs(root) {
   return files.length;
 }
 
+// Reads the pixel size from a JPEG's frame header, so case photos need no hand-written dimensions.
+export function jpegSize(buffer) {
+  const frameMarkers = new Set([0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce, 0xcf]);
+  for (const segment of jpegSegments(buffer)) {
+    if (frameMarkers.has(segment.marker)) {
+      return { height: buffer.readUInt16BE(segment.start + 5), width: buffer.readUInt16BE(segment.start + 7) };
+    }
+  }
+  return null;
+}
+
+// Case photos can be narrower than the standard widths (frames cut from collages are 750px),
+// so they get every standard width below their own plus their full width.
+export function variantWidthsUpTo(width) {
+  return [...widths.filter((value) => value < width), width];
+}
+
 export function variantUrl(photo, width, format) {
   return `/assets/generated/photos/${photo.id}-${width}.${format}`;
 }
 
 export function availableVariantWidths(photo) {
+  if (photo.variantWidths) return photo.variantWidths;
   return widths.filter((width) => !photo.width || width <= photo.width || width === widths[0]);
 }
 
@@ -120,7 +138,7 @@ export async function buildResponsiveImages(content, projectRoot, outputRoot, { 
   let generated = 0;
   let reused = 0;
   try {
-    for (const photo of content.photos) {
+    for (const photo of [...content.photos, ...content.commissions.images]) {
       const source = path.join(projectRoot, photo.source.replace(/^\//, ""));
       for (const width of availableVariantWidths(photo)) {
         for (const format of ["avif", "webp"]) {

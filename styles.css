@@ -3582,3 +3582,782 @@ a {
 .story-detail-page .story-caption p + p {
   margin-top: 1.2em;
 }
+
+/* Commissions (/commissions): client-facing portrait and commercial pages.
+   Same type, colour and spacing as the archive; layout follows the About page's label column. */
+.commission-page {
+  min-height: 100svh;
+  padding: calc(var(--header-height) + clamp(38px, 5.5vw, 82px)) var(--page-gutter) clamp(60px, 8vw, 120px);
+}
+
+.commission-inner {
+  display: grid;
+  gap: clamp(88px, 10vw, 152px);
+  width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
+}
+
+.commission-hero {
+  display: grid;
+  gap: clamp(32px, 4vw, 56px);
+}
+
+.commission-hero-copy {
+  display: grid;
+  gap: clamp(18px, 2vw, 26px);
+  align-content: end;
+}
+
+.commission-hero-copy .eyebrow {
+  margin: 0;
+}
+
+.commission-hero .section-page-title {
+  font-size: clamp(2.3rem, 4.6vw, 4.6rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  word-break: keep-all;
+}
+
+.commission-lead {
+  max-width: 31em;
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(1.08rem, 0.98rem + 0.36vw, 1.32rem);
+  line-height: 1.75;
+  letter-spacing: -0.012em;
+  text-wrap: pretty;
+}
+
+.commission-meta {
+  margin: 0;
+  color: var(--quiet);
+  font-size: clamp(0.88rem, 0.84rem + 0.12vw, 0.96rem);
+  line-height: 1.6;
+}
+
+.commission-hero-image {
+  width: 100%;
+  margin: 0;
+}
+
+.commission-hero-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 3px;
+  background: var(--bg-soft);
+}
+
+.commission-hero-image figcaption {
+  margin-top: 12px;
+  color: var(--quiet);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+/* Sections: a narrow label column on the left, content on the right (desktop). */
+.commission-section {
+  display: grid;
+  gap: clamp(20px, 2.4vw, 28px);
+}
+
+.commission-section-title {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(0.98rem, 0.92rem + 0.16vw, 1.08rem);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+.commission-section p {
+  margin: 0;
+}
+
+/* Two doors on /commissions: Portraits and Commercial. */
+.commission-paths {
+  display: grid;
+  border-top: 1px solid var(--line);
+}
+
+.commission-paths a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px 24px;
+  align-items: baseline;
+  padding: clamp(26px, 3.2vw, 42px) 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.commission-path-title {
+  font-size: clamp(1.7rem, 2.8vw, 2.6rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+  transition: text-decoration-color 180ms ease;
+}
+
+.commission-path-text {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  max-width: 34em;
+  color: var(--quiet);
+  font-size: clamp(1rem, 0.93rem + 0.24vw, 1.12rem);
+  line-height: 1.7;
+}
+
+.commission-path-arrow {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: clamp(1.2rem, 1.6vw, 1.6rem);
+  line-height: 1;
+  transition: transform 260ms var(--ease-apple);
+}
+
+.commission-paths a:hover .commission-path-title,
+.commission-paths a:focus-visible .commission-path-title {
+  text-decoration-color: currentColor;
+}
+
+.commission-paths a:hover .commission-path-arrow,
+.commission-paths a:focus-visible .commission-path-arrow {
+  transform: translateX(6px);
+}
+
+.commission-paths a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+/* Cases: photos in two columns, a full-width frame first on phones. */
+.commission-case-title {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.45rem, 2.2vw, 2rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  word-break: keep-all;
+}
+
+.commission-case-meta {
+  margin-top: 8px !important;
+  color: var(--quiet);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.commission-facts {
+  display: grid;
+  gap: 10px;
+  margin: 22px 0 0;
+}
+
+.commission-facts div {
+  display: grid;
+  gap: 2px;
+}
+
+.commission-facts dt {
+  color: var(--quiet);
+  font-size: 0.82rem;
+}
+
+.commission-facts dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.commission-case-body {
+  margin-top: 22px;
+  color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.75;
+}
+
+.commission-case-body p + p {
+  margin-top: 1em;
+}
+
+.commission-frames {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(10px, 1.3vw, 18px);
+  align-items: start;
+}
+
+.commission-frames .photo-tile {
+  display: block;
+  margin: 0;
+  scroll-margin-top: calc(var(--header-height) + 24px);
+}
+
+.commission-case {
+  scroll-margin-top: calc(var(--header-height) + 24px);
+}
+
+/* Personal work: three archive photos on /commissions, three series on the commercial page. */
+.commission-archive-body,
+.commission-terms-body {
+  display: grid;
+  gap: clamp(20px, 2.4vw, 30px);
+  justify-items: start;
+}
+
+.commission-archive-body > p,
+.commission-terms-body > p,
+.commission-series-header > p {
+  max-width: 40em;
+  color: var(--muted);
+  font-size: clamp(1rem, 0.93rem + 0.24vw, 1.12rem);
+  line-height: 1.75;
+}
+
+.commission-terms-body > p + p {
+  margin-top: calc(clamp(20px, 2.4vw, 30px) * -0.5);
+}
+
+.commission-archive-photos {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(10px, 1.3vw, 18px);
+  align-items: end;
+}
+
+.commission-archive-photos a {
+  display: block;
+  overflow: hidden;
+  border-radius: 3px;
+}
+
+.commission-archive-photos picture,
+.commission-archive-photos img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.commission-archive-photos img {
+  background: var(--bg-soft);
+  transition: transform 480ms var(--ease-spring);
+}
+
+.commission-archive-photos a:hover img,
+.commission-archive-photos a:focus-visible img {
+  transform: scale(1.018);
+}
+
+.commission-archive-photos a:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.commission-series-header {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.commission-series-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(28px, 3vw, 44px) clamp(14px, 1.8vw, 24px);
+}
+
+.commission-series-grid .series-card {
+  gap: 14px;
+  text-decoration: none;
+}
+
+.commission-series-grid .series-card-copy strong {
+  font-size: clamp(1.02rem, 0.96rem + 0.2vw, 1.18rem);
+}
+
+/* The covers have different shapes; one shared crop keeps the three cards even.
+   !important is needed to override the photo's own aspect ratio set inline by the build. */
+.commission-series-grid .series-card > picture,
+.commission-series-grid .series-card > picture > img {
+  aspect-ratio: 4 / 3 !important;
+}
+
+.commission-series-grid .series-card > picture > img {
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Process steps on the portrait page. */
+/* Line the label up with the first step's title rather than the rule above it. */
+.commission-process-label {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  align-content: start;
+  padding-top: clamp(18px, 2vw, 24px);
+}
+
+.commission-steps {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+
+.commission-steps li {
+  display: grid;
+  gap: 6px;
+  padding: clamp(18px, 2vw, 24px) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.commission-steps h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.commission-steps p {
+  max-width: 38em;
+  color: var(--muted);
+  font-size: clamp(1rem, 0.93rem + 0.24vw, 1.12rem);
+  line-height: 1.7;
+}
+
+/* Contact. */
+.commission-contact-body {
+  display: grid;
+  gap: clamp(22px, 2.6vw, 32px);
+}
+
+.commission-contact-prompt {
+  max-width: 22em;
+  color: var(--ink);
+  font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.9rem);
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.commission-contact-list {
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.commission-contact-list div {
+  display: grid;
+  grid-template-columns: minmax(84px, 7.5rem) minmax(0, 1fr);
+  gap: 16px;
+  align-items: baseline;
+}
+
+.commission-contact-list dt {
+  color: var(--quiet);
+  font-size: 0.92rem;
+}
+
+.commission-contact-list dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1rem, 0.95rem + 0.16vw, 1.08rem);
+  overflow-wrap: anywhere;
+}
+
+.commission-social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+}
+
+.commission-contact-list a {
+  position: relative;
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(16, 16, 18, 0.24);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 160ms ease;
+}
+
+.commission-contact-list a::after {
+  content: "";
+  position: absolute;
+  inset: -10px -6px;
+}
+
+.commission-contact-list a:hover,
+.commission-contact-list a:focus-visible {
+  text-decoration-color: currentColor;
+}
+
+.commission-contact-list a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+@media (min-width: 901px) {
+  .commission-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.86fr);
+    align-items: end;
+  }
+
+  .commission-hero-image {
+    width: min(100%, 540px, calc((100svh - var(--header-height) - 150px) * 0.75));
+    justify-self: end;
+  }
+
+  .commission-hero-text {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .commission-section {
+    grid-template-columns: minmax(150px, 0.22fr) minmax(0, 1fr);
+    column-gap: clamp(36px, 4vw, 62px);
+    align-items: start;
+  }
+
+  .commission-section > :first-child {
+    grid-column: 1;
+  }
+
+  .commission-section > :not(:first-child) {
+    grid-column: 2;
+  }
+
+  /* The place name stays beside its photos while they scroll. */
+  .commission-case-header {
+    position: sticky;
+    top: calc(var(--header-height) + 28px);
+  }
+
+  /* Same two columns as the sections below, so the descriptions line up with their text. */
+  .commission-paths a {
+    position: relative;
+    grid-template-columns: minmax(150px, 0.22fr) minmax(0, 1fr);
+    column-gap: clamp(36px, 4vw, 62px);
+  }
+
+  .commission-path-text {
+    grid-column: 2;
+    grid-row: 1;
+    padding-right: 56px;
+  }
+
+  .commission-path-arrow {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    margin-top: -0.5em;
+  }
+
+  .commission-series {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .commission-series > .commission-series-header {
+    grid-template-columns: minmax(150px, 0.22fr) minmax(0, 1fr);
+    column-gap: clamp(36px, 4vw, 62px);
+    align-items: baseline;
+  }
+
+  .commission-series > .commission-series-grid {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .commission-page {
+    padding-top: calc(var(--header-height) + 36px);
+  }
+
+  .commission-hero-image {
+    max-width: 560px;
+  }
+}
+
+@media (max-width: 620px) {
+  .commission-page {
+    padding-inline: 20px;
+  }
+
+  .commission-frames > :first-child,
+  .commission-frames > :last-child:nth-child(even) {
+    grid-column: 1 / -1;
+  }
+
+  .commission-series-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .commission-contact-list div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .commission-path-arrow,
+  .commission-path-title,
+  .commission-archive-photos img,
+  .commission-contact-list a {
+    transition: none;
+  }
+
+  .commission-paths a:hover .commission-path-arrow,
+  .commission-paths a:focus-visible .commission-path-arrow,
+  .commission-archive-photos a:hover img,
+  .commission-archive-photos a:focus-visible img {
+    transform: none;
+  }
+}
+
+/* Commission cases: previews on the Portraits and Commercial pages, one page per case, example stand-ins. */
+.commission-case-title a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+  transition: text-decoration-color 180ms ease;
+}
+
+.commission-case-title a:hover,
+.commission-case-title a:focus-visible {
+  text-decoration-color: currentColor;
+}
+
+.commission-case-title a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+.commission-preview-header {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+}
+
+.commission-case-summary {
+  max-width: 22em;
+  margin-top: 12px !important;
+  color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.7;
+}
+
+.commission-preview {
+  display: grid;
+  gap: clamp(18px, 2vw, 26px);
+  justify-items: start;
+}
+
+.commission-preview-frames {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(10px, 1.3vw, 18px);
+  align-items: start;
+}
+
+.commission-preview-frame {
+  display: block;
+  overflow: hidden;
+  border-radius: 3px;
+}
+
+.commission-preview-frame picture,
+.commission-preview-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.commission-preview-frame img {
+  background: var(--bg-soft);
+  transition: transform 480ms var(--ease-spring);
+}
+
+.commission-preview-frame:hover img {
+  transform: scale(1.018);
+}
+
+/* Case page: place, year and project details stay beside the photos; any text sits above them. */
+.commission-case-page .commission-facts {
+  margin: 0;
+  gap: 14px;
+}
+
+.commission-case-content {
+  display: grid;
+  gap: clamp(32px, 4vw, 52px);
+}
+
+.commission-case-page .commission-case-body {
+  max-width: 38em;
+  margin: 0;
+  font-size: clamp(1rem, 0.93rem + 0.24vw, 1.12rem);
+}
+
+.commission-pagination {
+  display: grid;
+  gap: 18px 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.commission-pagination a {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  min-height: 44px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.commission-pagination span {
+  color: var(--nav-muted);
+  font-size: 0.82rem;
+}
+
+.commission-pagination strong {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.commission-pagination-index {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.commission-pagination a:hover strong,
+.commission-pagination a:focus-visible strong,
+.commission-pagination-index:hover,
+.commission-pagination-index:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.commission-pagination a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+/* Example content (draft: true): grey stand-ins with a dashed edge and an "Example" tag. */
+.commission-frame-empty {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border: 1px dashed rgba(16, 16, 18, 0.2);
+  border-radius: 3px;
+  color: var(--quiet);
+  background: var(--bg-soft);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
+.commission-draft-tag {
+  width: fit-content;
+  margin-top: 10px;
+  padding: 3px 10px;
+  border: 1px dashed rgba(16, 16, 18, 0.34);
+  border-radius: 999px;
+  color: var(--quiet);
+  font-size: 0.74rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+}
+
+.commission-process-label .commission-draft-tag,
+.commission-hero-copy .commission-draft-tag {
+  margin-top: 0;
+}
+
+.commission-steps li[data-commission-draft] p {
+  color: var(--quiet);
+}
+
+@media (min-width: 901px) {
+  .commission-pagination {
+    grid-template-columns: minmax(150px, 0.22fr) minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: clamp(36px, 4vw, 62px);
+  }
+
+  .commission-pagination [rel="prev"] {
+    grid-column: 2;
+  }
+
+  .commission-pagination [rel="next"] {
+    grid-column: 3;
+  }
+}
+
+@media (max-width: 620px) {
+  .commission-preview-frames {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .commission-preview-frames > :first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .commission-case-title a,
+  .commission-preview-frame img {
+    transition: none;
+  }
+
+  .commission-preview-frame:hover img {
+    transform: none;
+  }
+}
+
+/* Case page: the title and its photos belong together, so the gap between them is half the usual. */
+.commission-case-page .commission-hero {
+  margin-bottom: calc(clamp(88px, 10vw, 152px) * -0.5);
+}
+
+/* Case page on phones: project details in two columns, so the photos start sooner. */
+@media (max-width: 620px) {
+  .commission-case-page .commission-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 16px;
+  }
+}
+
+/* Commission pages share the main header; these tabs (Works page style) move between Overview, Portraits and Commercial. */
+.commission-tabs-row {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto clamp(40px, 5vw, 72px);
+}
+
+/* Phones: "Commissions" makes the English nav the longest, so its items get less side padding to stay inside the margins. */
+@media (max-width: 420px) {
+  html[lang="en"] .main-nav > a {
+    padding-inline: 7px;
+  }
+}
+
+@media (max-width: 350px) {
+  html[lang="en"] .main-nav > a {
+    padding-inline: 4px;
+    letter-spacing: 0;
+  }
+}

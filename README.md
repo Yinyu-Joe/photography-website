@@ -56,6 +56,7 @@ npx wrangler pages dev _site --ip 127.0.0.1 --port 4174
 | --- | --- |
 | 首页文案、关于页、版权说明、联系方式、社交链接、故事 | `content/site-content.mjs` |
 | 照片的手写标题和说明 | `content/photo-text.json` |
+| 委托拍摄页（人像、商业案例、合作方式、联系） | `content/commissions.mjs`，照片放在 `assets/commissions/` |
 | 首页 9 张照片、精选顺序、系列、全部作品筛选 | `assets/photos/portfolio-data.js` |
 | 照片清单、年份、原始文件对应 | `assets/photos/photo-manifest.js` |
 | 拍摄地点和地图坐标 | `assets/photos/place-manifest.js` |
@@ -68,6 +69,8 @@ npx wrangler pages dev _site --ip 127.0.0.1 --port 4174
 - `content/photo-text.json` 按照片 id 填写，例如 `city-03`。哪种语言留空，那种语言就继续用自动生成的“某年拍摄于某地”，所以可以一张一张慢慢补。写错 id 时构建会报错。
 - 中文标题要控制换行时：首页标题在 `content/site-content.mjs` 里用 `<wbr>` 标出换行位置；故事标题用 `titlePhrases` 分词组，拼起来必须和中文标题完全一致，否则构建会报错。
 - 故事正文 `body` 按段落写成数组；`excerpt` 是故事列表显示的一句话，也用作页面描述；`location` 和 `date` 显示在详情页照片下方，没有就留 `null`。`alt` 只给读屏和图片加载失败时使用，不在页面上显示。
+- 委托拍摄页 `/commissions`、`/commissions/portraits`、`/commissions/commercial` 是发给客户看的，在主导航的“委托”下，页面顶部用“概览 / 人像 / 商业”标签切换。默认不被搜索引擎收录，也不进 sitemap；想被搜到，把 `content/commissions.mjs` 里的 `searchVisible` 改成 `true`。每个案例有自己的页面（`/commissions/portraits/<id>`、`/commissions/commercial/<id>`），可以单独发给客户。加一个案例：把照片放进 `assets/commissions/`，再在 `commissionCases` 里写一段，宽高会自动读取。
+- 写着 `draft: true` 的案例和流程步骤是示例：没有照片时显示灰色占位框，并带“示例”标记，用来先看框架。`npm run test` 照常通过，并在 `commissionExamplePages` 里显示还有几页带示例；`npm run validate` 只要还有示例就会失败，所以示例不会被发布出去。
 - `homePhotoIds` 必须正好 9 张，顺序对应首页拼贴的九个位置，第 1、4、7 张显示得最大。
 - `styles.css` 是按时间往后叠加的，后面的段落会覆盖前面的同名规则。新增的规则加在文件末尾，并写一行注释说明用途。
 - 新增照片：先在 `photo-manifest.js` 里加基础信息，要进精选或系列，再把 id 加进 `portfolio-data.js`。

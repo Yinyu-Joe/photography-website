@@ -10,6 +10,6 @@
     "audit:images": "node scripts/audit-image-metadata.mjs",
     "lighthouse:local": "node scripts/run-lighthouse.mjs",
     "test": "npm run build:fast && npm run audit:site",
-    "validate": "npm run build && npm run audit:site && npm run audit:images"
+    "validate": "npm run build && npm run audit:site -- --release && npm run audit:images"
   }
 }

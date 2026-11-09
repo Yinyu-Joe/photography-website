@@ -54,7 +54,30 @@ const labels = {
     archive: "摄影档案",
     allSeries: "全部系列",
     allPlaces: "全部地点",
-    allStories: "全部故事"
+    allStories: "全部故事",
+    commissions: "委托拍摄",
+    commissionsNav: "委托",
+    overview: "概览",
+    portraits: "人像",
+    commercial: "商业",
+    socials: "社交平台",
+    personalWork: "个人作品",
+    openArchive: "进入摄影档案",
+    process: "拍摄与交付",
+    terms: "报价与授权",
+    commissionTypes: "委托类型",
+    example: "示例",
+    photo: "照片",
+    viewSet: "查看这组照片",
+    viewCase: "查看案例",
+    howItWorks: "合作流程",
+    place: "地点",
+    year: "年份",
+    previousCase: "上一个",
+    nextCase: "下一个",
+    moreCases: "更多案例",
+    allPortraits: "全部人像",
+    allCommercial: "全部商业案例"
   },
   en: {
     skip: "Skip to main content",
@@ -80,7 +103,30 @@ const labels = {
     archive: "Photography archive",
     allSeries: "All series",
     allPlaces: "All places",
-    allStories: "All stories"
+    allStories: "All stories",
+    commissions: "Commissions",
+    commissionsNav: "Commissions",
+    overview: "Overview",
+    portraits: "Portraits",
+    commercial: "Commercial",
+    socials: "Social",
+    personalWork: "Personal work",
+    openArchive: "Open the archive",
+    process: "Shoot and delivery",
+    terms: "Quotes and licensing",
+    commissionTypes: "Kinds of commission",
+    example: "Example",
+    photo: "Photo",
+    viewSet: "See the full set",
+    viewCase: "View the case",
+    howItWorks: "How it works",
+    place: "Place",
+    year: "Year",
+    previousCase: "Previous",
+    nextCase: "Next",
+    moreCases: "More cases",
+    allPortraits: "All portraits",
+    allCommercial: "All commercial work"
   }
 };
 
@@ -134,6 +180,8 @@ function imageDimensions(image) {
   if (photo?.width && photo?.height) return { width: photo.width, height: photo.height };
   const story = content.stories.find((entry) => entry.coverPhoto === image);
   if (story?.width && story?.height) return { width: story.width, height: story.height };
+  const frame = content.commissions.images.find((entry) => entry.source === image);
+  if (frame) return { width: frame.width, height: frame.height };
   return null;
 }
 
@@ -150,7 +198,8 @@ function route(locale, type, slug) {
     places: "/places",
     stories: "/stories",
     about: "/about",
-    rights: "/rights"
+    rights: "/rights",
+    commissions: "/commissions"
   }[type];
   if (base === undefined) throw new Error(`Unknown route type: ${type}`);
   return `${prefix}${base}${slug ? `/${slug}` : ""}` || "/";
@@ -175,7 +224,7 @@ function equivalentPath(locale, type, slug) {
   return route(locale === "zh" ? "en" : "zh", type, slug);
 }
 
-function headMarkup({ locale, type, slug, title, description, image, imageAlt, ogType = "website", jsonLd = [], headExtra = "" }) {
+function headMarkup({ locale, type, slug, title, description, image, imageAlt, ogType = "website", jsonLd = [], headExtra = "", robots = "index, follow, max-image-preview:large" }) {
   const canonicalPath = route(locale, type, slug);
   const zhPath = route("zh", type, slug);
   const enPath = route("en", type, slug);
@@ -190,7 +239,7 @@ function headMarkup({ locale, type, slug, title, description, image, imageAlt, o
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>${esc(title)}</title>
     <meta name="description" content="${esc(description)}">
-    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="robots" content="${robots}">
     <meta name="theme-color" content="#fafafa">
     <link rel="canonical" href="${absolute(canonicalPath)}">
     <link rel="alternate" hreflang="zh-CN" href="${absolute(zhPath)}">
@@ -231,6 +280,7 @@ function headerMarkup(locale, currentType, equivalentHref) {
     ["work", l.work, `${prefix}/work`],
     ["places", l.places, `${prefix}/places`],
     ["stories", l.stories, `${prefix}/stories`],
+    ["commissions", l.commissionsNav, `${prefix}/commissions`],
     ["about", l.about, `${prefix}/about`]
   ];
   return `
@@ -259,6 +309,7 @@ function footerMarkup(locale) {
     <footer class="archive-footer">
       <p>© 2026 Yinyu Zhu</p>
       <nav aria-label="${locale === "zh" ? "页脚导航" : "Footer navigation"}">
+        <a href="${prefix}/commissions">${l.commissions}</a>
         <a href="${prefix}/about">${l.about}</a>
         <a href="${prefix}/rights">${l.rights}</a>
         <a href="mailto:${site.author.email}">${l.email}</a>
@@ -266,11 +317,11 @@ function footerMarkup(locale) {
     </footer>`;
 }
 
-function pageShell({ locale, type, slug = null, title, description, image, imageAlt, main, scripts = [], bodyClass = "", ogType, jsonLd, headExtra = "" }) {
+function pageShell({ locale, type, slug = null, title, description, image, imageAlt, main, scripts = [], bodyClass = "", ogType, jsonLd, headExtra = "", robots }) {
   const equivalentHref = equivalentPath(locale, type, slug);
   return `<!DOCTYPE html>
 <html lang="${locale === "zh" ? "zh-CN" : "en"}" data-site-v2>
-  <head>${headMarkup({ locale, type, slug, title, description, image, imageAlt, ogType, jsonLd, headExtra })}
+  <head>${headMarkup({ locale, type, slug, title, description, image, imageAlt, ogType, jsonLd, headExtra, robots })}
   </head>
   <body${bodyClass ? ` class="${bodyClass}"` : ""}>${headerMarkup(locale, type, equivalentHref)}
 ${main}
@@ -284,8 +335,8 @@ function photoHref(locale, photo) {
   return route(locale, "work", photo.slug);
 }
 
-function pictureMarkup(photo, locale, { sizes = "(max-width: 640px) 70vw, 33vw", eager = false, decorative = false, className = "" } = {}) {
-  const alt = decorative ? "" : photoAccessibleText(photo, locale);
+function pictureMarkup(photo, locale, { sizes = "(max-width: 640px) 70vw, 33vw", eager = false, decorative = false, className = "", alt: altText } = {}) {
+  const alt = decorative ? "" : altText ?? photoAccessibleText(photo, locale);
   const loading = eager ? "eager" : "lazy";
   const priority = eager ? ' fetchpriority="high"' : ' fetchpriority="low"';
   const width = photo.width || 1000;
@@ -581,7 +632,7 @@ function aboutPage(locale) {
     description: site.about[locale][0],
     image: "/assets/home/home-landscape.jpg",
     jsonLd: [personJsonLd()],
-    main: `    <main class="about-minimal" id="main-content" tabindex="-1"><section class="about-minimal-content"><div class="about-minimal-section"><h1 class="section-page-title">${l.about}</h1>${paragraphs}</div><div class="about-minimal-section contact-panel" id="contact"><h2 class="about-minimal-title">${l.contact}</h2><dl class="contact-list">${contactRows}</dl><nav class="mobile-social-links" aria-label="${locale === "zh" ? "社交账号" : "Social profiles"}">${site.author.socials.map((social) => `<a href="${esc(social.href)}" target="_blank" rel="noopener noreferrer">${esc(social.label)}</a>`).join("")}</nav></div><div class="about-minimal-section rights-summary"><h2 class="about-minimal-title">${l.rights}</h2><p>${esc(site.rights[locale][0])}</p><p><a class="home-text-link" href="${route(locale, "rights")}">${l.imageRights}<span aria-hidden="true">↗</span></a></p></div></section></main>`
+    main: `    <main class="about-minimal" id="main-content" tabindex="-1"><section class="about-minimal-content"><div class="about-minimal-section"><h1 class="section-page-title">${l.about}</h1>${paragraphs}</div><div class="about-minimal-section contact-panel" id="contact"><h2 class="about-minimal-title">${l.contact}</h2><dl class="contact-list">${contactRows}</dl><nav class="mobile-social-links" aria-label="${locale === "zh" ? "社交账号" : "Social profiles"}">${site.author.socials.map((social) => `<a href="${esc(social.href)}" target="_blank" rel="noopener noreferrer">${esc(social.label)}</a>`).join("")}</nav></div><div class="about-minimal-section commission-summary"><h2 class="about-minimal-title">${l.commissions}</h2><p>${locale === "zh" ? "人像与商业拍摄的案例和合作方式。" : "Portrait and commercial work, and how to commission it."}</p><p><a class="home-text-link" href="${route(locale, "commissions")}">${locale === "zh" ? "查看委托拍摄" : "View commissions"}<span aria-hidden="true">↗</span></a></p></div><div class="about-minimal-section rights-summary"><h2 class="about-minimal-title">${l.rights}</h2><p>${esc(site.rights[locale][0])}</p><p><a class="home-text-link" href="${route(locale, "rights")}">${l.imageRights}<span aria-hidden="true">↗</span></a></p></div></section></main>`
   });
 }
 
@@ -642,6 +693,329 @@ function photoDetailPage(locale, photo, index) {
   });
 }
 
+// ---- Commissions (/commissions): client-facing portrait and commercial pages. Content: content/commissions.mjs.
+const commissionData = content.commissions;
+const commissionRobots = commissionData.searchVisible ? undefined : "noindex, follow";
+
+function commissionAlt(entry, locale, index) {
+  const place = text(entry.place, locale);
+  const count = entry.frames.length;
+  if (entry.kind === "commercial") {
+    const name = [text(entry.title, locale), place, entry.year].filter(Boolean).join(locale === "zh" ? "，" : ", ");
+    return locale === "zh" ? `${name}，第 ${index + 1} 张` : `${name}, ${index + 1} of ${count}`;
+  }
+  return locale === "zh"
+    ? `${[`${place}人像`, entry.year].filter(Boolean).join("，")}，第 ${index + 1} 张`
+    : `${[`Portrait in ${place}`, entry.year].filter(Boolean).join(", ")}, ${index + 1} of ${count}`;
+}
+
+function commissionFrame(image, locale, { group, title, meta, alt, sizes, eager = false }) {
+  const lightboxWidth = availableVariantWidths(image).at(-1);
+  const optimizedAttributes = skipImageBuild ? "" : ` data-lightbox-avif-src="${variantUrl(image, lightboxWidth, "avif")}" data-lightbox-webp-src="${variantUrl(image, lightboxWidth, "webp")}"`;
+  const label = locale === "zh" ? `放大查看：${alt}` : `View larger: ${alt}`;
+  return `<a class="photo-tile is-visible commission-frame" id="${image.key}" href="#${image.key}" aria-label="${esc(label)}" data-lightbox-item data-lightbox-group="${esc(group)}" data-photo-id="${image.key}" data-full-src="${image.source}"${optimizedAttributes} data-title="${esc(title)}" data-alt="${esc(alt)}" data-caption="" data-meta="${esc(meta)}"><figure>${pictureMarkup(image, locale, { eager, sizes, alt })}</figure></a>`;
+}
+
+const commissionSections = { portrait: "portraits", commercial: "commercial" };
+
+// Cases and steps marked draft: true in content/commissions.mjs show the finished layout with grey
+// stand-ins and an "Example" tag. npm run validate fails while any of them is still on a page.
+function draftAttribute(draft) {
+  return draft ? " data-commission-draft" : "";
+}
+
+function draftTag(draft, locale) {
+  return draft ? `<span class="commission-draft-tag">${labels[locale].example}</span>` : "";
+}
+
+function commissionCaseHref(locale, entry) {
+  return route(locale, "commissions", `${commissionSections[entry.kind]}/${entry.id}`);
+}
+
+function commissionCaseHeading(entry, locale) {
+  return entry.title ? text(entry.title, locale) : text(entry.place, locale);
+}
+
+function commissionCaseMeta(entry, locale) {
+  return [entry.title ? text(entry.place, locale) : "", entry.year].filter(Boolean).join(" · ");
+}
+
+function commissionEmptyFrame(locale) {
+  return `<div class="commission-frame-empty" data-commission-draft><span>${labels[locale].photo}</span></div>`;
+}
+
+function commissionFramesMarkup(entry, locale) {
+  if (!entry.frames.length) return Array.from({ length: entry.placeholders }, () => commissionEmptyFrame(locale)).join("\n          ");
+  const heading = commissionCaseHeading(entry, locale);
+  const meta = commissionCaseMeta(entry, locale);
+  const count = entry.frames.length;
+  return entry.frames.map((image, index) => {
+    // On phones the first photo, and a last photo left without a partner, run full width.
+    const fullOnPhone = index === 0 || (index === count - 1 && count % 2 === 0);
+    const sizes = `${fullOnPhone ? "(max-width: 620px) calc(100vw - 40px)" : "(max-width: 620px) calc(50vw - 26px)"}, (max-width: 900px) calc(50vw - 44px), 470px`;
+    return commissionFrame(image, locale, {
+      group: `commission-${entry.id}`,
+      title: heading,
+      meta,
+      alt: commissionAlt(entry, locale, index),
+      sizes,
+      eager: index < 2
+    });
+  }).join("\n          ");
+}
+
+// On the Portraits and Commercial pages each case shows its first three photos and links to its own page.
+function commissionCasePreview(entry, locale) {
+  const l = labels[locale];
+  const href = commissionCaseHref(locale, entry);
+  const heading = commissionCaseHeading(entry, locale);
+  const meta = commissionCaseMeta(entry, locale);
+  const frames = entry.frames.length
+    ? entry.frames.slice(0, 3).map((image, index) => `<a class="commission-preview-frame" href="${href}" tabindex="-1" aria-hidden="true">${pictureMarkup(image, locale, { decorative: true, sizes: index === 0 ? "(max-width: 620px) calc(100vw - 40px), (max-width: 900px) 33vw, 300px" : "(max-width: 620px) calc(50vw - 26px), (max-width: 900px) 33vw, 300px" })}</a>`).join("")
+    : Array.from({ length: Math.min(3, entry.placeholders) }, () => commissionEmptyFrame(locale)).join("");
+  return `
+      <section class="commission-section commission-case-preview" id="${entry.id}" aria-labelledby="case-${entry.id}"${draftAttribute(entry.draft)}>
+        <header class="commission-preview-header"><h2 class="commission-case-title" id="case-${entry.id}"><a href="${href}">${esc(heading)}</a></h2>${draftTag(entry.draft, locale)}${meta ? `<p class="commission-case-meta">${esc(meta)}</p>` : ""}${entry.summary ? `<p class="commission-case-summary">${esc(text(entry.summary, locale))}</p>` : ""}</header>
+        <div class="commission-preview">
+          <div class="commission-preview-frames">${frames}</div>
+          <a class="home-text-link" href="${href}">${entry.kind === "portrait" ? l.viewSet : l.viewCase}<span aria-hidden="true">↗</span></a>
+        </div>
+      </section>`;
+}
+
+function commissionProcessMarkup(steps, locale, { id, title }) {
+  const hasDraft = steps.some((step) => step.draft);
+  return `
+      <section class="commission-section commission-process" aria-labelledby="${id}"${draftAttribute(hasDraft)}>
+        <div class="commission-process-label"><h2 class="commission-section-title" id="${id}">${title}</h2>${draftTag(hasDraft, locale)}</div>
+        <ol class="commission-steps">${steps.map((step) => `<li${draftAttribute(step.draft)}><h3>${esc(text(step.title, locale))}</h3><p>${esc(text(step.text, locale))}</p></li>`).join("")}</ol>
+      </section>`;
+}
+
+function commissionContactMarkup(locale) {
+  const l = labels[locale];
+  const subject = encodeURIComponent(text(commissionData.contact.mailSubject, locale));
+  return `
+      <section class="commission-section commission-contact" id="contact" aria-labelledby="commissionContactTitle">
+        <h2 class="commission-section-title" id="commissionContactTitle">${l.contact}</h2>
+        <div class="commission-contact-body">
+          <p class="commission-contact-prompt">${esc(text(commissionData.contact.prompt, locale))}</p>
+          <dl class="commission-contact-list">
+            <div><dt>${l.email}</dt><dd><a href="mailto:${site.author.email}?subject=${subject}">${site.author.email}</a></dd></div>
+            ${site.author.wechat ? `<div><dt>${l.wechat}</dt><dd>${esc(site.author.wechat)}</dd></div>` : ""}
+            <div><dt>${l.socials}</dt><dd class="commission-social-links">${site.author.socials.map((social) => `<a href="${esc(social.href)}" target="_blank" rel="noopener noreferrer">${esc(social.label)}</a>`).join("")}</dd></div>
+          </dl>
+        </div>
+      </section>`;
+}
+
+function commissionHeroImage(key, locale, { alt, caption, eager = true } = {}) {
+  const image = commissionData.imageByKey.get(key);
+  return `<figure class="commission-hero-image">${pictureMarkup(image, locale, { eager, alt, sizes: "(max-width: 900px) calc(100vw - 40px), 540px" })}${caption ? `<figcaption>${esc(caption)}</figcaption>` : ""}</figure>`;
+}
+
+// Tabs for moving between the commission pages, in the same style as the Works page tabs.
+// On a case page the tab of its list is highlighted but is not the current page.
+function commissionTabs(locale, activeKey, { isCurrentPage = true } = {}) {
+  const l = labels[locale];
+  const items = [
+    ["overview", l.overview, route(locale, "commissions")],
+    ["portraits", l.portraits, route(locale, "commissions", "portraits")],
+    ["commercial", l.commercial, route(locale, "commissions", "commercial")]
+  ];
+  const links = items.map(([key, label, href]) => {
+    if (key !== activeKey) return `<a href="${href}">${label}</a>`;
+    return `<a class="is-active" href="${href}"${isCurrentPage ? ' aria-current="page"' : ""}>${label}</a>`;
+  }).join("");
+  return `<div class="commission-tabs-row"><nav class="works-tabs commission-tabs" aria-label="${l.commissions}">${links}</nav></div>`;
+}
+
+function commissionPageShell(locale, { slug = null, activeKey = "overview", isCurrentPage = true, title, description, image, imageAlt, main, lightbox = false }) {
+  const tabs = commissionTabs(locale, activeKey, { isCurrentPage });
+  return pageShell({
+    locale,
+    type: "commissions",
+    slug,
+    title,
+    description,
+    image,
+    imageAlt,
+    robots: commissionRobots,
+    bodyClass: "commission-site",
+    scripts: lightbox ? ["/assets/archive-interactions.js?v=archive-v2"] : [],
+    main: `${main.replace('<div class="commission-inner">', `${tabs}\n      <div class="commission-inner">`)}${lightbox ? lightboxMarkup(locale) : ""}`
+  });
+}
+
+function commissionsLandingPage(locale) {
+  const l = labels[locale];
+  const landing = commissionData.landing;
+  const cover = commissionData.imageByKey.get(landing.cover);
+  const coverCase = commissionData.cases.find((entry) => entry.frames.includes(cover));
+  const coverAlt = coverCase ? commissionAlt(coverCase, locale, coverCase.frames.indexOf(cover)) : text(landing.title, locale);
+  const countries = new Set(content.places.map((place) => place.country.zh)).size;
+  const archiveLine = locale === "zh"
+    ? `摄影档案里有我在 ${countries} 个国家和地区、${content.places.length} 个地方拍的 ${content.photos.length} 张照片。`
+    : `The archive holds ${content.photos.length} photographs from ${content.places.length} places in ${countries} countries and regions.`;
+  const archivePhotos = landing.archivePhotoIds.map((id) => photoById.get(id)).map((photo) => `<a href="${photoHref(locale, photo)}" aria-label="${esc(photoAccessibleText(photo, locale))}">${pictureMarkup(photo, locale, { decorative: true, sizes: "(max-width: 900px) calc(33vw - 24px), 280px" })}</a>`).join("");
+  const description = text(landing.lead, locale);
+  return commissionPageShell(locale, {
+    title: locale === "zh" ? "委托拍摄 | Yinyu Zhu Photography" : "Commissions | Yinyu Zhu Photography",
+    description,
+    image: cover.source,
+    imageAlt: coverAlt,
+    main: `    <main class="commission-page commission-landing" id="main-content" tabindex="-1">
+      <div class="commission-inner">
+      <section class="commission-hero" aria-labelledby="commissionsTitle">
+        <div class="commission-hero-copy">
+          <h1 class="section-page-title" id="commissionsTitle">${esc(text(landing.title, locale))}</h1>
+          <p class="commission-lead">${esc(description)}</p>
+          <p class="commission-meta">${esc(text(commissionData.base, locale))}</p>
+        </div>
+        ${commissionHeroImage(landing.cover, locale, { alt: coverAlt })}
+      </section>
+      <nav class="commission-paths" aria-label="${l.commissionTypes}">
+        <a href="${route(locale, "commissions", "portraits")}"><span class="commission-path-title">${l.portraits}</span><span class="commission-path-text">${esc(text(landing.portraitsLine, locale))}</span><span class="commission-path-arrow" aria-hidden="true">→</span></a>
+        <a href="${route(locale, "commissions", "commercial")}"><span class="commission-path-title">${l.commercial}</span><span class="commission-path-text">${esc(text(landing.commercialLine, locale))}</span><span class="commission-path-arrow" aria-hidden="true">→</span></a>
+      </nav>
+      <section class="commission-section commission-archive" aria-labelledby="commissionArchiveTitle">
+        <h2 class="commission-section-title" id="commissionArchiveTitle">${l.personalWork}</h2>
+        <div class="commission-archive-body">
+          <p>${esc(archiveLine)}</p>
+          <div class="commission-archive-photos">${archivePhotos}</div>
+          <a class="home-text-link" href="${route(locale, "home")}">${l.openArchive}<span aria-hidden="true">↗</span></a>
+        </div>
+      </section>${commissionContactMarkup(locale)}
+      </div>
+    </main>`
+  });
+}
+
+function commissionPortraitsPage(locale) {
+  const l = labels[locale];
+  const portraits = commissionData.portraits;
+  const cases = commissionData.cases.filter((entry) => entry.kind === "portrait");
+  const coverCaption = [text(portraits.coverPlace, locale), portraits.coverYear].filter(Boolean).join(" · ");
+  const coverAlt = locale === "zh"
+    ? [`${text(portraits.coverPlace, locale)}人像`, portraits.coverYear].filter(Boolean).join("，")
+    : [`Portrait in ${text(portraits.coverPlace, locale)}`, portraits.coverYear].filter(Boolean).join(", ");
+  const cover = commissionData.imageByKey.get(portraits.cover);
+  return commissionPageShell(locale, {
+    slug: "portraits",
+    activeKey: "portraits",
+    title: locale === "zh" ? "人像委托 | Yinyu Zhu Photography" : "Portrait Commissions | Yinyu Zhu Photography",
+    description: text(portraits.intro, locale),
+    image: cover.source,
+    imageAlt: coverAlt,
+    main: `    <main class="commission-page commission-portraits" id="main-content" tabindex="-1">
+      <div class="commission-inner">
+      <section class="commission-hero" aria-labelledby="portraitsTitle">
+        <div class="commission-hero-copy">
+          <h1 class="section-page-title" id="portraitsTitle">${l.portraits}</h1>
+          <p class="commission-lead">${esc(text(portraits.intro, locale))}</p>
+          <p class="commission-meta">${esc(text(portraits.meta, locale))}</p>
+        </div>
+        ${commissionHeroImage(portraits.cover, locale, { alt: coverAlt, caption: coverCaption })}
+      </section>${cases.map((entry) => commissionCasePreview(entry, locale)).join("")}${commissionProcessMarkup(portraits.process, locale, { id: "portraitProcessTitle", title: l.process })}${commissionContactMarkup(locale)}
+      </div>
+    </main>`
+  });
+}
+
+function commissionCommercialPage(locale) {
+  const l = labels[locale];
+  const commercial = commissionData.commercial;
+  const cases = commissionData.cases.filter((entry) => entry.kind === "commercial");
+  const seriesCards = commercial.archiveSeriesIds.map((id) => seriesById.get(id)).map((entry) => {
+    const cover = photoById.get(entry.coverPhoto);
+    return `<a class="series-card" href="${route(locale, "series", entry.slug)}">${pictureMarkup(cover, locale, { decorative: true, sizes: "(max-width: 620px) calc(100vw - 40px), (max-width: 900px) 33vw, 290px" })}<span class="series-card-copy"><strong>${esc(text(entry.title, locale))}</strong><span>${esc(text(entry.description, locale))}</span></span></a>`;
+  }).join("");
+  const firstCover = cases.find((entry) => entry.frames.length)?.frames[0] ?? photoById.get(seriesById.get(commercial.archiveSeriesIds[0])?.coverPhoto);
+  return commissionPageShell(locale, {
+    slug: "commercial",
+    activeKey: "commercial",
+    title: locale === "zh" ? "商业委托 | Yinyu Zhu Photography" : "Commercial Commissions | Yinyu Zhu Photography",
+    description: text(commercial.intro, locale),
+    image: firstCover?.source,
+    main: `    <main class="commission-page commission-commercial" id="main-content" tabindex="-1">
+      <div class="commission-inner">
+      <section class="commission-hero commission-hero-text" aria-labelledby="commercialTitle">
+        <div class="commission-hero-copy">
+          <h1 class="section-page-title" id="commercialTitle">${l.commercial}</h1>
+          <p class="commission-lead">${esc(text(commercial.intro, locale))}</p>
+          <p class="commission-meta">${esc(text(commissionData.base, locale))}</p>
+        </div>
+      </section>${cases.map((entry) => commissionCasePreview(entry, locale)).join("")}
+      <section class="commission-section commission-series" aria-labelledby="commercialArchiveTitle">
+        <div class="commission-series-header">
+          <h2 class="commission-section-title" id="commercialArchiveTitle">${l.personalWork}</h2>
+          <p>${esc(text(commercial.archiveNote, locale))}</p>
+        </div>
+        <div class="commission-series-grid">${seriesCards}</div>
+      </section>${commercial.process?.length ? commissionProcessMarkup(commercial.process, locale, { id: "commercialProcessTitle", title: l.howItWorks }) : ""}
+      <section class="commission-section commission-terms" aria-labelledby="commercialTermsTitle">
+        <h2 class="commission-section-title" id="commercialTermsTitle">${l.terms}</h2>
+        <div class="commission-terms-body">${text(commercial.terms, locale).map((paragraph) => `<p>${esc(paragraph)}</p>`).join("")}<a class="home-text-link" href="${route(locale, "rights")}">${l.imageRights}<span aria-hidden="true">↗</span></a></div>
+      </section>${commissionContactMarkup(locale)}
+      </div>
+    </main>`
+  });
+}
+
+// Each case has its own page, so one project can be sent to a client on its own.
+function commissionCasePage(locale, entry) {
+  const l = labels[locale];
+  const section = commissionSections[entry.kind];
+  const isPortrait = entry.kind === "portrait";
+  const siblings = commissionData.cases.filter((candidate) => candidate.kind === entry.kind);
+  const index = siblings.indexOf(entry);
+  const previous = siblings[index - 1];
+  const next = siblings[index + 1];
+  const heading = commissionCaseHeading(entry, locale);
+  const summary = entry.summary ? text(entry.summary, locale) : "";
+  const place = text(entry.place, locale);
+  const cover = entry.frames[0];
+  const description = summary || (isPortrait
+    ? (locale === "zh" ? `${place}人像${entry.year ? `，${entry.year}` : ""}。朱垠宇的委托拍摄。` : `Portrait session in ${place}${entry.year ? `, ${entry.year}` : ""}. Commissioned work by Yinyu Zhu.`)
+    : `${heading}${commissionCaseMeta(entry, locale) ? ` · ${commissionCaseMeta(entry, locale)}` : ""}`);
+  const facts = [
+    place ? { label: l.place, value: place } : null,
+    entry.year ? { label: l.year, value: entry.year } : null,
+    ...(entry.facts ?? []).map((fact) => ({ label: text(fact.label, locale), value: text(fact.value, locale) }))
+  ].filter(Boolean);
+  const factsMarkup = `<dl class="commission-facts">${facts.map((fact) => `<div><dt>${esc(fact.label)}</dt><dd>${esc(fact.value)}</dd></div>`).join("")}</dl>`;
+  const body = entry.body ? `<div class="commission-case-body">${text(entry.body, locale).map((paragraph) => `<p>${esc(paragraph)}</p>`).join("")}</div>` : "";
+  const caseLink = (target, rel) => target ? `<a rel="${rel}" href="${commissionCaseHref(locale, target)}"><span>${rel === "prev" ? l.previousCase : l.nextCase}</span><strong>${esc(commissionCaseHeading(target, locale))}</strong></a>` : "";
+  const pagination = `
+      <nav class="commission-pagination" aria-label="${l.moreCases}"><a class="commission-pagination-index" href="${route(locale, "commissions", section)}">${isPortrait ? l.allPortraits : l.allCommercial}</a>${caseLink(previous, "prev")}${caseLink(next, "next")}</nav>`;
+  return commissionPageShell(locale, {
+    slug: `${section}/${entry.id}`,
+    activeKey: section,
+    isCurrentPage: false,
+    title: `${heading}${isPortrait ? (locale === "zh" ? " · 人像" : " · Portraits") : ""} | Yinyu Zhu Photography`,
+    description,
+    image: cover?.source,
+    imageAlt: cover ? commissionAlt(entry, locale, 0) : "",
+    lightbox: entry.frames.length > 0,
+    main: `    <main class="commission-page commission-case-page" id="main-content" tabindex="-1"${draftAttribute(entry.draft)}>
+      <div class="commission-inner">
+      <section class="commission-hero commission-hero-text" aria-labelledby="caseTitle">
+        <div class="commission-hero-copy">
+          <h1 class="section-page-title" id="caseTitle">${esc(heading)}</h1>${draftTag(entry.draft, locale)}
+          ${summary ? `<p class="commission-lead">${esc(summary)}</p>` : ""}
+        </div>
+      </section>
+      <div class="commission-section commission-case">
+        <div class="commission-case-header">${factsMarkup}</div>
+        <div class="commission-case-content">${body}<div class="commission-frames">
+          ${commissionFramesMarkup(entry, locale)}
+        </div></div>
+      </div>${pagination}${commissionContactMarkup(locale)}
+      </div>
+    </main>`
+  });
+}
+
 function notFoundPage(locale = "zh") {
   const prefix = localePrefix(locale);
   const equivalentHref = locale === "zh" ? "/en/404" : "/404";
@@ -675,6 +1049,10 @@ for (const locale of ["zh", "en"]) {
   await writeRoute(route(locale, "stories"), storiesIndexPage(locale));
   await writeRoute(route(locale, "about"), aboutPage(locale));
   await writeRoute(route(locale, "rights"), rightsPage(locale));
+  await writeRoute(route(locale, "commissions"), commissionsLandingPage(locale));
+  await writeRoute(route(locale, "commissions", "portraits"), commissionPortraitsPage(locale));
+  await writeRoute(route(locale, "commissions", "commercial"), commissionCommercialPage(locale));
+  for (const entry of commissionData.cases) await writeRoute(commissionCaseHref(locale, entry), commissionCasePage(locale, entry));
   for (const [index, photo] of content.photos.entries()) await writeRoute(route(locale, "work", photo.slug), photoDetailPage(locale, photo, index));
   for (const entry of content.series) await writeRoute(route(locale, "series", entry.slug), seriesDetailPage(locale, entry));
   for (const place of content.places) await writeRoute(route(locale, "places", place.slug), placeDetailPage(locale, place));
@@ -693,6 +1071,15 @@ for (const locale of ["zh", "en"]) {
   for (const entry of content.series) allRoutes.push({ path: route(locale, "series", entry.slug), image: photoById.get(entry.coverPhoto)?.source });
   for (const place of content.places) allRoutes.push({ path: route(locale, "places", place.slug), image: photoById.get(place.coverPhoto)?.source });
   for (const story of content.stories) allRoutes.push({ path: route(locale, "stories", story.slug), image: story.coverPhoto });
+  // Commission pages stay out of the sitemap while content/commissions.mjs keeps them out of search.
+  if (commissionData.searchVisible) {
+    allRoutes.push({ path: route(locale, "commissions"), image: commissionData.imageByKey.get(commissionData.landing.cover).source });
+    allRoutes.push({ path: route(locale, "commissions", "portraits"), image: commissionData.imageByKey.get(commissionData.portraits.cover).source });
+    allRoutes.push({ path: route(locale, "commissions", "commercial"), image: null });
+    for (const entry of commissionData.cases) {
+      if (!entry.draft) allRoutes.push({ path: commissionCaseHref(locale, entry), image: entry.frames[0]?.source ?? null });
+    }
+  }
 }
 
 const sitemapRows = allRoutes.map((entry) => `  <url>\n    <loc>${esc(absolute(entry.path))}</loc>${entry.image ? `\n    <image:image><image:loc>${esc(absolute(entry.image))}</image:loc></image:image>` : ""}\n  </url>`).join("\n");

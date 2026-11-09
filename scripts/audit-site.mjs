@@ -3,6 +3,8 @@ import path from "node:path";
 import { buildContentModel, projectRoot } from "./lib/content-model.mjs";
 
 const outputRoot = path.join(projectRoot, "_site");
+// npm run validate passes --release: example content from content/commissions.mjs must be gone before publishing.
+const releaseCheck = process.argv.includes("--release");
 const content = await buildContentModel();
 const failures = [];
 const stats = {
@@ -14,7 +16,8 @@ const stats = {
   contentPlaces: content.places.length,
   contentSeries: content.series.length,
   contentStories: content.stories.length,
-  interactiveMapMarkers: 0
+  interactiveMapMarkers: 0,
+  commissionExamplePages: 0
 };
 
 function fail(category, detail) {
@@ -113,6 +116,10 @@ for (const file of htmlFiles) {
     }
   }
   if (placeholderPattern.test(html)) fail("placeholder", relative);
+  if (/\bdata-commission-draft\b/.test(html)) {
+    stats.commissionExamplePages += 1;
+    if (releaseCheck) fail("example", `${relative}: still shows example content marked draft: true in content/commissions.mjs`);
+  }
   if (/id="placeCount"[^>]*>0</i.test(html) || />0<\/[^>]+>\s*<[^>]+>\s*(地点|photo places)/i.test(html)) fail("places-count", relative);
 
   const h1Count = (html.match(/<h1\b/gi) ?? []).length;
