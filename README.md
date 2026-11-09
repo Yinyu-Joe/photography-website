@@ -25,6 +25,8 @@ npm run audit:images
 
 完整图片构建依赖本机已有的 `ffmpeg`、`sips` 与 `cwebp`。`npm run validate` 会执行完整构建、站点审计和五张跨类别图片的 metadata 抽查。
 
+地图上的陆地点由 `npm run map:dots` 从 `data/natural-earth/ne_50m_land.geojson`（Natural Earth，公有领域）生成到 `assets/world-dots.json`，投影写在 `scripts/lib/world-map.mjs`。只有改投影或点阵规则时才需要重新生成；新增拍摄地点不用。
+
 ## 本地预览
 
 构建后从 `_site` 启动 Cloudflare Pages 预览：

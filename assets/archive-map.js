@@ -11,11 +11,21 @@
     y: Number.parseFloat(marker.style.getPropertyValue("--marker-y")) / 100
   }));
   const isEnglish = document.documentElement.lang === "en";
-  // world-dots.json is a 767.95 × 376.83 crop; the map keeps that shape on every screen.
-  const mapAspect = 767.95 / 376.83;
+  // The map keeps the projection's shape on every screen; the build writes it next to the canvas.
+  const mapAspect = Number.parseFloat(canvas.dataset.mapAspect) || 2.0294;
   const maxZoom = 5;
   const view = { zoom: 1, x: 0, y: 0 };
-  let dots = [];
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  // Land dots: one fine grid, and levels that each add the dots between the previous level's dots.
+  let grid = null;
+  let levels = [];
+  let landMask = null;
+  // How many levels of detail are showing; between two whole numbers the next level is fading in.
+  let detail = 0;
+  let detailTarget = 0;
+  let detailFrame = 0;
+  let detailTime = 0;
+  let painted = false;
   let activeCluster = null;
   let observedWidth = 0;
   let observedHeight = 0;
@@ -154,25 +164,148 @@
     return { left: (width - boxWidth) / 2, top: (height - boxHeight) / 2, width: boxWidth, height: boxHeight };
   }
 
+  function onLevel(level, column, row) {
+    const { step, checker } = levels[level];
+    return column % step === 0 && row % step === 0 && (!checker || ((column + row) / step) % 2 === 0);
+  }
+
+  function loadDots(data) {
+    grid = data.grid;
+    levels = data.levels;
+    landMask = new Uint8Array(grid.columns * grid.rows);
+    levels.forEach(({ step, checker, rows }, level) => {
+      const bit = 1 << level;
+      for (const [row, ...runs] of rows) {
+        const offset = checker && (row / step) % 2 ? step : 0;
+        const stride = checker ? step * 2 : step;
+        let position = 0;
+        for (let index = 0; index < runs.length; index += 2) {
+          position += runs[index];
+          for (const end = position + runs[index + 1]; position < end; position += 1) {
+            landMask[row * grid.columns + offset + position * stride] |= bit;
+          }
+        }
+      }
+    });
+
+    // Every photographed place keeps a dot under it at every level, even on a reef too small for the outlines.
+    for (const { x, y } of markerPositions) {
+      const column = x * grid.width - grid.origin;
+      const row = y * grid.height - grid.origin;
+      levels.forEach(({ step }, level) => {
+        let nearest = -1;
+        let nearestDistance = Infinity;
+        for (let r = Math.floor(row / step) * step - step; r <= row + step * 2; r += step) {
+          for (let c = Math.floor(column / step) * step - step; c <= column + step * 2; c += step) {
+            if (r < 0 || c < 0 || r >= grid.rows || c >= grid.columns || !onLevel(level, c, r)) continue;
+            const distance = Math.hypot(c - column, r - row);
+            if (distance < nearestDistance) {
+              nearest = r * grid.columns + c;
+              nearestDistance = distance;
+            }
+          }
+        }
+        if (nearest >= 0) landMask[nearest] |= 1 << level;
+      });
+    }
+  }
+
+  // Finer levels fade in once their dots sit about as far apart on screen as the full map's dots do,
+  // so the map gains coastline and islands as it grows instead of just showing bigger dots.
+  function spacing(level) {
+    return levels[level].step * (levels[level].checker ? Math.SQRT2 : 1);
+  }
+
+  function targetDetail(box) {
+    const coarsest = (box.width / grid.width) * spacing(0);
+    const comfortable = Math.max(coarsest * 0.9, 4);
+    const reach = Math.log2((coarsest * view.zoom) / comfortable);
+    let target = 0;
+    for (let level = 1; level < levels.length; level += 1) {
+      const needed = Math.log2(spacing(0) / spacing(level));
+      target += Math.min(1, Math.max(0, (reach - needed + 0.5) / 0.5));
+    }
+    return target;
+  }
+
+  function stepDetail(time) {
+    detailFrame = 0;
+    const elapsed = detailTime ? Math.min(64, time - detailTime) : 16;
+    detailTime = time;
+    detail += (detailTarget - detail) * (1 - Math.exp(-elapsed / 120));
+    if (Math.abs(detailTarget - detail) < 0.01) detail = detailTarget;
+    draw();
+  }
+
   function draw() {
     const bounds = canvas.getBoundingClientRect();
     const ratio = Math.min(devicePixelRatio || 1, 2);
-    canvas.width = Math.max(1, Math.round(bounds.width * ratio));
-    canvas.height = Math.max(1, Math.round(bounds.height * ratio));
+    const width = Math.max(1, Math.round(bounds.width * ratio));
+    const height = Math.max(1, Math.round(bounds.height * ratio));
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+    }
     context.setTransform(ratio, 0, 0, ratio, 0, 0);
     context.clearRect(0, 0, bounds.width, bounds.height);
-    context.fillStyle = "rgba(28, 28, 28, 0.16)";
+    if (!landMask) return;
+
     const box = mapBox(bounds.width, bounds.height);
-    const dotSpacing = (box.width * view.zoom) / 205;
-    const radius = Math.min(2.8, Math.max(0.62, dotSpacing * 0.24));
-    for (const dot of dots) {
-      const x = (box.left + (dot.x / 100) * box.width) * view.zoom + view.x;
-      const y = (box.top + (dot.y / 100) * box.height) * view.zoom + view.y;
-      if (x < -radius || x > bounds.width + radius || y < -radius || y > bounds.height + radius) continue;
-      context.beginPath();
-      context.arc(x, y, radius, 0, Math.PI * 2);
-      context.fill();
+    detailTarget = targetDetail(box);
+    if (!painted || reducedMotion.matches) detail = detailTarget;
+    painted = true;
+    if (detail !== detailTarget && !detailFrame) {
+      detailFrame = requestAnimationFrame(stepDetail);
+    } else if (detail === detailTarget) {
+      detailTime = 0;
     }
+
+    const coarse = Math.min(Math.floor(detail), levels.length - 1);
+    const mix = Math.min(1, detail - coarse);
+    const shown = mix > 0 ? coarse + 1 : coarse;
+    const coarseBit = 1 << coarse;
+    const shownBit = 1 << shown;
+    const { step, checker } = levels[shown];
+    const radius = Math.min(2, Math.max(0.62, (box.width / grid.width) * levels[0].step * 0.24)) * view.zoom ** 0.2;
+
+    // Only the grid lines on screen are visited.
+    const toColumn = (screenX) => ((screenX - view.x) / view.zoom - box.left) / box.width * grid.width - grid.origin;
+    const toRow = (screenY) => ((screenY - view.y) / view.zoom - box.top) / box.height * grid.height - grid.origin;
+    const firstColumn = Math.max(0, Math.floor(toColumn(-radius)));
+    const lastColumn = Math.min(grid.columns - 1, Math.ceil(toColumn(bounds.width + radius)));
+    const firstRow = Math.max(0, Math.ceil(toRow(-radius) / step) * step);
+    const lastRow = Math.min(grid.rows - 1, Math.floor(toRow(bounds.height + radius)));
+
+    const steady = new Path2D();
+    const leaving = new Path2D();
+    const arriving = new Path2D();
+    for (let row = firstRow; row <= lastRow; row += step) {
+      const offset = checker && (row / step) % 2 ? step : 0;
+      const stride = checker ? step * 2 : step;
+      const y = (box.top + ((grid.origin + row) / grid.height) * box.height) * view.zoom + view.y;
+      for (let column = offset + Math.ceil((firstColumn - offset) / stride) * stride; column <= lastColumn; column += stride) {
+        const bits = landMask[row * grid.columns + column];
+        if (!bits) continue;
+        const inCoarse = (bits & coarseBit) && (shown === coarse || onLevel(coarse, column, row));
+        const inShown = bits & shownBit;
+        const path = inCoarse ? (inShown || shown === coarse ? steady : leaving) : inShown ? arriving : null;
+        if (!path) continue;
+        const x = (box.left + ((grid.origin + column) / grid.width) * box.width) * view.zoom + view.x;
+        path.moveTo(x + radius, y);
+        path.arc(x, y, radius, 0, Math.PI * 2);
+      }
+    }
+
+    context.fillStyle = "rgb(28, 28, 28)";
+    context.globalAlpha = 0.16;
+    context.fill(steady);
+    if (mix > 0) {
+      context.globalAlpha = 0.16 * (1 - mix);
+      context.fill(leaving);
+      context.globalAlpha = 0.16 * mix;
+      context.fill(arriving);
+    }
+    context.globalAlpha = 1;
   }
 
   function clampView(width, height) {
@@ -366,7 +499,8 @@
   fetch(canvas.dataset.worldDotsSrc || "/assets/world-dots.json")
     .then((response) => response.ok ? response.json() : Promise.reject(new Error("map data unavailable")))
     .then((data) => {
-      dots = Array.isArray(data.dots) ? data.dots : [];
+      if (!data.grid || !Array.isArray(data.levels) || !data.levels.length) throw new Error("map data unreadable");
+      loadDots(data);
       draw();
     })
     .catch(() => {

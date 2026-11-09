@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "map:dots": "node scripts/generate-world-dots.mjs",
     "refresh:dimensions": "node scripts/generate-source-dimensions.mjs",
     "build": "node scripts/build-site.mjs",
     "build:fast": "SKIP_IMAGE_BUILD=1 node scripts/build-site.mjs",

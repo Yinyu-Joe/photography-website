@@ -3,6 +3,7 @@ import path from "node:path";
 import { createHash } from "node:crypto";
 import { buildContentModel, projectRoot } from "./lib/content-model.mjs";
 import { availableVariantWidths, buildResponsiveImages, variantUrl, stripPublishedJpegs } from "./lib/image-pipeline.mjs";
+import { worldMapAspect, worldMapFrame, worldMapX, worldMapY } from "./lib/world-map.mjs";
 
 const outputRoot = path.join(projectRoot, "_site");
 const skipImageBuild = process.env.SKIP_IMAGE_BUILD === "1";
@@ -13,6 +14,9 @@ const seriesById = new Map(content.series.map((series) => [series.id, series]));
 const site = content.site;
 const worldDotsSource = await fs.readFile(path.join(projectRoot, "assets/world-dots.json"));
 const worldDotsVersion = createHash("sha256").update(worldDotsSource).digest("hex").slice(0, 12);
+if (JSON.stringify(JSON.parse(worldDotsSource).frame) !== JSON.stringify(worldMapFrame)) {
+  throw new Error("assets/world-dots.json was made with a different map frame; run npm run map:dots");
+}
 
 if (path.basename(outputRoot) !== "_site" || path.dirname(outputRoot) !== projectRoot) {
   throw new Error(`Refusing to clean unexpected output path: ${outputRoot}`);
@@ -516,9 +520,9 @@ function placesIndexPage(locale) {
   const places = content.places;
   const firstCover = photoById.get(places[0]?.coverPhoto);
   const markers = places.map((place) => {
-    // world-dots.json is a cropped world map, so these values are fitted to its coastlines.
-    const left = place.coordinates.longitude * 0.287 + 48;
-    const top = place.coordinates.latitude * -0.712 + 59.4;
+    // Same projection as the land dots in world-dots.json.
+    const left = worldMapX(place.coordinates.longitude) * 100;
+    const top = worldMapY(place.coordinates.latitude) * 100;
     const placeName = text(place.name, locale);
     const placeCountry = text(place.country, locale);
     const markerLabel = locale === "zh" ? `查看${placeName}的摄影作品` : `View photographs from ${placeName}`;
@@ -534,7 +538,7 @@ function placesIndexPage(locale) {
     description: locale === "zh" ? `朱垠宇摄影档案中的 ${places.length} 个拍摄地点。` : `${places.length} photographed places in the Yinyu Zhu Photography archive.`,
     image: firstCover?.source,
     scripts: ["/assets/archive-map.js?v=archive-v2"],
-    main: `    <main id="main-content" tabindex="-1"><section class="atlas-hero archive-atlas" aria-labelledby="placesTitle"><h1 class="sr-only" id="placesTitle">${l.photographedPlaces}</h1><div class="map-stage" tabindex="0" aria-label="${esc(mapLabel)}"><canvas id="worldMapCanvas" class="world-map-canvas" aria-hidden="true" data-world-dots-src="/assets/world-dots.json?v=${worldDotsVersion}"></canvas><div class="archive-marker-layer">${markers}</div></div><div class="atlas-meta"><strong>${places.length}</strong><span>${l.photographedPlaces}</span></div></section></main>`
+    main: `    <main id="main-content" tabindex="-1"><section class="atlas-hero archive-atlas" aria-labelledby="placesTitle"><h1 class="sr-only" id="placesTitle">${l.photographedPlaces}</h1><div class="map-stage" tabindex="0" aria-label="${esc(mapLabel)}"><canvas id="worldMapCanvas" class="world-map-canvas" aria-hidden="true" data-world-dots-src="/assets/world-dots.json?v=${worldDotsVersion}" data-map-aspect="${worldMapAspect.toFixed(6)}"></canvas><div class="archive-marker-layer">${markers}</div></div><div class="atlas-meta"><strong>${places.length}</strong><span>${l.photographedPlaces}</span></div></section></main>`
   });
 }
 
