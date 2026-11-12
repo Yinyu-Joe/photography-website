@@ -109,9 +109,10 @@
   position: absolute;
   left: var(--marker-x);
   top: var(--marker-y);
-  width: 44px;
-  height: 44px;
-  margin: -22px 0 0 -22px;
+  /* The map script narrows the clickable circle where places sit close together. */
+  width: calc(var(--marker-reach, 22px) * 2);
+  height: calc(var(--marker-reach, 22px) * 2);
+  margin: calc(var(--marker-reach, 22px) * -1) 0 0 calc(var(--marker-reach, 22px) * -1);
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -119,12 +120,28 @@
   cursor: pointer;
 }
 
+/* The light ring sits under every dot, so neighbouring places never cut into each other. */
+.archive-map-marker::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border-radius: 50%;
+  background: rgb(250 250 250 / 82%);
+  pointer-events: none;
+}
+
 .archive-map-marker span {
+  position: relative;
+  z-index: 1;
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: #171717;
-  box-shadow: 0 0 0 4px rgb(250 250 250 / 82%);
   transition: transform 180ms ease;
 }
 
@@ -3245,7 +3262,7 @@ a {
   content: attr(data-place-label);
   position: absolute;
   z-index: 4;
-  bottom: calc(100% - 3px);
+  bottom: calc(50% + 19px);
   left: 50%;
   padding: 5px 8px;
   border: 1px solid rgb(20 20 20 / 10%);
@@ -3268,62 +3285,9 @@ a {
   transform: translate(-50%, 0);
 }
 
-/* A grouped place is drawn only by its group's circle, so no half-covered dots show beside it. */
-.archive-map-marker.is-clustered {
-  pointer-events: none;
-  visibility: hidden;
-}
-
-.archive-map-marker.is-clustered::after {
-  display: none;
-}
-
-.archive-map-cluster {
-  position: absolute;
-  z-index: 5;
-  top: var(--marker-y);
-  left: var(--marker-x);
-  width: 44px;
-  height: 44px;
-  margin: -22px 0 0 -22px;
-  padding: 0;
-  display: grid;
-  place-items: center;
-  border: 0;
-  border-radius: 50%;
-  color: var(--ink);
-  background: transparent;
-  pointer-events: auto;
-  cursor: pointer;
-}
-
-/* Several nearby places: a larger version of the place dot, with the count set in white. */
-.archive-map-cluster span {
-  width: 20px;
-  height: 20px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  color: #fafafa;
-  background: #171717;
-  box-shadow: 0 0 0 3px rgb(250 250 250 / 82%);
-  font-family: var(--site-font);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
-  line-height: 1;
-  transition: transform 180ms ease;
-}
-
-.archive-map-cluster:hover span,
-.archive-map-cluster:focus-visible span {
-  transform: scale(1.15);
-}
-
-.archive-map-cluster:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 3px;
+/* Pointing at dots that overlap names all of them; keyboard focus still names just the one place. */
+.archive-map-marker[data-hover-label]:hover::after {
+  content: attr(data-hover-label);
 }
 
 .archive-map-chooser {
@@ -3487,8 +3451,7 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .archive-map-marker::after,
-  .archive-map-cluster span {
+  .archive-map-marker::after {
     transition: none;
   }
 }

@@ -26,7 +26,12 @@
   let detailFrame = 0;
   let detailTime = 0;
   let painted = false;
-  let activeCluster = null;
+  let activeMarker = null;
+  // Dots closer than this on screen are one target, which lists its places instead of guessing.
+  // With a mouse that is where the dots themselves overlap; a fingertip needs a wider margin.
+  const coarsePointer = matchMedia("(pointer: coarse)");
+  const stackDistance = () => (coarsePointer.matches ? 16 : 8);
+  let stacks = new Map();
   let observedWidth = 0;
   let observedHeight = 0;
   let renderQueued = false;
@@ -43,16 +48,15 @@
   stage?.append(chooser);
 
   function closeChooser() {
-    activeCluster?.setAttribute("aria-expanded", "false");
     chooser.hidden = true;
     chooser.replaceChildren();
-    activeCluster = null;
+    activeMarker = null;
   }
 
   function positionChooser() {
-    if (chooser.hidden || !activeCluster) return;
+    if (chooser.hidden || !activeMarker) return;
     const bounds = stage.getBoundingClientRect();
-    const anchor = activeCluster.getBoundingClientRect();
+    const anchor = activeMarker.querySelector("span").getBoundingClientRect();
     const viewport = window.visualViewport;
     const viewportTop = viewport?.offsetTop || 0;
     const viewportLeft = viewport?.offsetLeft || 0;
@@ -89,36 +93,26 @@
     }
     chooser.replaceChildren(label, list);
     chooser.hidden = false;
-    activeCluster.setAttribute("aria-expanded", "true");
     positionChooser();
     chooser.scrollTop = 0;
     chooser.querySelector("a")?.focus({ preventScroll: true });
   }
 
-  function setupClusters() {
-    markerLayer?.querySelectorAll(".archive-map-cluster").forEach((cluster) => cluster.remove());
-    for (const marker of markers) {
-      marker.classList.remove("is-clustered");
-      marker.removeAttribute("aria-hidden");
-      marker.removeAttribute("tabindex");
-    }
-
-    const remaining = new Set(markers);
+  // Every place keeps its own dot. Dots that sit within stackDistance of each other, directly or
+  // through a neighbour, form one group: pointing at any of them names the group, and clicking lists it.
+  // Each dot's clickable circle reaches halfway to the nearest dot outside its group (up to the usual
+  // 44px), so circles from different groups never overlap and a click lands where it was aimed.
+  function arrangeMarkers() {
+    const limit = stackDistance();
+    const remaining = new Set(markerPositions);
     const groups = [];
-    const distanceThreshold = 52;
     while (remaining.size) {
       const seed = remaining.values().next().value;
       remaining.delete(seed);
       const group = [seed];
       for (let index = 0; index < group.length; index += 1) {
-        const sourceBounds = group[index].getBoundingClientRect();
-        const sourceX = sourceBounds.left + sourceBounds.width / 2;
-        const sourceY = sourceBounds.top + sourceBounds.height / 2;
         for (const candidate of [...remaining]) {
-          const candidateBounds = candidate.getBoundingClientRect();
-          const candidateX = candidateBounds.left + candidateBounds.width / 2;
-          const candidateY = candidateBounds.top + candidateBounds.height / 2;
-          if (Math.hypot(sourceX - candidateX, sourceY - candidateY) >= distanceThreshold) continue;
+          if (Math.hypot(group[index].screenX - candidate.screenX, group[index].screenY - candidate.screenY) >= limit) continue;
           remaining.delete(candidate);
           group.push(candidate);
         }
@@ -126,37 +120,40 @@
       groups.push(group);
     }
 
-    for (const group of groups.filter((entry) => entry.length > 1)) {
-      for (const marker of group) {
-        marker.classList.add("is-clustered");
-        marker.setAttribute("aria-hidden", "true");
-        marker.tabIndex = -1;
-      }
-      // The group's circle sits in the middle of its places, which are hidden while grouped.
-      const middle = (property) => group.reduce((sum, marker) => sum + Number.parseFloat(marker.style.getPropertyValue(property)), 0) / group.length;
-      const cluster = document.createElement("button");
-      cluster.className = "archive-map-cluster";
-      cluster.type = "button";
-      cluster.setAttribute("aria-controls", chooser.id);
-      cluster.setAttribute("aria-expanded", "false");
-      cluster.style.setProperty("--marker-x", `${middle("--marker-x")}%`);
-      cluster.style.setProperty("--marker-y", `${middle("--marker-y")}%`);
-      cluster.setAttribute("aria-label", isEnglish ? `${group.length} nearby photographed places` : `${group.length} 个附近拍摄地点`);
-      const count = document.createElement("span");
-      count.textContent = String(group.length);
-      count.setAttribute("aria-hidden", "true");
-      cluster.append(count);
-      cluster.addEventListener("click", () => {
-        if (activeCluster === cluster) {
-          closeChooser();
-          return;
+    stacks = new Map();
+    for (const group of groups) {
+      for (const entry of group) {
+        let gap = Infinity;
+        for (const other of markerPositions) {
+          if (!group.includes(other)) gap = Math.min(gap, Math.hypot(entry.screenX - other.screenX, entry.screenY - other.screenY));
         }
-        closeChooser();
-        activeCluster = cluster;
-        showChooser(group);
-      });
-      markerLayer?.append(cluster);
+        const { marker } = entry;
+        marker.style.setProperty("--marker-reach", `${Math.min(22, gap / 2).toFixed(1)}px`);
+        // The place under the pointer comes first, then the rest of its group from nearest to farthest.
+        const distanceTo = (other) => Math.hypot(entry.screenX - other.screenX, entry.screenY - other.screenY);
+        const together = [marker, ...group.filter((other) => other !== entry).sort((a, b) => distanceTo(a) - distanceTo(b)).map((other) => other.marker)];
+        const label = together.length > 1 ? together.map((place) => place.dataset.placeLabel).join(" · ") : "";
+        marker.dataset.hoverLabel = label || marker.dataset.placeLabel;
+        marker.title = label || [marker.dataset.placeLabel, marker.dataset.placeCountry].filter(Boolean).join(" · ");
+        if (label) stacks.set(marker, together);
+      }
     }
+  }
+
+  for (const marker of markers) {
+    marker.addEventListener("click", (event) => {
+      const stack = stacks.get(marker);
+      // Keyboard activation (detail 0) and modified clicks still follow the link itself.
+      if (!stack || event.detail === 0 || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      if (activeMarker === marker) {
+        closeChooser();
+        return;
+      }
+      closeChooser();
+      activeMarker = marker;
+      showChooser(stack);
+    });
   }
 
   function mapBox(width, height) {
@@ -316,9 +313,11 @@
 
   function positionMarkers(width, height) {
     const box = mapBox(width, height);
-    for (const { marker, x, y } of markerPositions) {
-      marker.style.setProperty("--marker-x", `${(((box.left + x * box.width) * view.zoom + view.x) / width) * 100}%`);
-      marker.style.setProperty("--marker-y", `${(((box.top + y * box.height) * view.zoom + view.y) / height) * 100}%`);
+    for (const entry of markerPositions) {
+      entry.screenX = (box.left + entry.x * box.width) * view.zoom + view.x;
+      entry.screenY = (box.top + entry.y * box.height) * view.zoom + view.y;
+      entry.marker.style.setProperty("--marker-x", `${(entry.screenX / width) * 100}%`);
+      entry.marker.style.setProperty("--marker-y", `${(entry.screenY / height) * 100}%`);
     }
   }
 
@@ -330,7 +329,7 @@
     stage.classList.toggle("is-zoomed", view.zoom > 1);
     draw();
     positionMarkers(bounds.width, bounds.height);
-    setupClusters();
+    arrangeMarkers();
   }
 
   function queueRender() {
@@ -482,16 +481,16 @@
   chooser.addEventListener("click", (event) => event.stopPropagation());
   chooser.addEventListener("wheel", (event) => event.stopPropagation(), { passive: true });
   document.addEventListener("focusin", (event) => {
-    if (!chooser.hidden && !chooser.contains(event.target) && event.target !== activeCluster) closeChooser();
+    if (!chooser.hidden && !chooser.contains(event.target) && event.target !== activeMarker) closeChooser();
   });
   addEventListener("scroll", positionChooser, { passive: true });
   window.visualViewport?.addEventListener("resize", positionChooser);
   document.addEventListener("click", (event) => {
-    if (!chooser.hidden && !chooser.contains(event.target) && !event.target.closest(".archive-map-cluster")) closeChooser();
+    if (!chooser.hidden && !chooser.contains(event.target) && event.target.closest(".archive-map-marker") !== activeMarker) closeChooser();
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !chooser.hidden) {
-      const returnFocus = activeCluster;
+      const returnFocus = activeMarker;
       closeChooser();
       returnFocus?.focus({ preventScroll: true });
     }
@@ -524,6 +523,6 @@
     observedHeight = bounds.height;
     if (sizeChanged) positionMarkers(bounds.width, bounds.height);
     draw();
-    if (sizeChanged && chooser.hidden) setupClusters();
+    if (sizeChanged && chooser.hidden) arrangeMarkers();
   }).observe(canvas);
 })();
