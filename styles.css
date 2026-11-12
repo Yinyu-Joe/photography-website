@@ -4367,3 +4367,101 @@ a {
     letter-spacing: 0;
   }
 }
+
+/* Series pages end with a way on: all series, the previous one and the next one (same look as the commission case links). */
+.series-pagination {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 24px;
+  margin-top: clamp(72px, 9vw, 140px);
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.series-pagination a {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  min-height: 44px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.series-pagination span {
+  color: var(--nav-muted);
+  font-size: 0.82rem;
+}
+
+.series-pagination strong {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.series-pagination-index {
+  grid-column: 1 / -1;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.series-pagination a:hover strong,
+.series-pagination a:focus-visible strong,
+.series-pagination-index:hover,
+.series-pagination-index:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.series-pagination a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+@media (min-width: 901px) {
+  .series-pagination {
+    grid-template-columns: minmax(150px, 0.22fr) minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: clamp(36px, 4vw, 62px);
+  }
+
+  .series-pagination-index {
+    grid-column: 1;
+  }
+
+  .series-pagination [rel="prev"] {
+    grid-column: 2;
+  }
+
+  .series-pagination [rel="next"] {
+    grid-column: 3;
+  }
+}
+
+/* Lightbox position ("3 / 9"), shown above the title only when the set has more than one photo. */
+.lightbox-info .lightbox-count {
+  color: var(--lightbox-muted);
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+
+/* Lightbox: the photo follows a horizontal swipe, springs back on a short one, and the next photo
+   arrives from the side it lives on (assets/archive-interactions.js). Reduced motion: photos just swap. */
+.archive-lightbox .lightbox-media {
+  touch-action: pan-y pinch-zoom;
+}
+
+.archive-lightbox .lightbox-media img {
+  transition: transform 520ms var(--ease-spring), opacity 380ms ease;
+}
+
+.archive-lightbox .lightbox-media img.is-dragging,
+.archive-lightbox .lightbox-media img.is-entering {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archive-lightbox .lightbox-media img {
+    transition: none;
+    transform: none !important;
+  }
+}

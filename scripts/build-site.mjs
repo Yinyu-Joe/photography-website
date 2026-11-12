@@ -81,7 +81,11 @@ const labels = {
     nextCase: "下一个",
     moreCases: "更多案例",
     allPortraits: "全部人像",
-    allCommercial: "全部商业案例"
+    allCommercial: "全部商业案例",
+    previousSeries: "上一个系列",
+    nextSeries: "下一个系列",
+    moreSeries: "更多系列",
+    photoPosition: (current, total) => `第 ${current} 张，共 ${total} 张`
   },
   en: {
     skip: "Skip to main content",
@@ -130,7 +134,11 @@ const labels = {
     nextCase: "Next",
     moreCases: "More cases",
     allPortraits: "All portraits",
-    allCommercial: "All commercial work"
+    allCommercial: "All commercial work",
+    previousSeries: "Previous series",
+    nextSeries: "Next series",
+    moreSeries: "More series",
+    photoPosition: (current, total) => `Photo ${current} of ${total}`
   }
 };
 
@@ -377,7 +385,7 @@ function photoTile(photo, locale, index = 1, className = "", group = "archive", 
   const optimizedAttributes = skipImageBuild ? "" : ` data-lightbox-avif-src="${variantUrl(photo, lightboxWidth, "avif")}" data-lightbox-webp-src="${variantUrl(photo, lightboxWidth, "webp")}"`;
   const accessibleText = photoAccessibleText(photo, locale);
   const linkLabel = locale === "zh" ? `查看${accessibleText}` : `View ${accessibleText}`;
-  return `<a class="photo-tile is-visible ${className}" href="${photoHref(locale, photo)}" aria-label="${esc(linkLabel)}" data-lightbox-item data-lightbox-group="${esc(group)}" data-photo-id="${photo.id}" data-full-src="${photo.source}"${optimizedAttributes} data-title="${esc(text(photo.title, locale))}" data-alt="${esc(accessibleText)}" data-caption="${esc(photoDescription(photo, locale))}" data-meta="${esc(meta)}">
+  return `<a class="photo-tile is-visible ${className}" href="${photoHref(locale, photo)}" aria-label="${esc(linkLabel)}" data-lightbox-item data-lightbox-group="${esc(group)}" data-photo-id="${photo.id}" data-full-src="${photo.source}"${optimizedAttributes} data-title="${esc(text(photo.title, locale))}" data-alt="${esc(accessibleText)}" data-caption="${esc(photo.writtenCaption?.[locale] || "")}" data-meta="${esc(meta)}">
           <figure>${pictureMarkup(photo, locale, { eager: index === 0, ...(sizes ? { sizes } : {}) })}</figure>
         </a>`;
 }
@@ -390,7 +398,7 @@ function lightboxMarkup(locale) {
       <button class="lightbox-control lightbox-prev" type="button" data-lightbox-prev aria-label="${l.previous}">‹</button>
       <div class="lightbox-media"><picture data-lightbox-picture><source type="image/avif" data-lightbox-avif><source type="image/webp" data-lightbox-webp><img data-lightbox-image decoding="async" alt=""></picture></div>
       <button class="lightbox-control lightbox-next" type="button" data-lightbox-next aria-label="${l.next}">›</button>
-      <div class="lightbox-info"><h2 id="lightboxTitle" data-lightbox-title></h2><p id="lightboxMeta" data-lightbox-meta></p><p data-lightbox-caption></p></div>
+      <div class="lightbox-info"><p class="lightbox-count" data-lightbox-count data-position-label="${esc(l.photoPosition("{current}", "{total}"))}" hidden></p><h2 id="lightboxTitle" data-lightbox-title></h2><p id="lightboxMeta" data-lightbox-meta></p><p data-lightbox-caption></p></div>
     </dialog>`;
 }
 
@@ -502,6 +510,15 @@ function seriesDetailPage(locale, entry) {
   const l = labels[locale];
   const photos = entry.photoIds.map((id) => photoById.get(id)).filter(Boolean);
   const cover = photoById.get(entry.coverPhoto) || photos[0];
+  // Series loop, so the last one leads back to the first and every page ends with somewhere to go.
+  const seriesList = content.series;
+  const seriesIndex = seriesList.findIndex((candidate) => candidate.id === entry.id);
+  const previous = seriesList[(seriesIndex - 1 + seriesList.length) % seriesList.length];
+  const next = seriesList[(seriesIndex + 1) % seriesList.length];
+  const seriesLink = (target, rel) => `<a rel="${rel}" href="${route(locale, "series", target.slug)}"><span>${rel === "prev" ? l.previousSeries : l.nextSeries}</span><strong>${esc(text(target.title, locale))}</strong></a>`;
+  const pagination = seriesList.length > 1
+    ? `<nav class="series-pagination" aria-label="${l.moreSeries}"><a class="series-pagination-index" href="${route(locale, "series")}">${l.allSeries}</a>${seriesList.length > 2 ? seriesLink(previous, "prev") : ""}${seriesLink(next, "next")}</nav>`
+    : "";
   return pageShell({
     locale,
     type: "series",
@@ -511,7 +528,7 @@ function seriesDetailPage(locale, entry) {
     image: cover?.source,
     imageAlt: cover ? photoAccessibleText(cover, locale) : "",
     scripts: ["/assets/archive-interactions.js?v=archive-v2"],
-    main: `    <main class="content-page work-page works-page" id="main-content" tabindex="-1"><section class="works-heading"><p class="eyebrow"><a href="${route(locale, "series")}">${l.allSeries}</a></p><h1 class="section-page-title">${esc(text(entry.title, locale))}</h1><p class="works-intro">${esc(text(entry.description, locale))}</p></section><section class="work-gallery"><div class="photo-wall stack-wall">${photos.map((photo, index) => photoTile(photo, locale, index, "", `series-${entry.id}`, "(max-width: 620px) calc(100vw - 32px), (max-width: 900px) 50vw, 33vw")).join("\n")}</div></section></main>${lightboxMarkup(locale)}`
+    main: `    <main class="content-page work-page works-page" id="main-content" tabindex="-1"><section class="works-heading"><p class="eyebrow"><a href="${route(locale, "series")}">${l.allSeries}</a></p><h1 class="section-page-title">${esc(text(entry.title, locale))}</h1><p class="works-intro">${esc(text(entry.description, locale))}</p></section><section class="work-gallery"><div class="photo-wall stack-wall">${photos.map((photo, index) => photoTile(photo, locale, index, "", `series-${entry.id}`, "(max-width: 620px) calc(100vw - 32px), (max-width: 900px) 50vw, 33vw")).join("\n")}</div></section>${pagination}</main>${lightboxMarkup(locale)}`
   });
 }
 
@@ -667,6 +684,7 @@ function photoDetailPage(locale, photo, index) {
   const placeNames = places.map((place) => text(place.name, locale)).join(", ");
   const semanticTitle = [titleText, placeNames, photo.year].filter(Boolean).join(" · ");
   const description = photoDescription(photo, locale);
+  const writtenCaption = photo.writtenCaption?.[locale];
   const canonicalPath = route(locale, "work", photo.slug);
   return pageShell({
     locale,
@@ -693,7 +711,7 @@ function photoDetailPage(locale, photo, index) {
       ...(places.length ? { contentLocation: places.map((place) => ({ "@type": "Place", name: text(place.name, locale) })) } : {}),
       inLanguage: locale === "zh" ? "zh-CN" : "en"
     }],
-    main: `    <main class="photo-detail-page" id="main-content" tabindex="-1"><article class="photo-detail"><header><p class="eyebrow"><a href="${route(locale, "work")}">${l.work}</a></p><h1>${esc(titleText)}</h1><p class="photo-detail-meta">${metadata}</p></header><figure>${pictureMarkup(photo, locale, { eager: true, sizes: "(max-width: 760px) 70vw, 78vw" })}<figcaption>${esc(description)}</figcaption></figure><p class="photo-copyright">${photo.copyright}</p><nav class="photo-pagination" aria-label="${locale === "zh" ? "相邻作品" : "Adjacent works"}"><a rel="prev" href="${photoHref(locale, previous)}"><span>${l.previous}</span><strong>${esc(text(previous.title, locale))}</strong></a><a rel="next" href="${photoHref(locale, next)}"><span>${l.next}</span><strong>${esc(text(next.title, locale))}</strong></a></nav></article></main>`
+    main: `    <main class="photo-detail-page" id="main-content" tabindex="-1"><article class="photo-detail"><header><p class="eyebrow"><a href="${route(locale, "work")}">${l.work}</a></p><h1>${esc(titleText)}</h1><p class="photo-detail-meta">${metadata}</p></header><figure>${pictureMarkup(photo, locale, { eager: true, sizes: "(max-width: 760px) 70vw, 78vw" })}${writtenCaption ? `<figcaption>${esc(writtenCaption)}</figcaption>` : ""}</figure><p class="photo-copyright">${photo.copyright}</p><nav class="photo-pagination" aria-label="${locale === "zh" ? "相邻作品" : "Adjacent works"}"><a rel="prev" href="${photoHref(locale, previous)}"><span>${l.previous}</span><strong>${esc(text(previous.title, locale))}</strong></a><a rel="next" href="${photoHref(locale, next)}"><span>${l.next}</span><strong>${esc(text(next.title, locale))}</strong></a></nav></article></main>`
   });
 }
 
